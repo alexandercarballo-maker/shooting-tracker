@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>TomCat // Weekly Shooting Tracker</title>
+
+  <!-- iOS PWA / Add to Home Screen Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TomCat Hoops" />
+  <meta name="theme-color" content="#090D16" />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            court: {
+              bg: '#090D16',
+              card: '#111827',
+              elevated: '#1E293B',
+              navy: '#0F2342',
+              orange: '#F97316',
+              orangeHover: '#EA580C',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Safe Area & Mobile Touch Optimization */
+    body {
+      background-color: #090D16;
+      color: #F8FAFC;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 92px);
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+    }
+
+    /* Hide scrollbars on horizontal tab bar while keeping scroll */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Tactile button press feedback */
+    .tap-btn {
+      transition: transform 0.08s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.12s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .tap-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Pulse animation on Make */
+    @keyframes makeFlash {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.65); }
+      100% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); }
+    }
+    .animate-make-flash {
+      animation: makeFlash 0.35s ease-out;
+    }
+
+    /* Sticky bottom bar safe area */
+    .sticky-footer {
+      padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-orange-500 selection:text-white">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-30 bg-[#090D16]/95 backdrop-blur-md border-b border-slate-800/90 px-4 pt-3 pb-3">
+    <div class="max-w-xl mx-auto">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5">
+          <!-- Basketball Icon Badge -->
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20 shrink-0">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M5.65 5.65c3.9 3.9 3.9 8.8 0 12.7"></path>
+              <path d="M18.35 5.65c-3.9 3.9-3.9 8.8 0 12.7"></path>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <line x1="12" y1="2" x2="12" y2="22"></line>
+            </svg>
+          </div>
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-orange-400 leading-none mb-0.5">
+              WEEKLY SHOOTING TRACKER
+            </div>
+            <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-white leading-tight">
+              Player: <span class="text-orange-500">TomCat</span>
+            </h1>
+            <div class="flex items-center gap-2 mt-0.5">
+              <label for="week-input" class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Week of:</label>
+              <input
+                id="week-input"
+                type="date"
+                class="bg-slate-900 border border-slate-700/80 text-slate-200 text-xs font-medium rounded-md px-2 py-0.5 focus:outline-none focus:border-orange-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Goal Pill -->
+        <div class="text-right shrink-0">
+          <div class="inline-flex flex-col items-end bg-[#0F2342] border border-blue-800/60 rounded-xl px-2.5 py-1">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Daily Goal</span>
+            <span class="text-xs font-extrabold font-mono text-white">150 <span class="text-orange-400 font-sans font-semibold">Makes</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 1 TO DAY 7 SELECTOR PILLS -->
+      <div id="day-tabs" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar mt-3 pt-0.5 pb-0.5" role="tablist">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="max-w-xl mx-auto px-4 pt-4 space-y-4">
+
+    <!-- SELECTED DAY STATUS & KNEE CHECK BANNER -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 shadow-sm">
+      <div class="flex items-center justify-between gap-2 mb-2.5">
+        <div>
+          <span id="active-day-label" class="text-xs font-extrabold uppercase tracking-wider text-orange-400">DAY 1 WORKOUT</span>
+          <h2 class="text-lg font-extrabold text-white leading-snug">
+            <span id="day-makes-hero" class="font-mono text-2xl">0</span>
+            <span class="text-slate-400 text-sm font-semibold">/ 150 Makes</span>
+            <span id="day-pct-badge" class="ml-2 inline-block align-middle text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">0.0%</span>
+          </h2>
+        </div>
+
+        <!-- View Switcher: Courtside Cards vs 7-Day Grid -->
+        <button
+          id="toggle-grid-btn"
+          type="button"
+          class="tap-btn inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold px-3 py-2 rounded-xl"
+        >
+          <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="3" y1="15" x2="21" y2="15"></line>
+            <line x1="9" y1="9" x2="9" y2="21"></line>
+          </svg>
+          <span id="toggle-grid-text">7-Day Grid</span>
+        </button>
+      </div>
+
+      <!-- Daily Progress Bar -->
+      <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800/80">
+        <div id="day-progress-bar" class="h-full bg-gradient-to-r from-orange-500 to-emerald-400 transition-all duration-300 rounded-full" style="width: 0%"></div>
+      </div>
+
+      <!-- Post-PT Knee Comfort Check -->
+      <div class="mt-3 pt-2.5 border-t border-slate-800/80 space-y-1.5">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+          <span class="text-xs font-semibold text-slate-300">PT Knee Comfort Check:</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5" id="knee-status-group">
+          <button type="button" data-knee="Pain-Free (0-1/10)" class="knee-btn tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/70 text-slate-300 text-center">Green: Pain-Free 0-1/10</button>
+          <button type="button" data-knee="Mild Tightness (2/10 - Monitor Hops)" class="knee-btn tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/70 text-slate-300 text-center">Yellow: Mild 2/10 (Monitor)</button>
+          <button type="button" data-knee="Sore (3+/10 - Skip Hops / FT Only)" class="knee-btn tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/70 text-slate-300 text-center">Red: Sore 3+/10 (Skip Hops)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7-DAY SUMMARY GRID VIEW (COLLAPSIBLE) -->
+    <section id="weekly-grid-section" class="hidden bg-slate-900 border border-slate-700/90 rounded-2xl p-3.5 shadow-xl">
+      <div class="flex items-center justify-between mb-2.5">
+        <div>
+          <h3 class="text-sm font-extrabold uppercase tracking-wider text-white">Weekly Paper-Sheet Grid</h3>
+          <p class="text-[11px] text-slate-400">Makes / Attempts across all 7 days (Goal: 1,050 Makes)</p>
+        </div>
+        <button id="close-grid-btn" type="button" class="text-xs font-bold text-orange-400 hover:text-orange-300 px-2 py-1">Close ✕</button>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-slate-800">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
+              <th class="py-2 px-2.5 font-bold sticky left-0 bg-slate-950 z-10">Drill</th>
+              <th class="py-2 px-2 text-center font-mono">D1</th>
+              <th class="py-2 px-2 text-center font-mono">D2</th>
+              <th class="py-2 px-2 text-center font-mono">D3</th>
+              <th class="py-2 px-2 text-center font-mono">D4</th>
+              <th class="py-2 px-2 text-center font-mono">D5</th>
+              <th class="py-2 px-2 text-center font-mono">D6</th>
+              <th class="py-2 px-2 text-center font-mono">D7</th>
+            </tr>
+          </thead>
+          <tbody id="weekly-grid-body" class="divide-y divide-slate-800/80 bg-slate-900/60">
+            <!-- Populated dynamically -->
+          </tbody>
+          <tfoot id="weekly-grid-foot" class="bg-slate-950 font-bold text-white border-t border-slate-700">
+            <!-- Populated dynamically -->
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- 6 DRILL CARDS CONTAINER -->
+    <section id="drills-container" class="space-y-3.5" aria-label="Shooting Drills">
+      <!-- Drill cards rendered via JS -->
+    </section>
+
+    <!-- WEEKLY TOTALS & ACTIONS CARD -->
+    <section class="bg-gradient-to-br from-[#0F2342] to-slate-900 border border-blue-900/60 rounded-2xl p-4 shadow-lg">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-widest text-blue-300">7-Day Cumulative</span>
+          <h3 class="text-base font-extrabold text-white">WEEKLY TOTALS</h3>
+        </div>
+        <span class="text-xs font-mono font-bold bg-blue-950/90 border border-blue-800/70 text-blue-200 px-2.5 py-1 rounded-lg">
+          Goal: 1,050 Makes
+        </span>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2.5 text-center">
+        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-2.5">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Makes</div>
+          <div id="weekly-makes" class="text-xl font-extrabold font-mono text-white mt-0.5">0</div>
+        </div>
+        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-2.5">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Attempts</div>
+          <div id="weekly-attempts" class="text-xl font-extrabold font-mono text-slate-200 mt-0.5">0</div>
+        </div>
+        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-2.5">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Shoot %</div>
+          <div id="weekly-pct" class="text-xl font-extrabold font-mono text-orange-400 mt-0.5">0.0%</div>
+        </div>
+      </div>
+
+      <!-- Export & Reset Action Row -->
+      <div class="grid grid-cols-3 gap-2 mt-4">
+        <button
+          id="copy-summary-btn"
+          type="button"
+          class="tap-btn flex items-center justify-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs py-2.5 px-2 rounded-xl shadow-md shadow-orange-500/20"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy Log</span>
+        </button>
+
+        <button
+          id="export-csv-btn"
+          type="button"
+          class="tap-btn flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 font-bold text-xs py-2.5 px-2 rounded-xl"
+        >
+          <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Export CSV</span>
+        </button>
+
+        <button
+          id="open-reset-btn"
+          type="button"
+          class="tap-btn flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-rose-950/60 border border-slate-700 hover:border-rose-800 text-rose-400 font-bold text-xs py-2.5 px-2 rounded-xl"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span>Reset Week</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- iOS Add to Home Screen Tip -->
+    <p class="text-center text-[11px] text-slate-500 pb-4">
+      Tip: In Safari on iPhone, tap <strong class="text-slate-400">Share &rarr; Add to Home Screen</strong> for full-screen courtside mode.
+    </p>
+  </main>
+
+  <!-- STICKY BOTTOM DAILY TOTALS BAR -->
+  <footer class="fixed bottom-0 inset-x-0 z-30 bg-[#090D16]/95 backdrop-blur-md border-t border-slate-800 px-4 pt-2.5 sticky-footer">
+    <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-4">
+        <div>
+          <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400" id="footer-day-title">Day 1 Totals</span>
+          <div class="flex items-baseline gap-1.5">
+            <span id="footer-makes" class="font-mono text-lg font-extrabold text-white">0</span>
+            <span class="text-xs text-slate-400 font-semibold">/</span>
+            <span id="footer-attempts" class="font-mono text-base font-bold text-slate-300">0</span>
+            <span class="text-[11px] text-slate-400">shots</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="text-right">
+          <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Daily FG%</span>
+          <span id="footer-pct" class="font-mono text-lg font-extrabold text-orange-400">0.0%</span>
+        </div>
+        <div class="h-8 w-px bg-slate-800"></div>
+        <div class="text-right">
+          <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Week FG%</span>
+          <span id="footer-week-pct" class="font-mono text-sm font-extrabold text-emerald-400">0.0%</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- QUICK ENTRY MODAL (Set exact Makes / Attempts post-drill) -->
+  <div id="quick-entry-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-5 shadow-2xl">
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">Quick Drill Entry</span>
+        <button id="close-quick-modal" type="button" class="text-slate-400 hover:text-white text-sm font-bold px-2 py-0.5">✕</button>
+      </div>
+      <h3 id="quick-modal-drill-name" class="text-lg font-extrabold text-white">DRILL NAME</h3>
+      <p class="text-xs text-slate-400 mt-0.5 mb-4">Enter total makes and total shots attempted for this drill.</p>
+
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div>
+          <label for="quick-makes-input" class="block text-xs font-bold uppercase text-emerald-400 mb-1">Makes (Goal: 25)</label>
+          <input
+            id="quick-makes-input"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            max="200"
+            class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded-xl px-3 py-2.5 text-center font-mono text-xl font-extrabold text-white focus:outline-none"
+          />
+        </div>
+        <div>
+          <label for="quick-attempts-input" class="block text-xs font-bold uppercase text-slate-300 mb-1">Total Attempts</label>
+          <input
+            id="quick-attempts-input"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            max="300"
+            class="w-full bg-slate-950 border border-slate-700 focus:border-orange-500 rounded-xl px-3 py-2.5 text-center font-mono text-xl font-extrabold text-white focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button id="cancel-quick-btn" type="button" class="tap-btn flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm py-2.5 rounded-xl">
+          Cancel
+        </button>
+        <button id="save-quick-btn" type="button" class="tap-btn flex-1 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-sm py-2.5 rounded-xl shadow-lg shadow-orange-500/20">
+          Save Score
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESET CONFIRMATION MODAL -->
+  <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-5 shadow-2xl">
+      <h3 class="text-lg font-extrabold text-white">Start a Fresh Week?</h3>
+      <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+        This will clear all recorded makes, attempts, and knee check notes across Days 1–7. Make sure you've copied or exported your CSV first!
+      </p>
+      <div class="flex gap-2 mt-5">
+        <button id="cancel-reset-btn" type="button" class="tap-btn flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm py-2.5 rounded-xl">
+          Keep Data
+        </button>
+        <button id="confirm-reset-btn" type="button" class="tap-btn flex-1 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm py-2.5 rounded-xl">
+          Yes, Reset Week
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-200">
+    <div id="toast-msg" class="bg-emerald-600 text-white text-xs font-extrabold px-4 py-2.5 rounded-full shadow-xl border border-emerald-400/40 whitespace-nowrap">
+      Copied to clipboard!
+    </div>
+  </div>
+
+  <script>
+    /**
+     * TomCat Weekly Shooting Tracker - State & Logic
+     * Stores 7 days x 6 drills in localStorage for instant courtside tracking.
+     */
+    const DRILLS = [
+      {
+        id: 'd1',
+        number: 'DRILL 1',
+        name: '1-2 CATCH + SHOOT',
+        subtitle: '15 ft - 3PT | 5 spots x 5',
+        target: 25,
+        plyo: false
+      },
+      {
+        id: 'd2',
+        number: 'DRILL 2',
+        name: 'FORWARD HOP',
+        subtitle: '15 ft - 3PT | 5 spots x 5',
+        target: 25,
+        plyo: true
+      },
+      {
+        id: 'd3',
+        number: 'DRILL 3',
+        name: 'VERTICAL HOP',
+        subtitle: '15 ft - 3PT | 5 spots x 5',
+        target: 25,
+        plyo: true
+      },
+      {
+        id: 'd4',
+        number: 'DRILL 4',
+        name: 'ANCHOR STEP',
+        subtitle: '15 ft - 3PT | 5 spots x 5',
+        target: 25,
+        plyo: false
+      },
+      {
+        id: 'd5',
+        number: 'DRILL 5',
+        name: 'LATERAL STEP HOP',
+        subtitle: '15 ft - 3PT | 5 spots x 5',
+        target: 25,
+        plyo: true
+      },
+      {
+        id: 'd6',
+        number: 'DRILL 6',
+        name: 'FREE THROWS',
+        subtitle: '25 made free throws',
+        target: 25,
+        plyo: false
+      }
+    ];
+
+    const STORAGE_KEY = 'tomcat_shooting_tracker_v1';
+
+    // Create blank 7-day data structure
+    function createInitialState() {
+      const todayISO = new Date().toISOString().split('T')[0];
+      const days = {};
+      for (let d = 1; d <= 7; d++) {
+        days[d] = {
+          kneeStatus: '',
+          drills: {}
+        };
+        DRILLS.forEach(drill => {
+          days[d].drills[drill.id] = {
+            makes: 0,
+            attempts: 0,
+            history: [] // Stack of 'make' | 'miss' for accurate Undo
+          };
+        });
+      }
+      return {
+        weekOf: todayISO,
+        activeDay: 1,
+        days
+      };
+    }
+
+    // Load or initialize state
+    let state = (() => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.days && parsed.days[1]) return parsed;
+        }
+      } catch (e) {
+        console.error('Failed to load saved tracker data:', e);
+      }
+      return createInitialState();
+    })();
+
+    let quickEditDrillId = null;
+    let showWeeklyGrid = false;
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error('Failed to save state:', e);
+      }
+    }
+
+    function triggerHaptic(pattern = 15) {
+      if (navigator.vibrate) {
+        try {
+          navigator.vibrate(pattern);
+        } catch (_) {}
+      }
+    }
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.textContent = message;
+      toastMsg.className = isError
+        ? 'bg-rose-600 text-white text-xs font-extrabold px-4 py-2.5 rounded-full shadow-xl border border-rose-400/40 whitespace-nowrap'
+        : 'bg-emerald-600 text-white text-xs font-extrabold px-4 py-2.5 rounded-full shadow-xl border border-emerald-400/40 whitespace-nowrap';
+      toast.classList.remove('opacity-0');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0');
+      }, 2200);
+    }
+
+    function formatPct(makes, attempts) {
+      if (!attempts || attempts === 0) return '0.0%';
+      return ((makes / attempts) * 100).toFixed(1) + '%';
+    }
+
+    function getDayTotals(dayNum) {
+      const dayObj = state.days[dayNum];
+      let makes = 0;
+      let attempts = 0;
+      DRILLS.forEach(d => {
+        makes += dayObj.drills[d.id].makes;
+        attempts += dayObj.drills[d.id].attempts;
+      });
+      return { makes, attempts };
+    }
+
+    function getWeeklyTotals() {
+      let makes = 0;
+      let attempts = 0;
+      for (let d = 1; d <= 7; d++) {
+        const dt = getDayTotals(d);
+        makes += dt.makes;
+        attempts += dt.attempts;
+      }
+      return { makes, attempts };
+    }
+
+    // Core Shot Logging Actions
+    function recordShot(drillId, isMake) {
+      const drillData = state.days[state.activeDay].drills[drillId];
+      drillData.attempts += 1;
+      if (isMake) {
+        drillData.makes += 1;
+        drillData.history.push('make');
+        triggerHaptic(20);
+      } else {
+        drillData.history.push('miss');
+        triggerHaptic(10);
+      }
+      saveState();
+      renderAll(isMake ? drillId : null);
+    }
+
+    function undoShot(drillId) {
+      const drillData = state.days[state.activeDay].drills[drillId];
+      if (drillData.attempts <= 0) return;
+
+      const lastAction = drillData.history.pop();
+      if (lastAction === 'make') {
+        drillData.makes = Math.max(0, drillData.makes - 1);
+        drillData.attempts = Math.max(0, drillData.attempts - 1);
+      } else if (lastAction === 'miss') {
+        drillData.attempts = Math.max(0, drillData.attempts - 1);
+      } else {
+        // Fallback if manually entered via Quick Entry
+        if (drillData.attempts > drillData.makes) {
+          drillData.attempts -= 1;
+        } else {
+          drillData.makes = Math.max(0, drillData.makes - 1);
+          drillData.attempts = Math.max(0, drillData.attempts - 1);
+        }
+      }
+      triggerHaptic([10, 30, 10]);
+      saveState();
+      renderAll();
+    }
+
+    // Render Day Selector Pills
+    function renderDayTabs() {
+      const container = document.getElementById('day-tabs');
+      container.innerHTML = '';
+
+      for (let d = 1; d <= 7; d++) {
+        const isActive = state.activeDay === d;
+        const { makes } = getDayTotals(d);
+        const isComplete = makes >= 150;
+        const hasProgress = makes > 0 && makes < 150;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+
+        let baseClasses = 'tap-btn shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-colors ';
+        if (isActive) {
+          baseClasses += 'bg-orange-500 border-orange-400 text-white shadow-md shadow-orange-500/25';
+        } else if (isComplete) {
+          baseClasses += 'bg-emerald-950/60 border-emerald-700/70 text-emerald-300 hover:bg-emerald-900/60';
+        } else {
+          baseClasses += 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800';
+        }
+        btn.className = baseClasses;
+
+        let dotHtml = '';
+        if (isComplete) {
+          dotHtml = `<span class="w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-emerald-400'}"></span>`;
+        } else if (hasProgress) {
+          dotHtml = `<span class="w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-orange-400'}"></span>`;
+        }
+
+        btn.innerHTML = `<span>DAY ${d}</span>${dotHtml}`;
+        btn.addEventListener('click', () => {
+          state.activeDay = d;
+          saveState();
+          renderAll();
+        });
+        container.appendChild(btn);
+      }
+    }
+
+    // Render 6 Drill Cards
+    function renderDrills(flashedDrillId = null) {
+      const container = document.getElementById('drills-container');
+      container.innerHTML = '';
+      const dayData = state.days[state.activeDay];
+
+      DRILLS.forEach(drill => {
+        const stats = dayData.drills[drill.id];
+        const isComplete = stats.makes >= drill.target;
+        const pctText = formatPct(stats.makes, stats.attempts);
+        const progressPct = Math.min(100, Math.round((stats.makes / drill.target) * 100));
+
+        const card = document.createElement('article');
+        card.className = `rounded-2xl border p-4 transition-all ${
+          isComplete
+            ? 'bg-emerald-950/25 border-emerald-600/60 shadow-lg shadow-emerald-950/20'
+            : 'bg-slate-900 border-slate-800'
+        } ${flashedDrillId === drill.id ? 'animate-make-flash' : ''}`;
+
+        const plyoBadge = drill.plyo
+          ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-sky-950/90 border border-sky-800/70 text-sky-300">
+               Plyo &bull; Knee Check
+             </span>`
+          : '';
+
+        const completeBadge = isComplete
+          ? `<span class="inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300">
+               COMPLETE &check;
+             </span>`
+          : `<span class="text-[11px] font-mono font-bold text-slate-400">Goal: ${drill.target}</span>`;
+
+        card.innerHTML = `
+          <!-- Card Header -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">${drill.number}</span>
+                ${plyoBadge}
+              </div>
+              <h3 class="text-base sm:text-lg font-extrabold text-white tracking-tight mt-0.5">${drill.name}</h3>
+              <p class="text-xs text-slate-400 font-medium">${drill.subtitle}</p>
+            </div>
+            <div class="text-right shrink-0">
+              ${completeBadge}
+              <div class="mt-1.5 flex items-baseline justify-end gap-1">
+                <span class="font-mono text-2xl font-extrabold ${isComplete ? 'text-emerald-400' : 'text-white'}">${stats.makes}</span>
+                <span class="font-mono text-sm font-bold text-slate-400">/ ${stats.attempts}</span>
+              </div>
+              <div class="font-mono text-xs font-bold ${stats.attempts > 0 ? 'text-orange-400' : 'text-slate-500'}">${pctText}</div>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden mt-3 mb-3.5 border border-slate-800/80">
+            <div class="h-full transition-all duration-200 rounded-full ${isComplete ? 'bg-emerald-400' : 'bg-orange-500'}" style="width: ${progressPct}%"></div>
+          </div>
+
+          <!-- Thumb-Friendly Courtside Controls -->
+          <div class="grid grid-cols-12 gap-2">
+            <!-- +1 MAKE (5 cols) -->
+            <button
+              type="button"
+              data-action="make"
+              data-drill="${drill.id}"
+              class="tap-btn col-span-5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold text-sm py-3.5 px-2 rounded-xl shadow-md shadow-emerald-900/30 flex items-center justify-center gap-1.5"
+            >
+              <svg class="w-4 h-4 stroke-[2.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>+1 MAKE</span>
+            </button>
+
+            <!-- +1 MISS (4 cols) -->
+            <button
+              type="button"
+              data-action="miss"
+              data-drill="${drill.id}"
+              class="tap-btn col-span-4 bg-slate-800 hover:bg-slate-700 active:bg-rose-950 border border-slate-700 text-rose-300 font-extrabold text-sm py-3.5 px-2 rounded-xl flex items-center justify-center gap-1"
+            >
+              <span>+1 MISS</span>
+            </button>
+
+            <!-- Undo & Quick Entry Stacked/Split (3 cols) -->
+            <div class="col-span-3 flex flex-col gap-1.5">
+              <button
+                type="button"
+                data-action="undo"
+                data-drill="${drill.id}"
+                ${stats.attempts === 0 ? 'disabled' : ''}
+                class="tap-btn flex-1 bg-slate-950 hover:bg-slate-800 disabled:opacity-35 border border-slate-800 text-slate-300 font-bold text-[11px] rounded-lg flex items-center justify-center"
+                title="Undo last shot"
+              >
+                Undo
+              </button>
+              <button
+                type="button"
+                data-action="quick"
+                data-drill="${drill.id}"
+                class="tap-btn flex-1 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-orange-400 font-bold text-[11px] rounded-lg flex items-center justify-center"
+                title="Type exact Makes / Attempts"
+              >
+                Edit #
+              </button>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    // Render 7-Day Paper-Sheet Summary Grid
+    function renderWeeklyGrid() {
+      const tbody = document.getElementById('weekly-grid-body');
+      const tfoot = document.getElementById('weekly-grid-foot');
+      tbody.innerHTML = '';
+
+      DRILLS.forEach(drill => {
+        const tr = document.createElement('tr');
+        let cells = `<td class="py-2 px-2.5 font-bold text-slate-200 sticky left-0 bg-slate-900 z-10 whitespace-nowrap">${drill.name}</td>`;
+        for (let d = 1; d <= 7; d++) {
+          const st = state.days[d].drills[drill.id];
+          const done = st.makes >= drill.target;
+          cells += `<td class="py-2 px-2 text-center font-mono whitespace-nowrap ${
+            done ? 'text-emerald-400 font-bold' : st.attempts > 0 ? 'text-white' : 'text-slate-600'
+          }">${st.attempts > 0 ? `${st.makes}/${st.attempts}` : '25/__'}</td>`;
+        }
+        tr.innerHTML = cells;
+        tbody.appendChild(tr);
+      });
+
+      // Totals Row
+      let footCells = `<td class="py-2 px-2.5 font-extrabold text-orange-400 sticky left-0 bg-slate-950 z-10">MAKES / ATT</td>`;
+      let pctCells = `<td class="py-2 px-2.5 font-extrabold text-blue-300 sticky left-0 bg-slate-950 z-10">DAILY %</td>`;
+      for (let d = 1; d <= 7; d++) {
+        const dt = getDayTotals(d);
+        footCells += `<td class="py-2 px-2 text-center font-mono whitespace-nowrap ${
+          dt.makes >= 150 ? 'text-emerald-400' : 'text-slate-200'
+        }">${dt.attempts > 0 ? `${dt.makes}/${dt.attempts}` : '-'}</td>`;
+        pctCells += `<td class="py-2 px-2 text-center font-mono whitespace-nowrap text-orange-400">${
+          dt.attempts > 0 ? formatPct(dt.makes, dt.attempts) : '-'
+        }</td>`;
+      }
+      tfoot.innerHTML = `<tr>${footCells}</tr><tr class="border-t border-slate-800/80">${pctCells}</tr>`;
+    }
+
+    // Update Summary Numbers, Knee Status, and Footer
+    function renderSummaries() {
+      const dayNum = state.activeDay;
+      const dayTotals = getDayTotals(dayNum);
+      const weekTotals = getWeeklyTotals();
+
+      const dayPct = formatPct(dayTotals.makes, dayTotals.attempts);
+      const weekPct = formatPct(weekTotals.makes, weekTotals.attempts);
+      const dayProgress = Math.min(100, Math.round((dayTotals.makes / 150) * 100));
+
+      document.getElementById('active-day-label').textContent = `DAY ${dayNum} WORKOUT`;
+      document.getElementById('day-makes-hero').textContent = dayTotals.makes;
+      document.getElementById('day-pct-badge').textContent = `${dayPct} (${dayTotals.attempts} att)`;
+      document.getElementById('day-progress-bar').style.width = `${dayProgress}%`;
+
+      // Knee status buttons
+      const currentKnee = state.days[dayNum].kneeStatus;
+      document.querySelectorAll('.knee-btn').forEach(btn => {
+        const val = btn.getAttribute('data-knee');
+        const active = val === currentKnee;
+        if (active) {
+          if (val.startsWith('Pain-Free')) {
+            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg border border-emerald-500 bg-emerald-600/30 text-emerald-200 text-center';
+          } else if (val.startsWith('Mild')) {
+            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg border border-amber-500 bg-amber-600/30 text-amber-200 text-center';
+          } else {
+            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg border border-rose-500 bg-rose-600/30 text-rose-200 text-center';
+          }
+        } else {
+          btn.className = 'knee-btn tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/70 text-slate-400 hover:text-slate-200 text-center';
+        }
+      });
+
+      // Weekly card
+      document.getElementById('weekly-makes').textContent = weekTotals.makes;
+      document.getElementById('weekly-attempts').textContent = weekTotals.attempts;
+      document.getElementById('weekly-pct').textContent = weekPct;
+
+      // Sticky footer
+      document.getElementById('footer-day-title').textContent = `Day ${dayNum} Totals`;
+      document.getElementById('footer-makes').textContent = dayTotals.makes;
+      document.getElementById('footer-attempts').textContent = dayTotals.attempts;
+      document.getElementById('footer-pct').textContent = dayPct;
+      document.getElementById('footer-week-pct').textContent = weekPct;
+    }
+
+    function renderAll(flashedDrillId = null) {
+      document.getElementById('week-input').value = state.weekOf;
+      renderDayTabs();
+      renderDrills(flashedDrillId);
+      renderSummaries();
+      if (showWeeklyGrid) {
+        renderWeeklyGrid();
+      }
+    }
+
+    // Quick Entry Modal Handlers
+    function openQuickModal(drillId) {
+      quickEditDrillId = drillId;
+      const drill = DRILLS.find(d => d.id === drillId);
+      const stats = state.days[state.activeDay].drills[drillId];
+
+      document.getElementById('quick-modal-drill-name').textContent = `${drill.number}: ${drill.name}`;
+      document.getElementById('quick-makes-input').value = stats.makes > 0 ? stats.makes : 25;
+      document.getElementById('quick-attempts-input').value = stats.attempts > 0 ? stats.attempts : '';
+
+      const modal = document.getElementById('quick-entry-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => document.getElementById('quick-attempts-input').focus(), 60);
+    }
+
+    function closeQuickModal() {
+      quickEditDrillId = null;
+      const modal = document.getElementById('quick-entry-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Event Delegation for Drill Buttons
+    document.getElementById('drills-container').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.getAttribute('data-action');
+      const drillId = btn.getAttribute('data-drill');
+
+      if (action === 'make') recordShot(drillId, true);
+      else if (action === 'miss') recordShot(drillId, false);
+      else if (action === 'undo') undoShot(drillId);
+      else if (action === 'quick') openQuickModal(drillId);
+    });
+
+    // Quick Modal Save
+    document.getElementById('save-quick-btn').addEventListener('click', () => {
+      if (!quickEditDrillId) return;
+      const makesVal = Math.max(0, parseInt(document.getElementById('quick-makes-input').value, 10) || 0);
+      let attemptsVal = Math.max(0, parseInt(document.getElementById('quick-attempts-input').value, 10) || 0);
+      if (attemptsVal < makesVal) {
+        attemptsVal = makesVal;
+      }
+      state.days[state.activeDay].drills[quickEditDrillId] = {
+        makes: makesVal,
+        attempts: attemptsVal,
+        history: []
+      };
+      saveState();
+      closeQuickModal();
+      renderAll(quickEditDrillId);
+      showToast('Drill score updated!');
+    });
+
+    document.getElementById('close-quick-modal').addEventListener('click', closeQuickModal);
+    document.getElementById('cancel-quick-btn').addEventListener('click', closeQuickModal);
+
+    // Week Date Picker
+    document.getElementById('week-input').addEventListener('change', e => {
+      state.weekOf = e.target.value;
+      saveState();
+    });
+
+    // Knee Comfort Check Buttons
+    document.getElementById('knee-status-group').addEventListener('click', e => {
+      const btn = e.target.closest('.knee-btn');
+      if (!btn) return;
+      const status = btn.getAttribute('data-knee');
+      const current = state.days[state.activeDay].kneeStatus;
+      state.days[state.activeDay].kneeStatus = current === status ? '' : status;
+      triggerHaptic(12);
+      saveState();
+      renderSummaries();
+    });
+
+    // Toggle 7-Day Grid
+    document.getElementById('toggle-grid-btn').addEventListener('click', () => {
+      showWeeklyGrid = !showWeeklyGrid;
+      const sec = document.getElementById('weekly-grid-section');
+      const txt = document.getElementById('toggle-grid-text');
+      if (showWeeklyGrid) {
+        sec.classList.remove('hidden');
+        txt.textContent = 'Hide Grid';
+        renderWeeklyGrid();
+      } else {
+        sec.classList.add('hidden');
+        txt.textContent = '7-Day Grid';
+      }
+    });
+
+    document.getElementById('close-grid-btn').addEventListener('click', () => {
+      showWeeklyGrid = false;
+      document.getElementById('weekly-grid-section').classList.add('hidden');
+      document.getElementById('toggle-grid-text').textContent = '7-Day Grid';
+    });
+
+    // Copy Summary to Clipboard (iOS Safari compatible fallback)
+    document.getElementById('copy-summary-btn').addEventListener('click', () => {
+      const d = state.activeDay;
+      const dayObj = state.days[d];
+      const dt = getDayTotals(d);
+      const wt = getWeeklyTotals();
+
+      let lines = [
+        `🏀 TOMCAT — WEEKLY SHOOTING TRACKER`,
+        `Week of: ${state.weekOf} | Day ${d}`,
+        dayObj.kneeStatus ? `PT Knee Check: ${dayObj.kneeStatus}` : null,
+        `--------------------------------`
+      ].filter(Boolean);
+
+      DRILLS.forEach(drill => {
+        const s = dayObj.drills[drill.id];
+        lines.push(`${drill.name}: ${s.makes}/${s.attempts} (${formatPct(s.makes, s.attempts)})`);
+      });
+
+      lines.push(`--------------------------------`);
+      lines.push(`DAY ${d} TOTAL: ${dt.makes}/${dt.attempts} (${formatPct(dt.makes, dt.attempts)})`);
+      lines.push(`WEEKLY TOTAL: ${wt.makes}/${wt.attempts} (${formatPct(wt.makes, wt.attempts)})`);
+
+      const summaryText = lines.join('\n');
+
+      const textArea = document.createElement('textarea');
+      textArea.value = summaryText;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast(`TomCat Day ${d} & Weekly log copied!`);
+      } catch (err) {
+        showToast('Unable to copy text', true);
+      }
+      document.body.removeChild(textArea);
+    });
+
+    // Export CSV
+    document.getElementById('export-csv-btn').addEventListener('click', () => {
+      const rows = [
+        ['Player', 'Week Of', 'Day', 'Knee Status', 'Drill', 'Makes', 'Attempts', 'Percentage']
+      ];
+      for (let d = 1; d <= 7; d++) {
+        const dayObj = state.days[d];
+        DRILLS.forEach(drill => {
+          const s = dayObj.drills[drill.id];
+          rows.push([
+            'TomCat',
+            state.weekOf,
+            `Day ${d}`,
+            dayObj.kneeStatus || 'Not Logged',
+            drill.name,
+            s.makes,
+            s.attempts,
+            formatPct(s.makes, s.attempts)
+          ]);
+        });
+      }
+      const csvContent = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'TomCat_Shooting_Tracker.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('CSV exported!');
+    });
+
+    // Reset Week Modal
+    document.getElementById('open-reset-btn').addEventListener('click', () => {
+      const modal = document.getElementById('reset-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+
+    document.getElementById('cancel-reset-btn').addEventListener('click', () => {
+      const modal = document.getElementById('reset-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+
+    document.getElementById('confirm-reset-btn').addEventListener('click', () => {
+      state = createInitialState();
+      saveState();
+      const modal = document.getElementById('reset-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      renderAll();
+      showToast('Tracker reset for a new week!');
+    });
+
+    // Initial render
+    renderAll();
+  </script>
+</body>
+</html>
