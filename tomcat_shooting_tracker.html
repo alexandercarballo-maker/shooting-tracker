@@ -398,6 +398,124 @@
     </div>
   </div>
 
+  <!-- OFFLINE VIDEO PLAYER MODAL -->
+  <div id="video-player-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-sm p-3">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+        <div class="min-w-0 pr-2">
+          <span id="player-drill-badge" class="text-[10px] font-extrabold uppercase tracking-wider text-orange-400">DRILL 1 DEMO</span>
+          <h3 id="player-drill-title" class="text-sm font-black text-white truncate">1-2 Catch + Shoot</h3>
+        </div>
+        <button
+          id="close-player-modal-btn"
+          type="button"
+          class="tap-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
+          aria-label="Close Video Player"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="bg-black flex items-center justify-center">
+        <video
+          id="offline-drill-video"
+          controls
+          playsinline
+          preload="metadata"
+          class="w-full max-h-[72vh] object-contain"
+        ></video>
+      </div>
+      <div class="px-4 py-2.5 bg-slate-950 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+        <span id="player-file-info" class="truncate">Saved on iPhone</span>
+        <span class="text-emerald-400 font-bold shrink-0 ml-2">● Offline Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRILL VIDEO SETUP MODAL (OFFLINE IPHONE STORAGE + OPTIONAL LINK) -->
+  <div id="video-setup-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-5 shadow-2xl space-y-4">
+      <div>
+        <span id="video-modal-drill-num" class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">DRILL 1 DEMO</span>
+        <h3 id="video-modal-drill-name" class="text-lg font-black text-white">1-2 Catch + Shoot</h3>
+        <p class="text-xs text-slate-400 mt-0.5">Save a video directly from your iPhone Files or Photos so it plays offline in the gym.</p>
+      </div>
+
+      <!-- Offline Device Storage Box -->
+      <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-3 space-y-2.5">
+        <div class="text-xs font-extrabold text-emerald-400">Offline Video (Works Without Service)</div>
+        <p id="offline-video-status-text" class="text-[11px] text-slate-400">No offline video saved yet.</p>
+
+        <input
+          id="offline-video-file-input"
+          type="file"
+          accept="video/*"
+          class="hidden"
+        />
+
+        <div class="flex items-center gap-2">
+          <button
+            id="pick-offline-video-btn"
+            type="button"
+            class="tap-btn flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 border border-emerald-400/30"
+          >
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span id="pick-offline-video-label">Choose from Files / Photos</span>
+          </button>
+
+          <button
+            id="delete-offline-video-btn"
+            type="button"
+            class="hidden tap-btn py-2.5 px-3 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-300 font-bold text-xs border border-rose-800/70"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- Optional Web Video Link -->
+      <div class="space-y-1.5 pt-1 border-t border-slate-800">
+        <label for="video-url-input" class="block text-xs font-bold text-slate-300">Or Paste Video Link (Optional)</label>
+        <input
+          id="video-url-input"
+          type="url"
+          placeholder="https://youtube.com/... or https://icloud.com/..."
+          class="w-full bg-slate-950 border border-slate-700 focus:border-orange-500 rounded-xl px-3 py-2 text-xs font-mono text-slate-100 placeholder-slate-600 focus:outline-none"
+        />
+      </div>
+
+      <div class="flex items-center gap-2 pt-1">
+        <button
+          id="cancel-video-modal-btn"
+          type="button"
+          class="tap-btn py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700"
+        >
+          Close
+        </button>
+        <button
+          id="remove-video-link-btn"
+          type="button"
+          class="hidden tap-btn py-2.5 px-3 rounded-xl bg-rose-950/70 hover:bg-rose-900/80 text-rose-300 font-bold text-xs border border-rose-800/70"
+        >
+          Clear Link
+        </button>
+        <button
+          id="save-video-link-btn"
+          type="button"
+          class="tap-btn flex-1 py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-400 text-slate-950 font-black text-xs"
+        >
+          Save Link
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- GOOGLE SHEETS SETUP MODAL -->
   <div id="sheets-setup-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-5 shadow-2xl space-y-4">
@@ -671,6 +789,107 @@
 
     const STORAGE_KEY = 'tomcat_shooting_tracker_v5';
     const WEBHOOK_STORAGE_KEY = 'tomcat_sheets_webhook_url';
+    const VIDEO_LINKS_STORAGE_KEY = 'tomcat_drill_video_links_v1';
+    const OFFLINE_VIDEO_META_KEY = 'tomcat_offline_video_meta_v1';
+
+    // =========================================================================
+    // INDEXEDDB OFFLINE VIDEO STORAGE (WORKS IN AIRPLANE MODE / NO SERVICE)
+    // =========================================================================
+    const VIDEO_DB_NAME = 'TomCatDrillVideosDB';
+    const VIDEO_STORE_NAME = 'videos';
+
+    function openVideoDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error('IndexedDB not supported'));
+          return;
+        }
+        const req = indexedDB.open(VIDEO_DB_NAME, 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
+            db.createObjectStore(VIDEO_STORE_NAME);
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function saveOfflineVideoBlob(drillId, file) {
+      const db = await openVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+        tx.objectStore(VIDEO_STORE_NAME).put(file, drillId);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    async function getOfflineVideoBlob(drillId) {
+      const db = await openVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readonly');
+        const req = tx.objectStore(VIDEO_STORE_NAME).get(drillId);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function deleteOfflineVideoBlob(drillId) {
+      const db = await openVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+        tx.objectStore(VIDEO_STORE_NAME).delete(drillId);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    function loadOfflineVideoMeta() {
+      try {
+        const raw = localStorage.getItem(OFFLINE_VIDEO_META_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function loadVideoLinks() {
+      try {
+        const raw = localStorage.getItem(VIDEO_LINKS_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    let offlineVideoMeta = loadOfflineVideoMeta();
+    let drillVideoLinks = loadVideoLinks();
+    let editingVideoDrillId = null;
+    let activePlayerObjectUrl = null;
+
+    function saveOfflineVideoMeta() {
+      try {
+        localStorage.setItem(OFFLINE_VIDEO_META_KEY, JSON.stringify(offlineVideoMeta));
+      } catch (e) {
+        console.error('Failed to save offline video metadata:', e);
+      }
+    }
+
+    function saveVideoLinks() {
+      try {
+        localStorage.setItem(VIDEO_LINKS_STORAGE_KEY, JSON.stringify(drillVideoLinks));
+      } catch (e) {
+        console.error('Failed to save video links:', e);
+      }
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes) return '';
+      const mb = bytes / (1024 * 1024);
+      return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
+    }
 
     // Helper: Get local today's date as YYYY-MM-DD
     function getTodayDateString() {
@@ -1056,6 +1275,8 @@
         const progressPct = Math.min(100, Math.round((totals.makes / drill.target) * 100));
         const shotPct = formatPct(totals.makes, totals.attempts);
         const isCollapsed = Boolean(state.collapsedDrills[drill.id]);
+        const offlineMeta = offlineVideoMeta[drill.id] || null;
+        const videoUrl = drillVideoLinks[drill.id] || '';
 
         const card = document.createElement('article');
         card.className = `rounded-2xl p-3.5 border transition-all shadow-lg ${
@@ -1210,6 +1431,64 @@
           `;
         }
 
+        // Video pill badge integrated cleanly into the drill header badge row
+        let videoBadgeHtml = '';
+        if (offlineMeta) {
+          videoBadgeHtml = `
+            <button
+              type="button"
+              data-action="play-offline-video"
+              data-drill="${drill.id}"
+              class="drill-action-btn tap-btn inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40"
+            >
+              <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>Watch Demo</span>
+            </button>
+            <button
+              type="button"
+              data-action="video-setup"
+              data-drill="${drill.id}"
+              class="drill-action-btn tap-btn text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700"
+              title="Change or Remove Video"
+            >
+              Edit Video
+            </button>
+          `;
+        } else if (videoUrl) {
+          videoBadgeHtml = `
+            <a
+              href="${videoUrl.replace(/"/g, '&quot;')}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="tap-btn inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40"
+            >
+              <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>Watch Demo</span>
+            </a>
+            <button
+              type="button"
+              data-action="video-setup"
+              data-drill="${drill.id}"
+              class="drill-action-btn tap-btn text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700"
+              title="Change or Remove Video"
+            >
+              Edit Video
+            </button>
+          `;
+        } else {
+          videoBadgeHtml = `
+            <button
+              type="button"
+              data-action="video-setup"
+              data-drill="${drill.id}"
+              class="drill-action-btn tap-btn inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-orange-300 border border-slate-700/80"
+            >
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>+ Video</span>
+            </button>
+          `;
+        }
+
         card.innerHTML = `
           <div class="flex items-start justify-between gap-2">
             <div class="min-w-0">
@@ -1233,6 +1512,7 @@
                        </span>`
                     : ''
                 }
+                ${videoBadgeHtml}
               </div>
               <h3 class="text-base font-black text-white mt-1 leading-snug">${drill.name}</h3>
               <p class="text-xs font-medium text-slate-400">${drill.subtitle}</p>
@@ -1376,6 +1656,16 @@
       const entry = dayRecord.drills[drillId];
       if (!drill || !entry) return;
 
+      if (action === 'play-offline-video') {
+        playOfflineVideo(drill);
+        return;
+      }
+
+      if (action === 'video-setup') {
+        openVideoSetupModal(drillId);
+        return;
+      }
+
       if (action === 'toggle-spots') {
         state.collapsedDrills[drillId] = !state.collapsedDrills[drillId];
         saveState();
@@ -1440,6 +1730,181 @@
         openEditModal(drillId, null);
       }
     }
+
+    // OFFLINE VIDEO PLAYER & SETUP MODAL LOGIC
+    async function playOfflineVideo(drill) {
+      try {
+        const blob = await getOfflineVideoBlob(drill.id);
+        if (!blob) {
+          delete offlineVideoMeta[drill.id];
+          saveOfflineVideoMeta();
+          renderAll();
+          showToast('Video not found — please re-select', 'warn');
+          return;
+        }
+
+        if (activePlayerObjectUrl) {
+          URL.revokeObjectURL(activePlayerObjectUrl);
+        }
+        activePlayerObjectUrl = URL.createObjectURL(blob);
+
+        const videoEl = document.getElementById('offline-drill-video');
+        videoEl.src = activePlayerObjectUrl;
+
+        const meta = offlineVideoMeta[drill.id];
+        document.getElementById('player-drill-badge').textContent = `DRILL ${drill.num} DEMO`;
+        document.getElementById('player-drill-title').textContent = drill.name;
+        document.getElementById('player-file-info').textContent = meta
+          ? `${meta.name} (${formatBytes(meta.size)})`
+          : 'Saved on iPhone';
+
+        const modal = document.getElementById('video-player-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        videoEl.play().catch(() => {});
+      } catch (err) {
+        console.error('Error playing offline video:', err);
+        showToast('Unable to play offline video', 'error');
+      }
+    }
+
+    function closeVideoPlayerModal() {
+      const videoEl = document.getElementById('offline-drill-video');
+      videoEl.pause();
+      videoEl.removeAttribute('src');
+      videoEl.load();
+      if (activePlayerObjectUrl) {
+        URL.revokeObjectURL(activePlayerObjectUrl);
+        activePlayerObjectUrl = null;
+      }
+      const modal = document.getElementById('video-player-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.getElementById('close-player-modal-btn').addEventListener('click', closeVideoPlayerModal);
+
+    function openVideoSetupModal(drillId) {
+      const workout = getActiveWorkoutConfig();
+      const drill = workout.drills.find((d) => d.id === drillId);
+      if (!drill) return;
+
+      editingVideoDrillId = drillId;
+      const existingUrl = drillVideoLinks[drillId] || '';
+      const existingOffline = offlineVideoMeta[drillId] || null;
+
+      document.getElementById('video-modal-drill-num').textContent = `DRILL ${drill.num} DEMO`;
+      document.getElementById('video-modal-drill-name').textContent = drill.name;
+
+      const offlineStatus = document.getElementById('offline-video-status-text');
+      const pickLabel = document.getElementById('pick-offline-video-label');
+      const deleteOfflineBtn = document.getElementById('delete-offline-video-btn');
+
+      if (existingOffline) {
+        offlineStatus.innerHTML = `<span class="text-emerald-300 font-bold">Saved Offline:</span> ${existingOffline.name} (${formatBytes(existingOffline.size)})`;
+        pickLabel.textContent = 'Replace Offline Video';
+        deleteOfflineBtn.classList.remove('hidden');
+      } else {
+        offlineStatus.textContent = 'No offline video saved yet.';
+        pickLabel.textContent = 'Choose from Files / Photos';
+        deleteOfflineBtn.classList.add('hidden');
+      }
+
+      const input = document.getElementById('video-url-input');
+      const removeBtn = document.getElementById('remove-video-link-btn');
+      input.value = existingUrl;
+      if (existingUrl) {
+        removeBtn.classList.remove('hidden');
+      } else {
+        removeBtn.classList.add('hidden');
+      }
+
+      const modal = document.getElementById('video-setup-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeVideoSetupModal() {
+      editingVideoDrillId = null;
+      document.getElementById('offline-video-file-input').value = '';
+      const modal = document.getElementById('video-setup-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.getElementById('pick-offline-video-btn').addEventListener('click', () => {
+      document.getElementById('offline-video-file-input').click();
+    });
+
+    document.getElementById('offline-video-file-input').addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file || !editingVideoDrillId) return;
+
+      const pickLabel = document.getElementById('pick-offline-video-label');
+      const prevText = pickLabel.textContent;
+      pickLabel.textContent = 'Saving...';
+
+      try {
+        await saveOfflineVideoBlob(editingVideoDrillId, file);
+        offlineVideoMeta[editingVideoDrillId] = {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          savedAt: Date.now()
+        };
+        saveOfflineVideoMeta();
+        closeVideoSetupModal();
+        renderAll();
+        showToast('Video saved offline on device!');
+      } catch (err) {
+        console.error('Failed to save offline video:', err);
+        showToast('Error saving video to device', 'error');
+        pickLabel.textContent = prevText;
+      }
+    });
+
+    document.getElementById('delete-offline-video-btn').addEventListener('click', async () => {
+      if (!editingVideoDrillId) return;
+      try {
+        await deleteOfflineVideoBlob(editingVideoDrillId);
+      } catch (e) {
+        console.error(e);
+      }
+      delete offlineVideoMeta[editingVideoDrillId];
+      saveOfflineVideoMeta();
+      closeVideoSetupModal();
+      renderAll();
+      showToast('Offline video removed');
+    });
+
+    document.getElementById('cancel-video-modal-btn').addEventListener('click', closeVideoSetupModal);
+
+    document.getElementById('remove-video-link-btn').addEventListener('click', () => {
+      if (!editingVideoDrillId) return;
+      delete drillVideoLinks[editingVideoDrillId];
+      saveVideoLinks();
+      closeVideoSetupModal();
+      renderAll();
+      showToast('Video link cleared');
+    });
+
+    document.getElementById('save-video-link-btn').addEventListener('click', () => {
+      if (!editingVideoDrillId) return;
+      let val = document.getElementById('video-url-input').value.trim();
+      if (val && !/^https?:\/\//i.test(val)) {
+        val = 'https://' + val;
+      }
+      if (val) {
+        drillVideoLinks[editingVideoDrillId] = val;
+        showToast('Video link saved!');
+      } else {
+        delete drillVideoLinks[editingVideoDrillId];
+        showToast('Video link cleared');
+      }
+      saveVideoLinks();
+      closeVideoSetupModal();
+      renderAll();
+    });
 
     // EDIT MODAL LOGIC
     function openEditModal(drillId, spotIndex = null) {
