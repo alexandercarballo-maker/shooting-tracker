@@ -2,58 +2,31 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>TomCat // Weekly Shooting Tracker</title>
-
-  <!-- iOS PWA / Add to Home Screen Meta Tags -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="TomCat Hoops" />
-  <meta name="theme-color" content="#090D16" />
-
-  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>TomCat Shooting Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            court: {
-              bg: '#090D16',
-              card: '#111827',
-              elevated: '#1E293B',
-              navy: '#0F2342',
-              orange: '#F97316',
-              orangeHover: '#EA580C',
-            }
-          }
-        }
-      }
-    };
-  </script>
-
   <style>
-    /* Safe Area & Mobile Touch Optimization */
     body {
-      background-color: #090D16;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #070B14;
       color: #F8FAFC;
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: calc(env(safe-area-inset-bottom) + 92px);
       -webkit-tap-highlight-color: transparent;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: contain;
     }
-
-    /* Hide scrollbars on horizontal tab bar while keeping scroll */
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .tap-btn {
+      transition: transform 0.08s ease, background-color 0.15s ease, border-color 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .tap-btn:active {
+      transform: scale(0.96);
+    }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -61,981 +34,1647 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-
-    /* Tactile button press feedback */
-    .tap-btn {
-      transition: transform 0.08s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.12s ease;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    .tap-btn:active {
-      transform: scale(0.95);
-    }
-
-    /* Pulse animation on Make */
-    @keyframes makeFlash {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.65); }
-      100% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); }
-    }
-    .animate-make-flash {
-      animation: makeFlash 0.35s ease-out;
-    }
-
-    /* Sticky bottom bar safe area */
-    .sticky-footer {
-      padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
     }
   </style>
 </head>
-<body class="antialiased selection:bg-orange-500 selection:text-white">
+<body class="min-h-screen pb-14 selection:bg-orange-500 selection:text-white">
 
-  <!-- TOP HEADER -->
-  <header class="sticky top-0 z-30 bg-[#090D16]/95 backdrop-blur-md border-b border-slate-800/90 px-4 pt-3 pb-3">
-    <div class="max-w-xl mx-auto">
+  <!-- TOP STICKY HEADER -->
+  <header class="sticky top-0 z-30 bg-[#090D16]/95 backdrop-blur-md border-b border-slate-800/90 shadow-lg">
+    <div class="max-w-2xl mx-auto px-3.5 pt-3 pb-2.5 space-y-2.5">
+      <!-- Top Row: Brand, Week Of, Goal Pill & Settings Gear -->
       <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2.5">
-          <!-- Basketball Icon Badge -->
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20 shrink-0">
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-md shadow-orange-950/50 shrink-0">
+            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
-              <path d="M5.65 5.65c3.9 3.9 3.9 8.8 0 12.7"></path>
-              <path d="M18.35 5.65c-3.9 3.9-3.9 8.8 0 12.7"></path>
+              <path d="M5.6 5.6c3.5 3.5 3.5 9.3 0 12.8"></path>
+              <path d="M18.4 5.6c-3.5 3.5-3.5 9.3 0 12.8"></path>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <line x1="12" y1="2" x2="12" y2="22"></line>
             </svg>
           </div>
-          <div>
-            <div class="text-[10px] font-extrabold uppercase tracking-widest text-orange-400 leading-none mb-0.5">
-              WEEKLY SHOOTING TRACKER
-            </div>
-            <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-white leading-tight">
-              Player: <span class="text-orange-500">TomCat</span>
+          <div class="min-w-0">
+            <h1 class="text-base sm:text-lg font-black tracking-tight text-white truncate">
+              TomCat Shooting Tracker
             </h1>
-            <div class="flex items-center gap-2 mt-0.5">
-              <label for="week-input" class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Week of:</label>
-              <input
-                id="week-input"
-                type="date"
-                class="bg-slate-900 border border-slate-700/80 text-slate-200 text-xs font-medium rounded-md px-2 py-0.5 focus:outline-none focus:border-orange-500"
-              />
+            <div class="flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+              <span>Player: <strong class="text-orange-400 font-bold">TomCat</strong></span>
+              <span>•</span>
+              <label for="week-of-input" class="inline-flex items-center gap-1 cursor-pointer">
+                <span>Week of:</span>
+                <input
+                  id="week-of-input"
+                  type="date"
+                  class="bg-slate-900/90 border border-slate-700/80 rounded px-1.5 py-0.5 text-[11px] font-mono text-slate-200 focus:outline-none focus:border-orange-500"
+                />
+              </label>
             </div>
           </div>
         </div>
 
-        <!-- Goal Pill -->
-        <div class="text-right shrink-0">
+        <div class="flex items-center gap-2 shrink-0">
           <div class="inline-flex flex-col items-end bg-[#0F2342] border border-blue-800/60 rounded-xl px-2.5 py-1">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-300">Daily Goal</span>
-            <span class="text-xs font-extrabold font-mono text-white">150 <span class="text-orange-400 font-sans font-semibold">Makes</span></span>
+            <span class="text-[9px] font-extrabold uppercase tracking-wider text-blue-300">Daily Goal</span>
+            <span class="text-xs font-black font-mono text-white">
+              <span id="header-goal-num">100</span> <span class="text-orange-400 font-sans font-bold">Makes</span>
+            </span>
           </div>
+          <button
+            id="open-sheets-setup-btn"
+            type="button"
+            class="tap-btn relative w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white"
+            title="Google Sheets Setup"
+            aria-label="Google Sheets Setup"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span id="sheets-status-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-[#090D16]"></span>
+          </button>
         </div>
       </div>
 
-      <!-- DAY 1 TO DAY 7 SELECTOR PILLS -->
-      <div id="day-tabs" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar mt-3 pt-0.5 pb-0.5" role="tablist">
-        <!-- Injected by JS -->
+      <!-- Segmented Workout Switcher -->
+      <div class="grid grid-cols-2 gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800/90" role="tablist" aria-label="Select Workout">
+        <button
+          id="workout-btn-catch"
+          type="button"
+          data-workout="catchShoot"
+          class="workout-switch-btn tap-btn py-2 px-2.5 rounded-lg text-left transition-all flex items-center justify-between gap-1.5"
+        >
+          <div class="min-w-0">
+            <div class="text-xs font-extrabold truncate">Catch + Shoot</div>
+            <div class="text-[10px] opacity-80 truncate">6 Drills • 5x3 Spots</div>
+          </div>
+          <span class="font-mono text-xs font-black px-1.5 py-0.5 rounded bg-black/25 shrink-0">100</span>
+        </button>
+
+        <button
+          id="workout-btn-footwork"
+          type="button"
+          data-workout="footworkDribble"
+          class="workout-switch-btn tap-btn py-2 px-2.5 rounded-lg text-left transition-all flex items-center justify-between gap-1.5"
+        >
+          <div class="min-w-0">
+            <div class="text-xs font-extrabold truncate">Footwork + Dribble</div>
+            <div class="text-[10px] opacity-80 truncate">7 Drills • 5x3 + Game</div>
+          </div>
+          <span class="font-mono text-xs font-black px-1.5 py-0.5 rounded bg-black/25 shrink-0">135</span>
+        </button>
+      </div>
+
+      <!-- Day 1-7 Tabs + 7-Day Grid Toggle -->
+      <div class="flex items-center gap-2">
+        <div id="day-tabs-container" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          <!-- Injected by JS -->
+        </div>
+        <button
+          id="toggle-grid-btn"
+          type="button"
+          class="tap-btn shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-extrabold border border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"
+        >
+          <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          </svg>
+          <span id="toggle-grid-label">7-Day Grid</span>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- MAIN WORKSPACE -->
-  <main class="max-w-xl mx-auto px-4 pt-4 space-y-4">
+  <main class="max-w-2xl mx-auto px-3.5 pt-3.5 space-y-4">
 
-    <!-- SELECTED DAY STATUS & KNEE CHECK BANNER -->
-    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 shadow-sm">
-      <div class="flex items-center justify-between gap-2 mb-2.5">
+    <!-- 7-DAY WEEKLY GRID VIEW -->
+    <section id="weekly-grid-section" class="hidden bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl">
+      <div class="flex items-center justify-between mb-3 gap-2">
         <div>
-          <span id="active-day-label" class="text-xs font-extrabold uppercase tracking-wider text-orange-400">DAY 1 WORKOUT</span>
-          <h2 class="text-lg font-extrabold text-white leading-snug">
-            <span id="day-makes-hero" class="font-mono text-2xl">0</span>
-            <span class="text-slate-400 text-sm font-semibold">/ 150 Makes</span>
-            <span id="day-pct-badge" class="ml-2 inline-block align-middle text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">0.0%</span>
-          </h2>
+          <span id="grid-workout-badge" class="text-[10px] font-extrabold uppercase tracking-wider text-orange-400">Catch + Shoot Workout</span>
+          <h2 class="text-base font-black text-white">7-Day Shooting Summary</h2>
         </div>
-
-        <!-- View Switcher: Courtside Cards vs 7-Day Grid -->
         <button
-          id="toggle-grid-btn"
+          id="close-grid-btn"
           type="button"
-          class="tap-btn inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold px-3 py-2 rounded-xl"
+          class="tap-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 shrink-0"
         >
-          <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="9" x2="21" y2="9"></line>
-            <line x1="3" y1="15" x2="21" y2="15"></line>
-            <line x1="9" y1="9" x2="9" y2="21"></line>
-          </svg>
-          <span id="toggle-grid-text">7-Day Grid</span>
+          Back to Day View
         </button>
       </div>
 
-      <!-- Daily Progress Bar -->
-      <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800/80">
-        <div id="day-progress-bar" class="h-full bg-gradient-to-r from-orange-500 to-emerald-400 transition-all duration-300 rounded-full" style="width: 0%"></div>
-      </div>
-
-      <!-- Post-PT Knee Comfort Check -->
-      <div class="mt-3 pt-2.5 border-t border-slate-800/80 space-y-1.5">
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-          <span class="text-xs font-semibold text-slate-300">PT Knee Comfort Check:</span>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5" id="knee-status-group">
-          <button type="button" data-knee="Pain-Free (0-1/10)" class="knee-btn tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/70 text-slate-300 text-center">Green: Pain-Free 0-1/10</button>
-          <button type="button" data-knee="Mild Tightness (2/10 - Monitor Hops)" class="knee-btn tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/70 text-slate-300 text-center">Yellow: Mild 2/10 (Monitor)</button>
-          <button type="button" data-knee="Sore (3+/10 - Skip Hops / FT Only)" class="knee-btn tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/70 text-slate-300 text-center">Red: Sore 3+/10 (Skip Hops)</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7-DAY SUMMARY GRID VIEW (COLLAPSIBLE) -->
-    <section id="weekly-grid-section" class="hidden bg-slate-900 border border-slate-700/90 rounded-2xl p-3.5 shadow-xl">
-      <div class="flex items-center justify-between mb-2.5">
-        <div>
-          <h3 class="text-sm font-extrabold uppercase tracking-wider text-white">Weekly Paper-Sheet Grid</h3>
-          <p class="text-[11px] text-slate-400">Makes / Attempts across all 7 days (Goal: 1,050 Makes)</p>
-        </div>
-        <button id="close-grid-btn" type="button" class="text-xs font-bold text-orange-400 hover:text-orange-300 px-2 py-1">Close ✕</button>
-      </div>
       <div class="overflow-x-auto rounded-xl border border-slate-800">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
-              <th class="py-2 px-2.5 font-bold sticky left-0 bg-slate-950 z-10">Drill</th>
-              <th class="py-2 px-2 text-center font-mono">D1</th>
-              <th class="py-2 px-2 text-center font-mono">D2</th>
-              <th class="py-2 px-2 text-center font-mono">D3</th>
-              <th class="py-2 px-2 text-center font-mono">D4</th>
-              <th class="py-2 px-2 text-center font-mono">D5</th>
-              <th class="py-2 px-2 text-center font-mono">D6</th>
-              <th class="py-2 px-2 text-center font-mono">D7</th>
+              <th class="py-2.5 px-2.5 font-extrabold sticky left-0 bg-slate-950 z-10 min-w-[145px]">DRILL</th>
+              <th class="py-2.5 px-2 text-center font-mono font-bold">D1</th>
+              <th class="py-2.5 px-2 text-center font-mono font-bold">D2</th>
+              <th class="py-2.5 px-2 text-center font-mono font-bold">D3</th>
+              <th class="py-2.5 px-2 text-center font-mono font-bold">D4</th>
+              <th class="py-2.5 px-2 text-center font-mono font-bold">D5</th>
+              <th class="py-2.5 px-2 text-center font-mono font-bold">D6</th>
+              <th class="py-2.5 px-2 text-center font-mono font-bold">D7</th>
+              <th class="py-2.5 px-2.5 text-right font-mono font-extrabold text-orange-400">TOTAL</th>
             </tr>
           </thead>
-          <tbody id="weekly-grid-body" class="divide-y divide-slate-800/80 bg-slate-900/60">
-            <!-- Populated dynamically -->
+          <tbody id="weekly-grid-tbody" class="divide-y divide-slate-800/80">
+            <!-- Populated by JS -->
           </tbody>
-          <tfoot id="weekly-grid-foot" class="bg-slate-950 font-bold text-white border-t border-slate-700">
-            <!-- Populated dynamically -->
+          <tfoot id="weekly-grid-tfoot" class="bg-slate-950/90 border-t-2 border-slate-700 font-mono">
+            <!-- Populated by JS -->
           </tfoot>
         </table>
       </div>
     </section>
 
-    <!-- 6 DRILL CARDS CONTAINER -->
-    <section id="drills-container" class="space-y-3.5" aria-label="Shooting Drills">
-      <!-- Drill cards rendered via JS -->
-    </section>
+    <!-- ACTIVE DAY WORKOUT VIEW -->
+    <div id="active-day-view" class="space-y-4">
 
-    <!-- WEEKLY TOTALS & ACTIONS CARD -->
-    <section class="bg-gradient-to-br from-[#0F2342] to-slate-900 border border-blue-900/60 rounded-2xl p-4 shadow-lg">
-      <div class="flex items-center justify-between mb-3">
-        <div>
-          <span class="text-[11px] font-extrabold uppercase tracking-widest text-blue-300">7-Day Cumulative</span>
-          <h3 class="text-base font-extrabold text-white">WEEKLY TOTALS</h3>
-        </div>
-        <span class="text-xs font-mono font-bold bg-blue-950/90 border border-blue-800/70 text-blue-200 px-2.5 py-1 rounded-lg">
-          Goal: 1,050 Makes
-        </span>
-      </div>
+      <!-- DAILY SUMMARY + PT KNEE COMFORT + WORKOUT NOTES CARD -->
+      <section class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span id="active-day-label" class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">DAY 1</span>
+              <span class="text-slate-600">•</span>
+              <span id="active-workout-subtitle" class="text-[11px] font-bold text-slate-300">Catch + Shoot Workout</span>
+            </div>
+            <div class="flex items-baseline gap-2 mt-0.5">
+              <span id="day-makes-hero" class="text-3xl font-black font-mono text-white">0</span>
+              <span class="text-xs font-bold text-slate-400">/ <span id="day-goal-hero">100</span> Makes Goal</span>
+            </div>
+          </div>
 
-      <div class="grid grid-cols-3 gap-2.5 text-center">
-        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-2.5">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Makes</div>
-          <div id="weekly-makes" class="text-xl font-extrabold font-mono text-white mt-0.5">0</div>
-        </div>
-        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-2.5">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Attempts</div>
-          <div id="weekly-attempts" class="text-xl font-extrabold font-mono text-slate-200 mt-0.5">0</div>
-        </div>
-        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-2.5">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Shoot %</div>
-          <div id="weekly-pct" class="text-xl font-extrabold font-mono text-orange-400 mt-0.5">0.0%</div>
-        </div>
-      </div>
-
-      <!-- Export & Reset Action Row -->
-      <div class="grid grid-cols-3 gap-2 mt-4">
-        <button
-          id="copy-summary-btn"
-          type="button"
-          class="tap-btn flex items-center justify-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs py-2.5 px-2 rounded-xl shadow-md shadow-orange-500/20"
-        >
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-          <span>Copy Log</span>
-        </button>
-
-        <button
-          id="export-csv-btn"
-          type="button"
-          class="tap-btn flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 font-bold text-xs py-2.5 px-2 rounded-xl"
-        >
-          <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span>Export CSV</span>
-        </button>
-
-        <button
-          id="open-reset-btn"
-          type="button"
-          class="tap-btn flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-rose-950/60 border border-slate-700 hover:border-rose-800 text-rose-400 font-bold text-xs py-2.5 px-2 rounded-xl"
-        >
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-            <path d="M3 3v5h5"></path>
-          </svg>
-          <span>Reset Week</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- iOS Add to Home Screen Tip -->
-    <p class="text-center text-[11px] text-slate-500 pb-4">
-      Tip: In Safari on iPhone, tap <strong class="text-slate-400">Share &rarr; Add to Home Screen</strong> for full-screen courtside mode.
-    </p>
-  </main>
-
-  <!-- STICKY BOTTOM DAILY TOTALS BAR -->
-  <footer class="fixed bottom-0 inset-x-0 z-30 bg-[#090D16]/95 backdrop-blur-md border-t border-slate-800 px-4 pt-2.5 sticky-footer">
-    <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
-      <div class="flex items-center gap-4">
-        <div>
-          <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400" id="footer-day-title">Day 1 Totals</span>
-          <div class="flex items-baseline gap-1.5">
-            <span id="footer-makes" class="font-mono text-lg font-extrabold text-white">0</span>
-            <span class="text-xs text-slate-400 font-semibold">/</span>
-            <span id="footer-attempts" class="font-mono text-base font-bold text-slate-300">0</span>
-            <span class="text-[11px] text-slate-400">shots</span>
+          <div class="text-right">
+            <span id="day-pct-badge" class="inline-block font-mono text-xs font-extrabold px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700">
+              0.0% (0 att)
+            </span>
+            <div class="text-[11px] text-slate-400 mt-1 font-mono">
+              Week: <strong id="week-makes-mini" class="text-white">0</strong>/<span id="week-goal-mini">700</span> (<span id="week-pct-mini">0.0%</span>)
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="flex items-center gap-3">
-        <div class="text-right">
-          <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Daily FG%</span>
-          <span id="footer-pct" class="font-mono text-lg font-extrabold text-orange-400">0.0%</span>
+        <!-- Daily Progress Bar -->
+        <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden mt-2.5 border border-slate-800">
+          <div
+            id="day-progress-bar"
+            class="h-full bg-gradient-to-r from-orange-500 via-amber-500 to-emerald-500 transition-all duration-300"
+            style="width: 0%"
+          ></div>
         </div>
-        <div class="h-8 w-px bg-slate-800"></div>
-        <div class="text-right">
-          <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Week FG%</span>
-          <span id="footer-week-pct" class="font-mono text-sm font-extrabold text-emerald-400">0.0%</span>
+
+        <!-- PT Knee Comfort Check & Daily Workout Notes -->
+        <div class="mt-3 pt-3 border-t border-slate-800/80 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+              <span class="text-xs font-bold text-slate-200">PT Knee Comfort Check:</span>
+            </div>
+            <span id="last-synced-badge" class="text-[10px] font-mono text-slate-500">Not synced yet</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-1.5" id="knee-status-group">
+            <button
+              type="button"
+              data-knee="Great (0/10)"
+              class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+            >
+              Great (0/10)
+            </button>
+            <button
+              type="button"
+              data-knee="Mild Tightness (1-2/10)"
+              class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+            >
+              Mild Tightness
+            </button>
+            <button
+              type="button"
+              data-knee="Sore - Stop Hops (3+/10)"
+              class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+            >
+              Sore • Stop Hops
+            </button>
+          </div>
+
+          <div>
+            <label for="day-notes-input" class="sr-only">Workout Notes</label>
+            <input
+              id="day-notes-input"
+              type="text"
+              placeholder="Workout Notes (e.g., Wore knee sleeve, felt explosive)..."
+              class="w-full bg-slate-950/90 border border-slate-800 focus:border-orange-500 rounded-xl px-3 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none"
+            />
+          </div>
         </div>
-      </div>
+      </section>
+
+      <!-- DRILL CARDS LIST -->
+      <section id="drills-container" class="space-y-3">
+        <!-- Populated dynamically by JS -->
+      </section>
+
+      <!-- BOTTOM SYNC, EXPORT & RESET ACTION CARD -->
+      <section class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl space-y-2.5">
+        <button
+          id="sync-sheets-btn"
+          type="button"
+          class="tap-btn w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/30"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+            <path d="M16 16h5v5"></path>
+          </svg>
+          <span id="sync-sheets-btn-text">Sync Day 1 to Google Sheets</span>
+        </button>
+
+        <div class="grid grid-cols-3 gap-2">
+          <button
+            id="copy-log-btn"
+            type="button"
+            class="tap-btn flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs py-2.5 px-2 rounded-xl"
+          >
+            <svg class="w-3.5 h-3.5 text-orange-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>Copy Log</span>
+          </button>
+
+          <button
+            id="export-csv-btn"
+            type="button"
+            class="tap-btn flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs py-2.5 px-2 rounded-xl"
+          >
+            <svg class="w-3.5 h-3.5 text-sky-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Export CSV</span>
+          </button>
+
+          <button
+            id="reset-day-btn"
+            type="button"
+            class="tap-btn flex items-center justify-center gap-1.5 bg-rose-950/60 hover:bg-rose-900/70 border border-rose-800/70 text-rose-300 font-bold text-xs py-2.5 px-2 rounded-xl"
+          >
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span id="reset-day-label">Reset Day 1</span>
+          </button>
+        </div>
+      </section>
     </div>
-  </footer>
+  </main>
 
-  <!-- QUICK ENTRY MODAL (Set exact Makes / Attempts post-drill) -->
-  <div id="quick-entry-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-5 shadow-2xl">
-      <div class="flex items-center justify-between mb-1">
-        <span class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">Quick Drill Entry</span>
-        <button id="close-quick-modal" type="button" class="text-slate-400 hover:text-white text-sm font-bold px-2 py-0.5">✕</button>
+  <!-- EDIT DRILL NUMBERS MODAL -->
+  <div id="edit-drill-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-5 shadow-2xl space-y-4">
+      <div>
+        <span id="edit-modal-drill-num" class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">DRILL 1</span>
+        <h3 id="edit-modal-drill-name" class="text-lg font-black text-white">1-2 Catch + Shoot</h3>
+        <p id="edit-modal-drill-sub" class="text-xs text-slate-400 mt-0.5">15 ft - 3PT | 5 spots x 3</p>
       </div>
-      <h3 id="quick-modal-drill-name" class="text-lg font-extrabold text-white">DRILL NAME</h3>
-      <p class="text-xs text-slate-400 mt-0.5 mb-4">Enter total makes and total shots attempted for this drill.</p>
 
-      <div class="grid grid-cols-2 gap-3 mb-4">
+      <div class="grid grid-cols-2 gap-3">
         <div>
-          <label for="quick-makes-input" class="block text-xs font-bold uppercase text-emerald-400 mb-1">Makes (Goal: 25)</label>
+          <label for="edit-makes-input" class="block text-xs font-bold text-slate-300 mb-1">Makes</label>
           <input
-            id="quick-makes-input"
+            id="edit-makes-input"
             type="number"
             inputmode="numeric"
             min="0"
-            max="200"
-            class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded-xl px-3 py-2.5 text-center font-mono text-xl font-extrabold text-white focus:outline-none"
+            max="500"
+            class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded-xl px-3 py-2.5 text-lg font-mono font-extrabold text-emerald-400 focus:outline-none"
           />
         </div>
         <div>
-          <label for="quick-attempts-input" class="block text-xs font-bold uppercase text-slate-300 mb-1">Total Attempts</label>
+          <label for="edit-attempts-input" class="block text-xs font-bold text-slate-300 mb-1">Total Attempts</label>
           <input
-            id="quick-attempts-input"
+            id="edit-attempts-input"
             type="number"
             inputmode="numeric"
             min="0"
-            max="300"
-            class="w-full bg-slate-950 border border-slate-700 focus:border-orange-500 rounded-xl px-3 py-2.5 text-center font-mono text-xl font-extrabold text-white focus:outline-none"
+            max="500"
+            class="w-full bg-slate-950 border border-slate-700 focus:border-orange-500 rounded-xl px-3 py-2.5 text-lg font-mono font-extrabold text-white focus:outline-none"
           />
         </div>
       </div>
+      <!-- Edit Modal Info -->
+      <p class="text-[11px] text-slate-400">
+        Tip: If Makes starts at 0, it pre-fills with the target (<strong id="edit-modal-target-hint" class="text-slate-200">3</strong>) so you only need to type Total Attempts.
+      </p>
 
-      <div class="flex gap-2">
-        <button id="cancel-quick-btn" type="button" class="tap-btn flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm py-2.5 rounded-xl">
+      <div class="flex items-center gap-2 pt-1">
+        <button
+          id="cancel-edit-modal-btn"
+          type="button"
+          class="tap-btn flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700"
+        >
           Cancel
         </button>
-        <button id="save-quick-btn" type="button" class="tap-btn flex-1 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-sm py-2.5 rounded-xl shadow-lg shadow-orange-500/20">
-          Save Score
+        <button
+          id="save-edit-modal-btn"
+          type="button"
+          class="tap-btn flex-1 py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-400 text-slate-950 font-black text-xs"
+        >
+          Save Numbers
         </button>
       </div>
     </div>
   </div>
 
-  <!-- RESET CONFIRMATION MODAL -->
-  <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-5 shadow-2xl">
-      <h3 class="text-lg font-extrabold text-white">Start a Fresh Week?</h3>
-      <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
-        This will clear all recorded makes, attempts, and knee check notes across Days 1–7. Make sure you've copied or exported your CSV first!
-      </p>
-      <div class="flex gap-2 mt-5">
-        <button id="cancel-reset-btn" type="button" class="tap-btn flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm py-2.5 rounded-xl">
+  <!-- GOOGLE SHEETS SETUP MODAL -->
+  <div id="sheets-setup-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-5 shadow-2xl space-y-4">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-400">Cloud Backup</span>
+          <h3 class="text-lg font-black text-white">Google Sheets 1-Tap Sync</h3>
+        </div>
+        <button
+          id="close-sheets-modal-btn"
+          type="button"
+          class="tap-btn p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+          aria-label="Close"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-2">
+        <label for="webhook-url-input" class="block text-xs font-bold text-slate-200">
+          Google Apps Script Web App URL
+        </label>
+        <input
+          id="webhook-url-input"
+          type="url"
+          placeholder="https://script.google.com/macros/s/.../exec"
+          class="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded-xl px-3 py-2.5 text-xs font-mono text-slate-100 placeholder-slate-600 focus:outline-none"
+        />
+        <p class="text-[11px] text-slate-400">
+          Stored privately on your phone (<code class="text-slate-300">localStorage</code>) and never uploaded to GitHub.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          id="save-webhook-btn"
+          type="button"
+          class="tap-btn flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs"
+        >
+          Save URL
+        </button>
+        <button
+          id="clear-webhook-btn"
+          type="button"
+          class="tap-btn py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700"
+        >
+          Clear
+        </button>
+      </div>
+
+      <div class="border-t border-slate-800 pt-3 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-200">Google Apps Script (<code class="text-orange-400">doPost</code>)</span>
+          <button
+            id="copy-script-btn"
+            type="button"
+            class="tap-btn text-[11px] font-bold px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-orange-400 border border-slate-700"
+          >
+            Copy Script
+          </button>
+        </div>
+        <pre id="apps-script-code" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-[10px] font-mono text-slate-300 overflow-x-auto leading-relaxed">function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Shooting Log") || ss.insertSheet("Shooting Log");
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Timestamp", "Workout", "Week Of", "Day", "Drill", "Makes", "Attempts", "Percentage", "Knee Comfort", "Notes"]);
+  }
+  var data = JSON.parse(e.postData.contents);
+  var rows = data.rows || [];
+  rows.forEach(function(r) {
+    sheet.appendRow([
+      r.timestamp, r.workout, r.weekOf, r.day,
+      r.drill, r.makes, r.attempts, r.percentage,
+      r.kneeComfort, r.notes
+    ]);
+  });
+  return ContentService.createTextOutput(JSON.stringify({ status: "ok", count: rows.length }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM RESET MODAL (NO NATIVE confirm()) -->
+  <div id="confirm-reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-5 shadow-2xl space-y-4">
+      <div>
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-rose-400">Confirm Reset</span>
+        <h3 id="confirm-reset-title" class="text-lg font-black text-white">Reset Day 1 Stats?</h3>
+        <p id="confirm-reset-desc" class="text-xs text-slate-400 mt-1">
+          This will clear all logged makes, attempts, knee comfort status, and notes for Day 1 of the active workout.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          id="cancel-reset-btn"
+          type="button"
+          class="tap-btn flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700"
+        >
           Keep Data
         </button>
-        <button id="confirm-reset-btn" type="button" class="tap-btn flex-1 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm py-2.5 rounded-xl">
-          Yes, Reset Week
+        <button
+          id="confirm-reset-btn"
+          type="button"
+          class="tap-btn flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs"
+        >
+          Yes, Reset Day
         </button>
       </div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-200">
-    <div id="toast-msg" class="bg-emerald-600 text-white text-xs font-extrabold px-4 py-2.5 rounded-full shadow-xl border border-emerald-400/40 whitespace-nowrap">
-      Copied to clipboard!
+  <!-- TOAST NOTIFICATION BANNER -->
+  <div
+    id="toast-banner"
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-200 translate-y-2 max-w-[92vw]"
+  >
+    <div id="toast-inner" class="bg-slate-800 border border-slate-600 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2">
+      <span id="toast-dot" class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+      <span id="toast-message">Saved!</span>
     </div>
   </div>
 
   <script>
     /**
-     * TomCat Weekly Shooting Tracker - State & Logic
-     * Stores 7 days x 6 drills in localStorage for instant courtside tracking.
+     * SPOT DEFINITIONS (5 Spots around the arc/mid-range, 3 makes per spot = 15 makes)
      */
-    const DRILLS = [
-      {
-        id: 'd1',
-        number: 'DRILL 1',
-        name: '1-2 CATCH + SHOOT',
-        subtitle: '15 ft - 3PT | 5 spots x 5',
-        target: 25,
-        plyo: false
-      },
-      {
-        id: 'd2',
-        number: 'DRILL 2',
-        name: 'FORWARD HOP',
-        subtitle: '15 ft - 3PT | 5 spots x 5',
-        target: 25,
-        plyo: true
-      },
-      {
-        id: 'd3',
-        number: 'DRILL 3',
-        name: 'VERTICAL HOP',
-        subtitle: '15 ft - 3PT | 5 spots x 5',
-        target: 25,
-        plyo: true
-      },
-      {
-        id: 'd4',
-        number: 'DRILL 4',
-        name: 'ANCHOR STEP',
-        subtitle: '15 ft - 3PT | 5 spots x 5',
-        target: 25,
-        plyo: false
-      },
-      {
-        id: 'd5',
-        number: 'DRILL 5',
-        name: 'LATERAL STEP HOP',
-        subtitle: '15 ft - 3PT | 5 spots x 5',
-        target: 25,
-        plyo: true
-      },
-      {
-        id: 'd6',
-        number: 'DRILL 6',
-        name: 'FREE THROWS',
-        subtitle: '25 made free throws',
-        target: 25,
-        plyo: false
-      }
+    const SPOT_DEFS = [
+      { index: 0, label: 'Spot 1', courtPos: 'Left Corner', target: 3 },
+      { index: 1, label: 'Spot 2', courtPos: 'Left Wing', target: 3 },
+      { index: 2, label: 'Spot 3', courtPos: 'Top of Key', target: 3 },
+      { index: 3, label: 'Spot 4', courtPos: 'Right Wing', target: 3 },
+      { index: 4, label: 'Spot 5', courtPos: 'Right Corner', target: 3 }
     ];
 
-    const STORAGE_KEY = 'tomcat_shooting_tracker_v1';
+    /**
+     * WORKOUT DEFINITIONS
+     * Drills marked with hasSpots: true track Spot 1 - Spot 5 individually (3 makes each = 15 makes).
+     */
+    const WORKOUTS = {
+      catchShoot: {
+        id: 'catchShoot',
+        name: 'Catch + Shoot Workout',
+        shortName: 'Catch + Shoot',
+        dailyGoal: 100, // (15 * 5) + 25 = 100
+        drills: [
+          { id: 'cs_1', num: 1, name: '1-2 Catch + Shoot', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: false, hasSpots: true },
+          { id: 'cs_2', num: 2, name: 'Forward Hop', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
+          { id: 'cs_3', num: 3, name: 'Vertical Hop', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
+          { id: 'cs_4', num: 4, name: 'Anchor Step', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: false, hasSpots: true },
+          { id: 'cs_5', num: 5, name: 'Lateral Step Hop', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
+          { id: 'cs_6', num: 6, name: 'Free Throws', subtitle: '25 made free throws', target: 25, plyo: false, hasSpots: false }
+        ]
+      },
+      footworkDribble: {
+        id: 'footworkDribble',
+        name: 'Footwork + Off-Dribble Workout',
+        shortName: 'Footwork + Dribble',
+        dailyGoal: 135, // (15 * 4) + (25 * 3) = 135
+        drills: [
+          { id: 'fd_1', num: 1, name: '1-2 Square Up', subtitle: '15+ FT | 5 spots x 3', target: 15, plyo: false, hasSpots: true },
+          { id: 'fd_2', num: 2, name: 'Forward Inside Foot Hop', subtitle: '15+ FT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
+          { id: 'fd_3', num: 3, name: '2-Step Outside Foot Hop Square Up', subtitle: '15+ FT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
+          { id: 'fd_4', num: 4, name: 'Shot Fake Lateral Hop', subtitle: '15+ FT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
+          { id: 'fd_5', num: 5, name: 'Hunt / Slide Hops', subtitle: '15 FT - 3PT | game speed', target: 25, plyo: true, hasSpots: false },
+          { id: 'fd_6', num: 6, name: 'Rip Through 1-Dribble Pull-Ups', subtitle: 'Any spot | game speed', target: 25, plyo: false, hasSpots: false },
+          { id: 'fd_7', num: 7, name: 'Free Throws', subtitle: '25 made free throws', target: 25, plyo: false, hasSpots: false }
+        ]
+      }
+    };
 
-    // Create blank 7-day data structure
-    function createInitialState() {
-      const todayISO = new Date().toISOString().split('T')[0];
-      const days = {};
-      for (let d = 1; d <= 7; d++) {
-        days[d] = {
-          kneeStatus: '',
-          drills: {}
+    const STORAGE_KEY = 'tomcat_shooting_tracker_v4';
+    const WEBHOOK_STORAGE_KEY = 'tomcat_sheets_webhook_url';
+    const DAYS = [1, 2, 3, 4, 5, 6, 7];
+
+    // Helper: Get Monday of current week as YYYY-MM-DD
+    function getDefaultWeekOf() {
+      const now = new Date();
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      const monday = new Date(now.setDate(diff));
+      return monday.toISOString().split('T')[0];
+    }
+
+    // Create blank drill entry (supports 5 spots or single drill total)
+    function createEmptyDrillEntry(drill) {
+      if (drill.hasSpots) {
+        return {
+          spots: SPOT_DEFS.map(() => ({ makes: 0, attempts: 0 })),
+          history: [] // entries like { spot: 0..4, type: 'M'|'X' }
         };
-        DRILLS.forEach(drill => {
-          days[d].drills[drill.id] = {
-            makes: 0,
-            attempts: 0,
-            history: [] // Stack of 'make' | 'miss' for accurate Undo
-          };
-        });
       }
       return {
-        weekOf: todayISO,
-        activeDay: 1,
-        days
+        makes: 0,
+        attempts: 0,
+        history: [] // entries like { type: 'M'|'X' }
       };
     }
 
-    // Load or initialize state
-    let state = (() => {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (parsed && parsed.days && parsed.days[1]) return parsed;
-        }
-      } catch (e) {
-        console.error('Failed to load saved tracker data:', e);
+    // Compute aggregated makes & attempts for any drill
+    function getDrillTotals(drill, entry) {
+      if (!entry) return { makes: 0, attempts: 0 };
+      if (drill.hasSpots && Array.isArray(entry.spots)) {
+        let makes = 0;
+        let attempts = 0;
+        entry.spots.forEach((s) => {
+          makes += Number(s.makes) || 0;
+          attempts += Number(s.attempts) || 0;
+        });
+        return { makes, attempts };
       }
-      return createInitialState();
-    })();
+      return {
+        makes: Number(entry.makes) || 0,
+        attempts: Number(entry.attempts) || 0
+      };
+    }
 
-    let quickEditDrillId = null;
-    let showWeeklyGrid = false;
+    // Format spot breakdown summary string (e.g., "S1: 3/4, S2: 3/3, S3: 3/5, S4: 3/4, S5: 3/3")
+    function formatSpotsSummary(drill, entry) {
+      if (!drill.hasSpots || !Array.isArray(entry.spots)) return '';
+      return entry.spots
+        .map((s, idx) => `Spot ${idx + 1} (${SPOT_DEFS[idx].courtPos}): ${s.makes}/${s.attempts}`)
+        .join(' | ');
+    }
+
+    // Create blank day structure for a given workout
+    function createEmptyDayData(workoutKey) {
+      const drillsObj = {};
+      WORKOUTS[workoutKey].drills.forEach((d) => {
+        drillsObj[d.id] = createEmptyDrillEntry(d);
+      });
+      return {
+        kneeComfort: 'Great (0/10)',
+        notes: '',
+        lastSynced: null,
+        drills: drillsObj
+      };
+    }
+
+    // Create blank 7-day structure for a workout
+    function createEmptyWorkoutDays(workoutKey) {
+      const daysObj = {};
+      DAYS.forEach((dayNum) => {
+        daysObj[dayNum] = createEmptyDayData(workoutKey);
+      });
+      return daysObj;
+    }
+
+    // Build initial default state
+    function createInitialState() {
+      return {
+        activeWorkout: 'catchShoot',
+        activeDay: 1,
+        weekOf: getDefaultWeekOf(),
+        showGrid: false,
+        collapsedDrills: {},
+        data: {
+          catchShoot: createEmptyWorkoutDays('catchShoot'),
+          footworkDribble: createEmptyWorkoutDays('footworkDribble')
+        }
+      };
+    }
+
+    // Load & sanitize state from localStorage (with seamless migration from v3 if present)
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('tomcat_shooting_tracker_v3');
+        if (!raw) return createInitialState();
+        const parsed = JSON.parse(raw);
+        const base = createInitialState();
+
+        base.activeWorkout = WORKOUTS[parsed.activeWorkout] ? parsed.activeWorkout : 'catchShoot';
+        base.activeDay = DAYS.includes(Number(parsed.activeDay)) ? Number(parsed.activeDay) : 1;
+        base.weekOf = parsed.weekOf || getDefaultWeekOf();
+        base.showGrid = Boolean(parsed.showGrid);
+        base.collapsedDrills = parsed.collapsedDrills && typeof parsed.collapsedDrills === 'object' ? parsed.collapsedDrills : {};
+
+        Object.keys(WORKOUTS).forEach((wKey) => {
+          DAYS.forEach((dNum) => {
+            const savedDay = parsed.data?.[wKey]?.[dNum];
+            if (savedDay) {
+              base.data[wKey][dNum].kneeComfort = savedDay.kneeComfort || 'Great (0/10)';
+              base.data[wKey][dNum].notes = savedDay.notes || '';
+              base.data[wKey][dNum].lastSynced = savedDay.lastSynced || null;
+              WORKOUTS[wKey].drills.forEach((drill) => {
+                const sd = savedDay.drills?.[drill.id];
+                if (sd) {
+                  if (drill.hasSpots) {
+                    if (Array.isArray(sd.spots) && sd.spots.length === 5) {
+                      base.data[wKey][dNum].drills[drill.id] = {
+                        spots: sd.spots.map((sp) => ({
+                          makes: Number(sp.makes) || 0,
+                          attempts: Number(sp.attempts) || 0
+                        })),
+                        history: Array.isArray(sd.history) ? sd.history : []
+                      };
+                    } else if ((Number(sd.makes) || 0) > 0 || (Number(sd.attempts) || 0) > 0) {
+                      // Migrate legacy drill total into Spot 1 so no prior data is lost
+                      const spots = SPOT_DEFS.map(() => ({ makes: 0, attempts: 0 }));
+                      spots[0] = { makes: Number(sd.makes) || 0, attempts: Number(sd.attempts) || 0 };
+                      base.data[wKey][dNum].drills[drill.id] = { spots, history: [] };
+                    }
+                  } else {
+                    base.data[wKey][dNum].drills[drill.id] = {
+                      makes: Number(sd.makes) || 0,
+                      attempts: Number(sd.attempts) || 0,
+                      history: Array.isArray(sd.history) ? sd.history : []
+                    };
+                  }
+                }
+              });
+            }
+          });
+        });
+
+        return base;
+      } catch (err) {
+        console.error('Failed to load state:', err);
+        return createInitialState();
+      }
+    }
+
+    let state = loadState();
+    let editingTarget = null; // { drillId: string, spotIndex: number | null }
+    let toastTimer = null;
 
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {
-        console.error('Failed to save state:', e);
+      } catch (err) {
+        console.error('Failed to save state:', err);
       }
     }
 
-    function triggerHaptic(pattern = 15) {
-      if (navigator.vibrate) {
-        try {
-          navigator.vibrate(pattern);
-        } catch (_) {}
-      }
-    }
+    function showToast(message, type = 'success') {
+      const banner = document.getElementById('toast-banner');
+      const msgEl = document.getElementById('toast-message');
+      const dotEl = document.getElementById('toast-dot');
 
-    function showToast(message, isError = false) {
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toast-msg');
-      toastMsg.textContent = message;
-      toastMsg.className = isError
-        ? 'bg-rose-600 text-white text-xs font-extrabold px-4 py-2.5 rounded-full shadow-xl border border-rose-400/40 whitespace-nowrap'
-        : 'bg-emerald-600 text-white text-xs font-extrabold px-4 py-2.5 rounded-full shadow-xl border border-emerald-400/40 whitespace-nowrap';
-      toast.classList.remove('opacity-0');
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => {
-        toast.classList.add('opacity-0');
-      }, 2200);
+      msgEl.textContent = message;
+      dotEl.className = 'w-2 h-2 rounded-full shrink-0 ' + (
+        type === 'error' ? 'bg-rose-400' : type === 'warn' ? 'bg-amber-400' : 'bg-emerald-400'
+      );
+
+      banner.classList.remove('opacity-0', 'translate-y-2');
+      banner.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.remove('opacity-100', 'translate-y-0');
+        banner.classList.add('opacity-0', 'translate-y-2');
+      }, 2600);
     }
 
     function formatPct(makes, attempts) {
-      if (!attempts || attempts === 0) return '0.0%';
+      if (!attempts || attempts <= 0) return '0.0%';
       return ((makes / attempts) * 100).toFixed(1) + '%';
     }
 
-    function getDayTotals(dayNum) {
-      const dayObj = state.days[dayNum];
-      let makes = 0;
-      let attempts = 0;
-      DRILLS.forEach(d => {
-        makes += dayObj.drills[d.id].makes;
-        attempts += dayObj.drills[d.id].attempts;
-      });
-      return { makes, attempts };
+    function getActiveWorkoutConfig() {
+      return WORKOUTS[state.activeWorkout];
     }
 
-    function getWeeklyTotals() {
+    function getActiveDayRecord() {
+      return state.data[state.activeWorkout][state.activeDay];
+    }
+
+    function computeDayTotals(workoutKey, dayNum) {
+      const wConfig = WORKOUTS[workoutKey];
+      const dayRec = state.data[workoutKey][dayNum];
       let makes = 0;
       let attempts = 0;
-      for (let d = 1; d <= 7; d++) {
-        const dt = getDayTotals(d);
+      wConfig.drills.forEach((d) => {
+        const totals = getDrillTotals(d, dayRec.drills[d.id]);
+        makes += totals.makes;
+        attempts += totals.attempts;
+      });
+      return { makes, attempts, goal: wConfig.dailyGoal };
+    }
+
+    function computeWeekTotals(workoutKey) {
+      let makes = 0;
+      let attempts = 0;
+      DAYS.forEach((dNum) => {
+        const dt = computeDayTotals(workoutKey, dNum);
         makes += dt.makes;
         attempts += dt.attempts;
-      }
-      return { makes, attempts };
+      });
+      return {
+        makes,
+        attempts,
+        goal: WORKOUTS[workoutKey].dailyGoal * 7
+      };
     }
 
-    // Core Shot Logging Actions
-    function recordShot(drillId, isMake) {
-      const drillData = state.days[state.activeDay].drills[drillId];
-      drillData.attempts += 1;
-      if (isMake) {
-        drillData.makes += 1;
-        drillData.history.push('make');
-        triggerHaptic(20);
+    // RENDER FUNCTIONS
+    function renderAll() {
+      const workout = getActiveWorkoutConfig();
+      const dayRecord = getActiveDayRecord();
+
+      // Update Header Goal & Week Of
+      document.getElementById('header-goal-num').textContent = workout.dailyGoal;
+      document.getElementById('week-of-input').value = state.weekOf;
+
+      // Update Webhook Indicator Dot
+      const webhookUrl = localStorage.getItem(WEBHOOK_STORAGE_KEY);
+      const statusDot = document.getElementById('sheets-status-dot');
+      if (webhookUrl && webhookUrl.startsWith('http')) {
+        statusDot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#090D16]';
       } else {
-        drillData.history.push('miss');
-        triggerHaptic(10);
+        statusDot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-[#090D16]';
       }
-      saveState();
-      renderAll(isMake ? drillId : null);
-    }
 
-    function undoShot(drillId) {
-      const drillData = state.days[state.activeDay].drills[drillId];
-      if (drillData.attempts <= 0) return;
-
-      const lastAction = drillData.history.pop();
-      if (lastAction === 'make') {
-        drillData.makes = Math.max(0, drillData.makes - 1);
-        drillData.attempts = Math.max(0, drillData.attempts - 1);
-      } else if (lastAction === 'miss') {
-        drillData.attempts = Math.max(0, drillData.attempts - 1);
-      } else {
-        // Fallback if manually entered via Quick Entry
-        if (drillData.attempts > drillData.makes) {
-          drillData.attempts -= 1;
+      // Update Workout Switcher Buttons
+      document.querySelectorAll('.workout-switch-btn').forEach((btn) => {
+        const wKey = btn.getAttribute('data-workout');
+        const isActive = wKey === state.activeWorkout;
+        if (isActive) {
+          btn.className = 'workout-switch-btn tap-btn py-2 px-2.5 rounded-lg text-left transition-all flex items-center justify-between gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 shadow-md';
         } else {
-          drillData.makes = Math.max(0, drillData.makes - 1);
-          drillData.attempts = Math.max(0, drillData.attempts - 1);
+          btn.className = 'workout-switch-btn tap-btn py-2 px-2.5 rounded-lg text-left transition-all flex items-center justify-between gap-1.5 bg-slate-900/70 hover:bg-slate-800 text-slate-300';
         }
-      }
-      triggerHaptic([10, 30, 10]);
-      saveState();
-      renderAll();
-    }
+      });
 
-    // Render Day Selector Pills
-    function renderDayTabs() {
-      const container = document.getElementById('day-tabs');
-      container.innerHTML = '';
-
-      for (let d = 1; d <= 7; d++) {
-        const isActive = state.activeDay === d;
-        const { makes } = getDayTotals(d);
-        const isComplete = makes >= 150;
-        const hasProgress = makes > 0 && makes < 150;
+      // Render Day 1-7 Tabs
+      const dayTabsContainer = document.getElementById('day-tabs-container');
+      dayTabsContainer.innerHTML = '';
+      DAYS.forEach((dNum) => {
+        const totals = computeDayTotals(state.activeWorkout, dNum);
+        const isSelected = dNum === state.activeDay && !state.showGrid;
+        const isComplete = totals.makes >= totals.goal;
+        const hasActivity = totals.attempts > 0;
 
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.setAttribute('role', 'tab');
-        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        btn.className = `tap-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border flex flex-col items-center min-w-[54px] transition-all ${
+          isSelected
+            ? 'bg-orange-500 text-slate-950 border-orange-400 shadow-md shadow-orange-950/50'
+            : isComplete
+              ? 'bg-emerald-950/60 text-emerald-300 border-emerald-700/70'
+              : hasActivity
+                ? 'bg-slate-800 text-white border-slate-600'
+                : 'bg-slate-900/90 text-slate-400 border-slate-800 hover:bg-slate-800'
+        }`;
 
-        let baseClasses = 'tap-btn shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-colors ';
-        if (isActive) {
-          baseClasses += 'bg-orange-500 border-orange-400 text-white shadow-md shadow-orange-500/25';
-        } else if (isComplete) {
-          baseClasses += 'bg-emerald-950/60 border-emerald-700/70 text-emerald-300 hover:bg-emerald-900/60';
-        } else {
-          baseClasses += 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800';
-        }
-        btn.className = baseClasses;
-
-        let dotHtml = '';
-        if (isComplete) {
-          dotHtml = `<span class="w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-emerald-400'}"></span>`;
-        } else if (hasProgress) {
-          dotHtml = `<span class="w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-orange-400'}"></span>`;
-        }
-
-        btn.innerHTML = `<span>DAY ${d}</span>${dotHtml}`;
+        btn.innerHTML = `
+          <span>D${dNum}</span>
+          <span class="text-[9px] font-mono ${isSelected ? 'text-slate-900 font-black' : isComplete ? 'text-emerald-400' : 'text-slate-400'}">
+            ${totals.makes}/${totals.goal}
+          </span>
+        `;
         btn.addEventListener('click', () => {
-          state.activeDay = d;
+          state.activeDay = dNum;
+          state.showGrid = false;
           saveState();
           renderAll();
         });
-        container.appendChild(btn);
+        dayTabsContainer.appendChild(btn);
+      });
+
+      // Toggle Grid vs Active Day View
+      const gridSection = document.getElementById('weekly-grid-section');
+      const activeDayView = document.getElementById('active-day-view');
+      const toggleGridBtn = document.getElementById('toggle-grid-btn');
+      const toggleGridLabel = document.getElementById('toggle-grid-label');
+
+      if (state.showGrid) {
+        gridSection.classList.remove('hidden');
+        activeDayView.classList.add('hidden');
+        toggleGridLabel.textContent = 'Day View';
+        toggleGridBtn.classList.add('border-orange-500', 'text-orange-300');
+        renderWeeklyGrid();
+      } else {
+        gridSection.classList.add('hidden');
+        activeDayView.classList.remove('hidden');
+        toggleGridLabel.textContent = '7-Day Grid';
+        toggleGridBtn.classList.remove('border-orange-500', 'text-orange-300');
+        renderActiveDayView();
       }
     }
 
-    // Render 6 Drill Cards
-    function renderDrills(flashedDrillId = null) {
+    function renderActiveDayView() {
+      const workout = getActiveWorkoutConfig();
+      const dayRecord = getActiveDayRecord();
+      const dayTotals = computeDayTotals(state.activeWorkout, state.activeDay);
+      const weekTotals = computeWeekTotals(state.activeWorkout);
+
+      document.getElementById('active-day-label').textContent = `DAY ${state.activeDay}`;
+      document.getElementById('active-workout-subtitle').textContent = workout.name;
+      document.getElementById('day-makes-hero').textContent = dayTotals.makes;
+      document.getElementById('day-goal-hero').textContent = dayTotals.goal;
+      document.getElementById('day-pct-badge').textContent = `${formatPct(dayTotals.makes, dayTotals.attempts)} (${dayTotals.attempts} att)`;
+      document.getElementById('week-makes-mini').textContent = weekTotals.makes;
+      document.getElementById('week-goal-mini').textContent = weekTotals.goal;
+      document.getElementById('week-pct-mini').textContent = formatPct(weekTotals.makes, weekTotals.attempts);
+
+      const pctWidth = Math.min(100, Math.round((dayTotals.makes / dayTotals.goal) * 100));
+      document.getElementById('day-progress-bar').style.width = `${pctWidth}%`;
+
+      // Last synced timestamp
+      const lastSyncedEl = document.getElementById('last-synced-badge');
+      lastSyncedEl.textContent = dayRecord.lastSynced ? `Synced ${dayRecord.lastSynced}` : 'Not synced yet';
+
+      // PT Knee Comfort Check Buttons
+      document.querySelectorAll('.knee-btn').forEach((btn) => {
+        const val = btn.getAttribute('data-knee');
+        const active = dayRecord.kneeComfort === val;
+        if (active) {
+          if (val.startsWith('Great')) {
+            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2 py-2 rounded-xl border border-emerald-400 bg-emerald-950/80 text-emerald-300 text-center leading-tight shadow-sm';
+          } else if (val.startsWith('Mild')) {
+            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2 py-2 rounded-xl border border-amber-400 bg-amber-950/80 text-amber-300 text-center leading-tight shadow-sm';
+          } else {
+            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2 py-2 rounded-xl border border-rose-400 bg-rose-950/80 text-rose-300 text-center leading-tight shadow-sm';
+          }
+        } else {
+          btn.className = 'knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-400 hover:text-slate-200 text-center leading-tight';
+        }
+      });
+
+      // Workout Notes Input
+      const notesInput = document.getElementById('day-notes-input');
+      if (notesInput.value !== dayRecord.notes) {
+        notesInput.value = dayRecord.notes;
+      }
+
+      // Update Bottom Buttons
+      document.getElementById('sync-sheets-btn-text').textContent = `Sync Day ${state.activeDay} to Google Sheets`;
+      document.getElementById('reset-day-label').textContent = `Reset Day ${state.activeDay}`;
+
+      // Render Drill Cards
       const container = document.getElementById('drills-container');
       container.innerHTML = '';
-      const dayData = state.days[state.activeDay];
 
-      DRILLS.forEach(drill => {
-        const stats = dayData.drills[drill.id];
-        const isComplete = stats.makes >= drill.target;
-        const pctText = formatPct(stats.makes, stats.attempts);
-        const progressPct = Math.min(100, Math.round((stats.makes / drill.target) * 100));
+      workout.drills.forEach((drill) => {
+        const entry = dayRecord.drills[drill.id];
+        const totals = getDrillTotals(drill, entry);
+        const isHit = totals.makes >= drill.target;
+        const progressPct = Math.min(100, Math.round((totals.makes / drill.target) * 100));
+        const shotPct = formatPct(totals.makes, totals.attempts);
+        const isCollapsed = Boolean(state.collapsedDrills[drill.id]);
 
         const card = document.createElement('article');
-        card.className = `rounded-2xl border p-4 transition-all ${
-          isComplete
-            ? 'bg-emerald-950/25 border-emerald-600/60 shadow-lg shadow-emerald-950/20'
-            : 'bg-slate-900 border-slate-800'
-        } ${flashedDrillId === drill.id ? 'animate-make-flash' : ''}`;
+        card.className = `rounded-2xl p-3.5 border transition-all shadow-lg ${
+          isHit
+            ? 'bg-emerald-950/20 border-emerald-700/70'
+            : 'bg-slate-900/95 border-slate-800'
+        }`;
 
-        const plyoBadge = drill.plyo
-          ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-sky-950/90 border border-sky-800/70 text-sky-300">
-               Plyo &bull; Knee Check
-             </span>`
-          : '';
+        // Build Spot-by-Spot Rows if this is a 5-spot drill
+        let controlsHtml = '';
+        if (drill.hasSpots) {
+          const spotRowsHtml = SPOT_DEFS.map((spotDef) => {
+            const sp = entry.spots[spotDef.index];
+            const spotHit = sp.makes >= spotDef.target;
+            const spotPct = formatPct(sp.makes, sp.attempts);
 
-        const completeBadge = isComplete
-          ? `<span class="inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300">
-               COMPLETE &check;
-             </span>`
-          : `<span class="text-[11px] font-mono font-bold text-slate-400">Goal: ${drill.target}</span>`;
+            return `
+              <div class="rounded-xl p-2.5 border transition-colors ${
+                spotHit
+                  ? 'bg-emerald-950/35 border-emerald-700/60'
+                  : 'bg-slate-950/80 border-slate-800/90'
+              }">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="text-xs font-extrabold ${spotHit ? 'text-emerald-300' : 'text-white'}">
+                      ${spotDef.label}:
+                    </span>
+                    <span class="text-[11px] font-medium text-slate-400 truncate">${spotDef.courtPos}</span>
+                    ${
+                      spotHit
+                        ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-500 text-slate-950 shrink-0">✓ 3/3</span>`
+                        : ''
+                    }
+                  </div>
+
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="font-mono text-xs font-black ${spotHit ? 'text-emerald-400' : 'text-slate-100'}">
+                      ${sp.makes}<span class="text-slate-500 font-semibold">/${sp.attempts}</span>
+                    </span>
+                    <span class="font-mono text-[10px] font-bold text-orange-400 w-11 text-right">
+                      ${spotPct}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-12 gap-1.5">
+                  <button
+                    type="button"
+                    data-action="spot-make"
+                    data-drill="${drill.id}"
+                    data-spot="${spotDef.index}"
+                    class="drill-action-btn tap-btn col-span-5 py-2.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-sm border border-emerald-400/30 flex items-center justify-center"
+                  >
+                    +1 MAKE
+                  </button>
+                  <button
+                    type="button"
+                    data-action="spot-miss"
+                    data-drill="${drill.id}"
+                    data-spot="${spotDef.index}"
+                    class="drill-action-btn tap-btn col-span-4 py-2.5 px-2 rounded-lg bg-slate-800 hover:bg-rose-950/80 text-rose-300 hover:text-rose-200 font-extrabold text-xs border border-slate-700 hover:border-rose-700/70 flex items-center justify-center"
+                  >
+                    +1 MISS
+                  </button>
+                  <button
+                    type="button"
+                    data-action="spot-edit"
+                    data-drill="${drill.id}"
+                    data-spot="${spotDef.index}"
+                    class="drill-action-btn tap-btn col-span-3 py-2.5 px-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-orange-300 font-bold text-[11px] border border-slate-700 flex items-center justify-center"
+                  >
+                    Edit #
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          controlsHtml = `
+            <div class="mt-3 pt-2.5 border-t border-slate-800/80">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <button
+                  type="button"
+                  data-action="toggle-spots"
+                  data-drill="${drill.id}"
+                  class="drill-action-btn tap-btn inline-flex items-center gap-1.5 text-[11px] font-extrabold text-slate-300 hover:text-white"
+                >
+                  <svg class="w-3.5 h-3.5 text-orange-400 transition-transform ${isCollapsed ? '-rotate-90' : ''}" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                  <span>${isCollapsed ? 'Show 5 Spots (3 makes each)' : '5 Spots (3 makes each)'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  data-action="undo"
+                  data-drill="${drill.id}"
+                  class="drill-action-btn tap-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[11px] border border-slate-700 ${
+                    entry.history.length === 0 ? 'opacity-40' : ''
+                  }"
+                >
+                  ↺ Undo Last
+                </button>
+              </div>
+
+              <div class="${isCollapsed ? 'hidden' : 'space-y-2'}">
+                ${spotRowsHtml}
+              </div>
+            </div>
+          `;
+        } else {
+          // Single-target drill (e.g., Free Throws, Hunt / Slide Hops, Rip Through Pull-Ups)
+          controlsHtml = `
+            <div class="grid grid-cols-12 gap-2 mt-3">
+              <button
+                type="button"
+                data-action="make"
+                data-drill="${drill.id}"
+                class="drill-action-btn tap-btn col-span-5 py-3 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm shadow-md shadow-emerald-950/50 border border-emerald-400/30 flex items-center justify-center gap-1"
+              >
+                <span>+1 MAKE</span>
+              </button>
+
+              <button
+                type="button"
+                data-action="miss"
+                data-drill="${drill.id}"
+                class="drill-action-btn tap-btn col-span-4 py-3 px-2 rounded-xl bg-slate-800 hover:bg-rose-950/80 text-rose-300 hover:text-rose-200 font-extrabold text-sm border border-slate-700 hover:border-rose-700/70 flex items-center justify-center gap-1"
+              >
+                <span>+1 MISS</span>
+              </button>
+
+              <div class="col-span-3 grid grid-rows-2 gap-1">
+                <button
+                  type="button"
+                  data-action="undo"
+                  data-drill="${drill.id}"
+                  class="drill-action-btn tap-btn rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 font-bold text-[11px] border border-slate-700 flex items-center justify-center ${
+                    entry.history.length === 0 ? 'opacity-40' : ''
+                  }"
+                >
+                  Undo
+                </button>
+                <button
+                  type="button"
+                  data-action="edit"
+                  data-drill="${drill.id}"
+                  class="drill-action-btn tap-btn rounded-lg bg-slate-800/90 hover:bg-slate-700 text-orange-300 font-bold text-[11px] border border-slate-700 flex items-center justify-center"
+                >
+                  Edit #
+                </button>
+              </div>
+            </div>
+          `;
+        }
 
         card.innerHTML = `
-          <!-- Card Header -->
           <div class="flex items-start justify-between gap-2">
-            <div>
-              <div class="flex flex-wrap items-center gap-1.5">
-                <span class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">${drill.number}</span>
-                ${plyoBadge}
+            <div class="min-w-0">
+              <div class="flex items-center flex-wrap gap-1.5">
+                <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                  isHit ? 'bg-emerald-500/20 text-emerald-300' : 'bg-orange-500/15 text-orange-400'
+                }">
+                  DRILL ${drill.num}
+                </span>
+                ${
+                  drill.plyo
+                    ? `<span class="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                        ⚡ Plyo • Knee Check
+                       </span>`
+                    : ''
+                }
+                ${
+                  isHit
+                    ? `<span class="text-[10px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded-md bg-emerald-500 text-slate-950">
+                        ✓ Target Hit
+                       </span>`
+                    : ''
+                }
               </div>
-              <h3 class="text-base sm:text-lg font-extrabold text-white tracking-tight mt-0.5">${drill.name}</h3>
-              <p class="text-xs text-slate-400 font-medium">${drill.subtitle}</p>
+              <h3 class="text-base font-black text-white mt-1 leading-snug">${drill.name}</h3>
+              <p class="text-xs font-medium text-slate-400">${drill.subtitle}</p>
             </div>
-            <div class="text-right shrink-0">
-              ${completeBadge}
-              <div class="mt-1.5 flex items-baseline justify-end gap-1">
-                <span class="font-mono text-2xl font-extrabold ${isComplete ? 'text-emerald-400' : 'text-white'}">${stats.makes}</span>
-                <span class="font-mono text-sm font-bold text-slate-400">/ ${stats.attempts}</span>
+
+            <!-- Drill Total Score Display -->
+            <div class="text-right shrink-0 bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-1.5">
+              <div class="font-mono text-lg font-black leading-none ${isHit ? 'text-emerald-400' : 'text-white'}">
+                ${totals.makes}<span class="text-slate-500 font-bold text-sm">/${totals.attempts}</span>
               </div>
-              <div class="font-mono text-xs font-bold ${stats.attempts > 0 ? 'text-orange-400' : 'text-slate-500'}">${pctText}</div>
+              <div class="text-[10px] font-mono font-bold text-slate-400 mt-1">
+                Goal ${drill.target} • <span class="text-orange-400">${shotPct}</span>
+              </div>
             </div>
           </div>
 
-          <!-- Progress Bar -->
-          <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden mt-3 mb-3.5 border border-slate-800/80">
-            <div class="h-full transition-all duration-200 rounded-full ${isComplete ? 'bg-emerald-400' : 'bg-orange-500'}" style="width: ${progressPct}%"></div>
+          <!-- Drill Progress Bar -->
+          <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden mt-3 border border-slate-800/80">
+            <div
+              class="h-full transition-all duration-200 ${isHit ? 'bg-emerald-400' : 'bg-orange-500'}"
+              style="width: ${progressPct}%"
+            ></div>
           </div>
 
-          <!-- Thumb-Friendly Courtside Controls -->
-          <div class="grid grid-cols-12 gap-2">
-            <!-- +1 MAKE (5 cols) -->
-            <button
-              type="button"
-              data-action="make"
-              data-drill="${drill.id}"
-              class="tap-btn col-span-5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold text-sm py-3.5 px-2 rounded-xl shadow-md shadow-emerald-900/30 flex items-center justify-center gap-1.5"
-            >
-              <svg class="w-4 h-4 stroke-[2.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span>+1 MAKE</span>
-            </button>
-
-            <!-- +1 MISS (4 cols) -->
-            <button
-              type="button"
-              data-action="miss"
-              data-drill="${drill.id}"
-              class="tap-btn col-span-4 bg-slate-800 hover:bg-slate-700 active:bg-rose-950 border border-slate-700 text-rose-300 font-extrabold text-sm py-3.5 px-2 rounded-xl flex items-center justify-center gap-1"
-            >
-              <span>+1 MISS</span>
-            </button>
-
-            <!-- Undo & Quick Entry Stacked/Split (3 cols) -->
-            <div class="col-span-3 flex flex-col gap-1.5">
-              <button
-                type="button"
-                data-action="undo"
-                data-drill="${drill.id}"
-                ${stats.attempts === 0 ? 'disabled' : ''}
-                class="tap-btn flex-1 bg-slate-950 hover:bg-slate-800 disabled:opacity-35 border border-slate-800 text-slate-300 font-bold text-[11px] rounded-lg flex items-center justify-center"
-                title="Undo last shot"
-              >
-                Undo
-              </button>
-              <button
-                type="button"
-                data-action="quick"
-                data-drill="${drill.id}"
-                class="tap-btn flex-1 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-orange-400 font-bold text-[11px] rounded-lg flex items-center justify-center"
-                title="Type exact Makes / Attempts"
-              >
-                Edit #
-              </button>
-            </div>
-          </div>
+          ${controlsHtml}
         `;
 
         container.appendChild(card);
       });
+
+      // Attach listeners to drill & spot action buttons
+      document.querySelectorAll('.drill-action-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const action = btn.getAttribute('data-action');
+          const drillId = btn.getAttribute('data-drill');
+          const spotAttr = btn.getAttribute('data-spot');
+          const spotIndex = spotAttr !== null ? Number(spotAttr) : null;
+          handleDrillAction(drillId, action, spotIndex);
+        });
+      });
     }
 
-    // Render 7-Day Paper-Sheet Summary Grid
     function renderWeeklyGrid() {
-      const tbody = document.getElementById('weekly-grid-body');
-      const tfoot = document.getElementById('weekly-grid-foot');
+      const workout = getActiveWorkoutConfig();
+      document.getElementById('grid-workout-badge').textContent = workout.name;
+
+      const tbody = document.getElementById('weekly-grid-tbody');
+      const tfoot = document.getElementById('weekly-grid-tfoot');
       tbody.innerHTML = '';
 
-      DRILLS.forEach(drill => {
+      workout.drills.forEach((drill) => {
+        let rowMakes = 0;
+        let rowAttempts = 0;
+        let cellsHtml = '';
+
+        DAYS.forEach((dNum) => {
+          const totals = getDrillTotals(drill, state.data[state.activeWorkout][dNum].drills[drill.id]);
+          rowMakes += totals.makes;
+          rowAttempts += totals.attempts;
+          const hit = totals.makes >= drill.target;
+          cellsHtml += `
+            <td class="py-2.5 px-2 text-center font-mono ${
+              hit ? 'text-emerald-400 font-bold' : totals.attempts > 0 ? 'text-slate-200' : 'text-slate-600'
+            }">
+              ${totals.attempts > 0 ? `${totals.makes}/${totals.attempts}` : `${drill.target}/—`}
+            </td>
+          `;
+        });
+
         const tr = document.createElement('tr');
-        let cells = `<td class="py-2 px-2.5 font-bold text-slate-200 sticky left-0 bg-slate-900 z-10 whitespace-nowrap">${drill.name}</td>`;
-        for (let d = 1; d <= 7; d++) {
-          const st = state.days[d].drills[drill.id];
-          const done = st.makes >= drill.target;
-          cells += `<td class="py-2 px-2 text-center font-mono whitespace-nowrap ${
-            done ? 'text-emerald-400 font-bold' : st.attempts > 0 ? 'text-white' : 'text-slate-600'
-          }">${st.attempts > 0 ? `${st.makes}/${st.attempts}` : '25/__'}</td>`;
-        }
-        tr.innerHTML = cells;
+        tr.className = 'hover:bg-slate-800/40';
+        tr.innerHTML = `
+          <td class="py-2.5 px-2.5 sticky left-0 bg-slate-900 z-10 border-r border-slate-800/80">
+            <div class="font-extrabold text-white leading-tight">${drill.num}. ${drill.name}</div>
+            <div class="text-[10px] text-slate-400">${drill.subtitle}</div>
+          </td>
+          ${cellsHtml}
+          <td class="py-2.5 px-2.5 text-right font-mono font-extrabold text-orange-400">
+            ${rowMakes}/${rowAttempts}
+          </td>
+        `;
         tbody.appendChild(tr);
       });
 
-      // Totals Row
-      let footCells = `<td class="py-2 px-2.5 font-extrabold text-orange-400 sticky left-0 bg-slate-950 z-10">MAKES / ATT</td>`;
-      let pctCells = `<td class="py-2 px-2.5 font-extrabold text-blue-300 sticky left-0 bg-slate-950 z-10">DAILY %</td>`;
-      for (let d = 1; d <= 7; d++) {
-        const dt = getDayTotals(d);
-        footCells += `<td class="py-2 px-2 text-center font-mono whitespace-nowrap ${
-          dt.makes >= 150 ? 'text-emerald-400' : 'text-slate-200'
-        }">${dt.attempts > 0 ? `${dt.makes}/${dt.attempts}` : '-'}</td>`;
-        pctCells += `<td class="py-2 px-2 text-center font-mono whitespace-nowrap text-orange-400">${
-          dt.attempts > 0 ? formatPct(dt.makes, dt.attempts) : '-'
-        }</td>`;
-      }
-      tfoot.innerHTML = `<tr>${footCells}</tr><tr class="border-t border-slate-800/80">${pctCells}</tr>`;
-    }
+      // Render Daily & Weekly Totals Footer Rows
+      let makesCells = '';
+      let attemptsCells = '';
+      let pctCells = '';
+      let weekMakes = 0;
+      let weekAttempts = 0;
 
-    // Update Summary Numbers, Knee Status, and Footer
-    function renderSummaries() {
-      const dayNum = state.activeDay;
-      const dayTotals = getDayTotals(dayNum);
-      const weekTotals = getWeeklyTotals();
-
-      const dayPct = formatPct(dayTotals.makes, dayTotals.attempts);
-      const weekPct = formatPct(weekTotals.makes, weekTotals.attempts);
-      const dayProgress = Math.min(100, Math.round((dayTotals.makes / 150) * 100));
-
-      document.getElementById('active-day-label').textContent = `DAY ${dayNum} WORKOUT`;
-      document.getElementById('day-makes-hero').textContent = dayTotals.makes;
-      document.getElementById('day-pct-badge').textContent = `${dayPct} (${dayTotals.attempts} att)`;
-      document.getElementById('day-progress-bar').style.width = `${dayProgress}%`;
-
-      // Knee status buttons
-      const currentKnee = state.days[dayNum].kneeStatus;
-      document.querySelectorAll('.knee-btn').forEach(btn => {
-        const val = btn.getAttribute('data-knee');
-        const active = val === currentKnee;
-        if (active) {
-          if (val.startsWith('Pain-Free')) {
-            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg border border-emerald-500 bg-emerald-600/30 text-emerald-200 text-center';
-          } else if (val.startsWith('Mild')) {
-            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg border border-amber-500 bg-amber-600/30 text-amber-200 text-center';
-          } else {
-            btn.className = 'knee-btn tap-btn text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg border border-rose-500 bg-rose-600/30 text-rose-200 text-center';
-          }
-        } else {
-          btn.className = 'knee-btn tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/70 text-slate-400 hover:text-slate-200 text-center';
-        }
+      DAYS.forEach((dNum) => {
+        const dt = computeDayTotals(state.activeWorkout, dNum);
+        weekMakes += dt.makes;
+        weekAttempts += dt.attempts;
+        const hitGoal = dt.makes >= dt.goal;
+        makesCells += `<td class="py-2 px-2 text-center ${hitGoal ? 'text-emerald-400 font-black' : 'text-white font-bold'}">${dt.makes}</td>`;
+        attemptsCells += `<td class="py-2 px-2 text-center text-slate-300">${dt.attempts}</td>`;
+        pctCells += `<td class="py-2 px-2 text-center text-orange-400 font-bold">${formatPct(dt.makes, dt.attempts)}</td>`;
       });
 
-      // Weekly card
-      document.getElementById('weekly-makes').textContent = weekTotals.makes;
-      document.getElementById('weekly-attempts').textContent = weekTotals.attempts;
-      document.getElementById('weekly-pct').textContent = weekPct;
-
-      // Sticky footer
-      document.getElementById('footer-day-title').textContent = `Day ${dayNum} Totals`;
-      document.getElementById('footer-makes').textContent = dayTotals.makes;
-      document.getElementById('footer-attempts').textContent = dayTotals.attempts;
-      document.getElementById('footer-pct').textContent = dayPct;
-      document.getElementById('footer-week-pct').textContent = weekPct;
+      tfoot.innerHTML = `
+        <tr class="border-b border-slate-800/80">
+          <td class="py-2 px-2.5 font-sans font-extrabold text-slate-200 sticky left-0 bg-slate-950 z-10">MAKES</td>
+          ${makesCells}
+          <td class="py-2 px-2.5 text-right font-black text-emerald-400">${weekMakes}</td>
+        </tr>
+        <tr class="border-b border-slate-800/80">
+          <td class="py-2 px-2.5 font-sans font-extrabold text-slate-400 sticky left-0 bg-slate-950 z-10">ATTEMPTS</td>
+          ${attemptsCells}
+          <td class="py-2 px-2.5 text-right font-bold text-slate-300">${weekAttempts}</td>
+        </tr>
+        <tr>
+          <td class="py-2 px-2.5 font-sans font-extrabold text-orange-400 sticky left-0 bg-slate-950 z-10">PERCENT</td>
+          ${pctCells}
+          <td class="py-2 px-2.5 text-right font-black text-orange-400">${formatPct(weekMakes, weekAttempts)}</td>
+        </tr>
+      `;
     }
 
-    function renderAll(flashedDrillId = null) {
-      document.getElementById('week-input').value = state.weekOf;
-      renderDayTabs();
-      renderDrills(flashedDrillId);
-      renderSummaries();
-      if (showWeeklyGrid) {
-        renderWeeklyGrid();
+    // DRILL & SPOT LOGGING HANDLERS
+    function handleDrillAction(drillId, action, spotIndex = null) {
+      const workout = getActiveWorkoutConfig();
+      const drill = workout.drills.find((d) => d.id === drillId);
+      const dayRecord = getActiveDayRecord();
+      const entry = dayRecord.drills[drillId];
+      if (!drill || !entry) return;
+
+      if (action === 'toggle-spots') {
+        state.collapsedDrills[drillId] = !state.collapsedDrills[drillId];
+        saveState();
+        renderAll();
+        return;
+      }
+
+      if (action === 'spot-make' && drill.hasSpots && spotIndex !== null) {
+        entry.spots[spotIndex].makes += 1;
+        entry.spots[spotIndex].attempts += 1;
+        entry.history.push({ spot: spotIndex, type: 'M' });
+        saveState();
+        renderAll();
+      } else if (action === 'spot-miss' && drill.hasSpots && spotIndex !== null) {
+        entry.spots[spotIndex].attempts += 1;
+        entry.history.push({ spot: spotIndex, type: 'X' });
+        saveState();
+        renderAll();
+      } else if (action === 'spot-edit' && drill.hasSpots && spotIndex !== null) {
+        openEditModal(drillId, spotIndex);
+      } else if (action === 'make' && !drill.hasSpots) {
+        entry.makes += 1;
+        entry.attempts += 1;
+        entry.history.push({ type: 'M' });
+        saveState();
+        renderAll();
+      } else if (action === 'miss' && !drill.hasSpots) {
+        entry.attempts += 1;
+        entry.history.push({ type: 'X' });
+        saveState();
+        renderAll();
+      } else if (action === 'undo') {
+        if (!entry.history || entry.history.length === 0) {
+          showToast('Nothing to undo on this drill', 'warn');
+          return;
+        }
+        const last = entry.history.pop();
+        if (drill.hasSpots && typeof last === 'object' && last.spot !== undefined) {
+          const sp = entry.spots[last.spot];
+          if (last.type === 'M') {
+            sp.makes = Math.max(0, sp.makes - 1);
+            sp.attempts = Math.max(0, sp.attempts - 1);
+          } else {
+            sp.attempts = Math.max(0, sp.attempts - 1);
+          }
+          saveState();
+          renderAll();
+          showToast(`Undid last shot on Spot ${last.spot + 1}`);
+        } else {
+          const type = typeof last === 'object' ? last.type : last;
+          if (type === 'M') {
+            entry.makes = Math.max(0, entry.makes - 1);
+            entry.attempts = Math.max(0, entry.attempts - 1);
+          } else {
+            entry.attempts = Math.max(0, entry.attempts - 1);
+          }
+          saveState();
+          renderAll();
+          showToast('Undid last shot');
+        }
+      } else if (action === 'edit') {
+        openEditModal(drillId, null);
       }
     }
 
-    // Quick Entry Modal Handlers
-    function openQuickModal(drillId) {
-      quickEditDrillId = drillId;
-      const drill = DRILLS.find(d => d.id === drillId);
-      const stats = state.days[state.activeDay].drills[drillId];
+    // EDIT MODAL LOGIC (SUPPORTS INDIVIDUAL SPOTS OR SINGLE-TOTAL DRILLS)
+    function openEditModal(drillId, spotIndex = null) {
+      const workout = getActiveWorkoutConfig();
+      const drill = workout.drills.find((d) => d.id === drillId);
+      if (!drill) return;
 
-      document.getElementById('quick-modal-drill-name').textContent = `${drill.number}: ${drill.name}`;
-      document.getElementById('quick-makes-input').value = stats.makes > 0 ? stats.makes : 25;
-      document.getElementById('quick-attempts-input').value = stats.attempts > 0 ? stats.attempts : '';
+      const entry = getActiveDayRecord().drills[drillId];
+      editingTarget = { drillId, spotIndex };
 
-      const modal = document.getElementById('quick-entry-modal');
+      const makesInput = document.getElementById('edit-makes-input');
+      const attemptsInput = document.getElementById('edit-attempts-input');
+
+      if (drill.hasSpots && spotIndex !== null) {
+        const spotDef = SPOT_DEFS[spotIndex];
+        const sp = entry.spots[spotIndex];
+        document.getElementById('edit-modal-drill-num').textContent = `DRILL ${drill.num} • ${spotDef.label.toUpperCase()}`;
+        document.getElementById('edit-modal-drill-name').textContent = `${drill.name} (${spotDef.courtPos})`;
+        document.getElementById('edit-modal-drill-sub').textContent = `Target: ${spotDef.target} makes at ${spotDef.label}`;
+        document.getElementById('edit-modal-target-hint').textContent = spotDef.target;
+
+        makesInput.value = sp.makes > 0 ? sp.makes : spotDef.target;
+        attemptsInput.value = sp.attempts > 0 ? sp.attempts : '';
+      } else {
+        document.getElementById('edit-modal-drill-num').textContent = `DRILL ${drill.num}`;
+        document.getElementById('edit-modal-drill-name').textContent = drill.name;
+        document.getElementById('edit-modal-drill-sub').textContent = drill.subtitle;
+        document.getElementById('edit-modal-target-hint').textContent = drill.target;
+
+        makesInput.value = entry.makes > 0 ? entry.makes : drill.target;
+        attemptsInput.value = entry.attempts > 0 ? entry.attempts : '';
+      }
+
+      const modal = document.getElementById('edit-drill-modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-      setTimeout(() => document.getElementById('quick-attempts-input').focus(), 60);
+      setTimeout(() => attemptsInput.focus(), 50);
     }
 
-    function closeQuickModal() {
-      quickEditDrillId = null;
-      const modal = document.getElementById('quick-entry-modal');
+    function closeEditModal() {
+      editingTarget = null;
+      const modal = document.getElementById('edit-drill-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
 
-    // Event Delegation for Drill Buttons
-    document.getElementById('drills-container').addEventListener('click', e => {
-      const btn = e.target.closest('button[data-action]');
-      if (!btn) return;
-      const action = btn.getAttribute('data-action');
-      const drillId = btn.getAttribute('data-drill');
+    document.getElementById('save-edit-modal-btn').addEventListener('click', () => {
+      if (!editingTarget) return;
+      const { drillId, spotIndex } = editingTarget;
+      const workout = getActiveWorkoutConfig();
+      const drill = workout.drills.find((d) => d.id === drillId);
+      if (!drill) return;
 
-      if (action === 'make') recordShot(drillId, true);
-      else if (action === 'miss') recordShot(drillId, false);
-      else if (action === 'undo') undoShot(drillId);
-      else if (action === 'quick') openQuickModal(drillId);
-    });
+      const makesVal = Math.max(0, parseInt(document.getElementById('edit-makes-input').value, 10) || 0);
+      let attemptsVal = Math.max(0, parseInt(document.getElementById('edit-attempts-input').value, 10) || 0);
 
-    // Quick Modal Save
-    document.getElementById('save-quick-btn').addEventListener('click', () => {
-      if (!quickEditDrillId) return;
-      const makesVal = Math.max(0, parseInt(document.getElementById('quick-makes-input').value, 10) || 0);
-      let attemptsVal = Math.max(0, parseInt(document.getElementById('quick-attempts-input').value, 10) || 0);
       if (attemptsVal < makesVal) {
         attemptsVal = makesVal;
       }
-      state.days[state.activeDay].drills[quickEditDrillId] = {
-        makes: makesVal,
-        attempts: attemptsVal,
-        history: []
-      };
-      saveState();
-      closeQuickModal();
-      renderAll(quickEditDrillId);
-      showToast('Drill score updated!');
-    });
 
-    document.getElementById('close-quick-modal').addEventListener('click', closeQuickModal);
-    document.getElementById('cancel-quick-btn').addEventListener('click', closeQuickModal);
-
-    // Week Date Picker
-    document.getElementById('week-input').addEventListener('change', e => {
-      state.weekOf = e.target.value;
-      saveState();
-    });
-
-    // Knee Comfort Check Buttons
-    document.getElementById('knee-status-group').addEventListener('click', e => {
-      const btn = e.target.closest('.knee-btn');
-      if (!btn) return;
-      const status = btn.getAttribute('data-knee');
-      const current = state.days[state.activeDay].kneeStatus;
-      state.days[state.activeDay].kneeStatus = current === status ? '' : status;
-      triggerHaptic(12);
-      saveState();
-      renderSummaries();
-    });
-
-    // Toggle 7-Day Grid
-    document.getElementById('toggle-grid-btn').addEventListener('click', () => {
-      showWeeklyGrid = !showWeeklyGrid;
-      const sec = document.getElementById('weekly-grid-section');
-      const txt = document.getElementById('toggle-grid-text');
-      if (showWeeklyGrid) {
-        sec.classList.remove('hidden');
-        txt.textContent = 'Hide Grid';
-        renderWeeklyGrid();
+      const entry = getActiveDayRecord().drills[drillId];
+      if (drill.hasSpots && spotIndex !== null) {
+        entry.spots[spotIndex].makes = makesVal;
+        entry.spots[spotIndex].attempts = attemptsVal;
+        // Clear undo history entries for this manually edited spot
+        entry.history = entry.history.filter((h) => h.spot !== spotIndex);
+        showToast(`Updated Spot ${spotIndex + 1} (${makesVal}/${attemptsVal})`);
       } else {
-        sec.classList.add('hidden');
-        txt.textContent = '7-Day Grid';
+        entry.makes = makesVal;
+        entry.attempts = attemptsVal;
+        entry.history = [];
+        showToast('Drill numbers updated');
       }
+
+      saveState();
+      closeEditModal();
+      renderAll();
+    });
+
+    document.getElementById('cancel-edit-modal-btn').addEventListener('click', closeEditModal);
+
+    // WORKOUT SWITCHER EVENTS
+    document.querySelectorAll('.workout-switch-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const selectedWorkout = btn.getAttribute('data-workout');
+        if (WORKOUTS[selectedWorkout] && selectedWorkout !== state.activeWorkout) {
+          state.activeWorkout = selectedWorkout;
+          saveState();
+          renderAll();
+          showToast(`Switched to ${WORKOUTS[selectedWorkout].shortName}`);
+        }
+      });
+    });
+
+    // WEEK OF DATE PICKER
+    document.getElementById('week-of-input').addEventListener('change', (e) => {
+      state.weekOf = e.target.value || getDefaultWeekOf();
+      saveState();
+    });
+
+    // GRID VIEW TOGGLE
+    document.getElementById('toggle-grid-btn').addEventListener('click', () => {
+      state.showGrid = !state.showGrid;
+      saveState();
+      renderAll();
     });
 
     document.getElementById('close-grid-btn').addEventListener('click', () => {
-      showWeeklyGrid = false;
-      document.getElementById('weekly-grid-section').classList.add('hidden');
-      document.getElementById('toggle-grid-text').textContent = '7-Day Grid';
+      state.showGrid = false;
+      saveState();
+      renderAll();
     });
 
-    // Copy Summary to Clipboard (iOS Safari compatible fallback)
-    document.getElementById('copy-summary-btn').addEventListener('click', () => {
-      const d = state.activeDay;
-      const dayObj = state.days[d];
-      const dt = getDayTotals(d);
-      const wt = getWeeklyTotals();
+    // PT KNEE COMFORT SELECTOR
+    document.querySelectorAll('.knee-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const val = btn.getAttribute('data-knee');
+        getActiveDayRecord().kneeComfort = val;
+        saveState();
+        renderActiveDayView();
+      });
+    });
 
-      let lines = [
-        `🏀 TOMCAT — WEEKLY SHOOTING TRACKER`,
-        `Week of: ${state.weekOf} | Day ${d}`,
-        dayObj.kneeStatus ? `PT Knee Check: ${dayObj.kneeStatus}` : null,
-        `--------------------------------`
-      ].filter(Boolean);
+    // DAILY NOTES INPUT
+    document.getElementById('day-notes-input').addEventListener('input', (e) => {
+      getActiveDayRecord().notes = e.target.value;
+      saveState();
+    });
 
-      DRILLS.forEach(drill => {
-        const s = dayObj.drills[drill.id];
-        lines.push(`${drill.name}: ${s.makes}/${s.attempts} (${formatPct(s.makes, s.attempts)})`);
+    // GOOGLE SHEETS SYNC
+    document.getElementById('sync-sheets-btn').addEventListener('click', async () => {
+      const webhookUrl = localStorage.getItem(WEBHOOK_STORAGE_KEY);
+      if (!webhookUrl || !webhookUrl.startsWith('http')) {
+        showToast('Paste your Google Sheets Web App URL in Settings first', 'warn');
+        openSheetsModal();
+        return;
+      }
+
+      const workout = getActiveWorkoutConfig();
+      const dayRecord = getActiveDayRecord();
+      const timestamp = new Date().toLocaleString();
+
+      const rows = workout.drills.map((d) => {
+        const entry = dayRecord.drills[d.id];
+        const totals = getDrillTotals(d, entry);
+        const spotDetail = d.hasSpots ? formatSpotsSummary(d, entry) : '';
+        const combinedNotes = [spotDetail, dayRecord.notes || ''].filter(Boolean).join(' — ');
+
+        return {
+          timestamp,
+          workout: workout.name,
+          weekOf: state.weekOf,
+          day: `Day ${state.activeDay}`,
+          drill: `${d.num}. ${d.name} (${d.subtitle})`,
+          makes: totals.makes,
+          attempts: totals.attempts,
+          percentage: formatPct(totals.makes, totals.attempts),
+          kneeComfort: dayRecord.kneeComfort,
+          notes: combinedNotes
+        };
       });
 
-      lines.push(`--------------------------------`);
-      lines.push(`DAY ${d} TOTAL: ${dt.makes}/${dt.attempts} (${formatPct(dt.makes, dt.attempts)})`);
-      lines.push(`WEEKLY TOTAL: ${wt.makes}/${wt.attempts} (${formatPct(wt.makes, wt.attempts)})`);
+      const btn = document.getElementById('sync-sheets-btn');
+      const btnText = document.getElementById('sync-sheets-btn-text');
+      btn.disabled = true;
+      btnText.textContent = 'Syncing to Google Sheets...';
 
-      const summaryText = lines.join('\n');
+      try {
+        // Use no-cors with text/plain payload so Google Apps Script doPost receives JSON cleanly on iOS Safari
+        await fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ rows })
+        });
 
-      const textArea = document.createElement('textarea');
-      textArea.value = summaryText;
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-9999px';
-      document.body.appendChild(textArea);
-      textArea.select();
+        const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        dayRecord.lastSynced = nowTime;
+        saveState();
+        renderActiveDayView();
+        showToast(`Synced Day ${state.activeDay} (${workout.shortName}) to Sheets!`);
+      } catch (err) {
+        console.error('Sync failed:', err);
+        showToast('Sync failed — check internet or Web App URL', 'error');
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = `Sync Day ${state.activeDay} to Google Sheets`;
+      }
+    });
+
+    // COPY FORMATTED LOG TO CLIPBOARD
+    document.getElementById('copy-log-btn').addEventListener('click', () => {
+      const workout = getActiveWorkoutConfig();
+      const dayRecord = getActiveDayRecord();
+      const totals = computeDayTotals(state.activeWorkout, state.activeDay);
+
+      const lines = [
+        `🏀 TomCat Shooting Log — ${workout.name}`,
+        `Week of: ${state.weekOf} | Day ${state.activeDay}`,
+        `Total: ${totals.makes}/${totals.attempts} (${formatPct(totals.makes, totals.attempts)}) | Goal: ${totals.goal}`,
+        `PT Knee Comfort: ${dayRecord.kneeComfort}`,
+        dayRecord.notes ? `Notes: ${dayRecord.notes}` : null,
+        `------------------------`
+      ].filter(Boolean);
+
+      workout.drills.forEach((d) => {
+        const entry = dayRecord.drills[d.id];
+        const totals = getDrillTotals(d, entry);
+        lines.push(`${d.num}. ${d.name}: ${totals.makes}/${totals.attempts} (${formatPct(totals.makes, totals.attempts)})`);
+        if (d.hasSpots && Array.isArray(entry.spots)) {
+          entry.spots.forEach((sp, idx) => {
+            lines.push(`   • Spot ${idx + 1} (${SPOT_DEFS[idx].courtPos}): ${sp.makes}/${sp.attempts}`);
+          });
+        }
+      });
+
+      const text = lines.join('\n');
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
       try {
         document.execCommand('copy');
-        showToast(`TomCat Day ${d} & Weekly log copied!`);
+        showToast('Workout log copied to clipboard!');
       } catch (err) {
-        showToast('Unable to copy text', true);
+        console.error('Copy failed:', err);
+        showToast('Could not copy log', 'error');
+      } finally {
+        document.body.removeChild(ta);
       }
-      document.body.removeChild(textArea);
     });
 
-    // Export CSV
+    // EXPORT CSV (BOTH WORKOUTS ACROSS ALL 7 DAYS WITH SPOT 1-5 BREAKDOWN)
     document.getElementById('export-csv-btn').addEventListener('click', () => {
-      const rows = [
-        ['Player', 'Week Of', 'Day', 'Knee Status', 'Drill', 'Makes', 'Attempts', 'Percentage']
+      const csvRows = [
+        ['Player', 'Workout', 'Week Of', 'Day', 'Drill #', 'Drill Name', 'Target', 'Makes', 'Attempts', 'Percentage', 'Spot 1', 'Spot 2', 'Spot 3', 'Spot 4', 'Spot 5', 'Knee Comfort', 'Notes']
       ];
-      for (let d = 1; d <= 7; d++) {
-        const dayObj = state.days[d];
-        DRILLS.forEach(drill => {
-          const s = dayObj.drills[drill.id];
-          rows.push([
-            'TomCat',
-            state.weekOf,
-            `Day ${d}`,
-            dayObj.kneeStatus || 'Not Logged',
-            drill.name,
-            s.makes,
-            s.attempts,
-            formatPct(s.makes, s.attempts)
-          ]);
+
+      Object.keys(WORKOUTS).forEach((wKey) => {
+        const wConfig = WORKOUTS[wKey];
+        DAYS.forEach((dNum) => {
+          const dayRec = state.data[wKey][dNum];
+          wConfig.drills.forEach((d) => {
+            const entry = dayRec.drills[d.id];
+            const totals = getDrillTotals(d, entry);
+            const spotCols = d.hasSpots && Array.isArray(entry.spots)
+              ? entry.spots.map((sp) => `${sp.makes}/${sp.attempts}`)
+              : ['-', '-', '-', '-', '-'];
+
+            csvRows.push([
+              'TomCat',
+              `"${wConfig.name}"`,
+              state.weekOf,
+              `Day ${dNum}`,
+              d.num,
+              `"${d.name} (${d.subtitle})"`,
+              d.target,
+              totals.makes,
+              totals.attempts,
+              formatPct(totals.makes, totals.attempts),
+              ...spotCols,
+              `"${dayRec.kneeComfort}"`,
+              `"${(dayRec.notes || '').replace(/"/g, '""')}"`
+            ]);
+          });
         });
-      }
-      const csvContent = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+      });
+
+      const csvContent = csvRows.map((r) => r.join(',')).join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'TomCat_Shooting_Tracker.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'TomCat_Shooting_Tracker.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('CSV exported!');
+      showToast('Exported TomCat_Shooting_Tracker.csv');
     });
 
-    // Reset Week Modal
-    document.getElementById('open-reset-btn').addEventListener('click', () => {
-      const modal = document.getElementById('reset-modal');
+    // RESET DAY MODAL LOGIC
+    document.getElementById('reset-day-btn').addEventListener('click', () => {
+      const workout = getActiveWorkoutConfig();
+      document.getElementById('confirm-reset-title').textContent = `Reset Day ${state.activeDay} Stats?`;
+      document.getElementById('confirm-reset-desc').textContent = `This will clear all logged shots and notes for Day ${state.activeDay} of the ${workout.name}.`;
+      const modal = document.getElementById('confirm-reset-modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     });
 
     document.getElementById('cancel-reset-btn').addEventListener('click', () => {
-      const modal = document.getElementById('reset-modal');
+      const modal = document.getElementById('confirm-reset-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     });
 
     document.getElementById('confirm-reset-btn').addEventListener('click', () => {
-      state = createInitialState();
+      state.data[state.activeWorkout][state.activeDay] = createEmptyDayData(state.activeWorkout);
       saveState();
-      const modal = document.getElementById('reset-modal');
+      const modal = document.getElementById('confirm-reset-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       renderAll();
-      showToast('Tracker reset for a new week!');
+      showToast(`Day ${state.activeDay} reset`);
     });
 
-    // Initial render
+    // GOOGLE SHEETS SETUP MODAL LOGIC
+    function openSheetsModal() {
+      const savedUrl = localStorage.getItem(WEBHOOK_STORAGE_KEY) || '';
+      document.getElementById('webhook-url-input').value = savedUrl;
+      const modal = document.getElementById('sheets-setup-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeSheetsModal() {
+      const modal = document.getElementById('sheets-setup-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.getElementById('open-sheets-setup-btn').addEventListener('click', openSheetsModal);
+    document.getElementById('close-sheets-modal-btn').addEventListener('click', closeSheetsModal);
+
+    document.getElementById('save-webhook-btn').addEventListener('click', () => {
+      const val = document.getElementById('webhook-url-input').value.trim();
+      if (val && !val.startsWith('https://script.google.com/')) {
+        showToast('URL should start with https://script.google.com/', 'warn');
+        return;
+      }
+      localStorage.setItem(WEBHOOK_STORAGE_KEY, val);
+      closeSheetsModal();
+      renderAll();
+      showToast(val ? 'Google Sheets Web App URL saved!' : 'Webhook URL cleared');
+    });
+
+    document.getElementById('clear-webhook-btn').addEventListener('click', () => {
+      localStorage.removeItem(WEBHOOK_STORAGE_KEY);
+      document.getElementById('webhook-url-input').value = '';
+      renderAll();
+      showToast('Webhook URL cleared');
+    });
+
+    document.getElementById('copy-script-btn').addEventListener('click', () => {
+      const code = document.getElementById('apps-script-code').textContent;
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast('Apps Script copied! Paste into Extensions > Apps Script');
+      } catch (e) {
+        showToast('Could not copy script', 'error');
+      }
+      document.body.removeChild(ta);
+    });
+
+    // INITIAL RENDER
     renderAll();
   </script>
 </body>
