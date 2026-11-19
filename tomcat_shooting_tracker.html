@@ -45,33 +45,49 @@
   <!-- TOP STICKY HEADER -->
   <header class="sticky top-0 z-30 bg-[#090D16]/95 backdrop-blur-md border-b border-slate-800/90 shadow-lg">
     <div class="max-w-2xl mx-auto px-3.5 pt-3 pb-2.5 space-y-2.5">
-      <!-- Top Row: Brand, Week Of, Goal Pill & Settings Gear -->
+      <!-- Top Row: Date Picker, Current Daily Goal Progress & Settings Gear -->
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-md shadow-orange-950/50 shrink-0">
-            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M5.6 5.6c3.5 3.5 3.5 9.3 0 12.8"></path>
-              <path d="M18.4 5.6c-3.5 3.5-3.5 9.3 0 12.8"></path>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <line x1="12" y1="2" x2="12" y2="22"></line>
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
           </div>
           <div class="min-w-0">
-            <h1 class="text-base sm:text-lg font-black tracking-tight text-white truncate">
-              TomCat Shooting Tracker
-            </h1>
-            <div class="flex items-center gap-2 text-[11px] text-slate-400 font-medium">
-              <span>Player: <strong class="text-orange-400 font-bold">TomCat</strong></span>
-              <span>•</span>
-              <label for="week-of-input" class="inline-flex items-center gap-1 cursor-pointer">
-                <span>Week of:</span>
-                <input
-                  id="week-of-input"
-                  type="date"
-                  class="bg-slate-900/90 border border-slate-700/80 rounded px-1.5 py-0.5 text-[11px] font-mono text-slate-200 focus:outline-none focus:border-orange-500"
-                />
-              </label>
+            <label for="session-date-input" class="block text-[10px] font-extrabold uppercase tracking-wider text-orange-400 mb-0.5">
+              Session Date
+            </label>
+            <div class="flex items-center gap-1.5">
+              <button
+                id="prev-date-btn"
+                type="button"
+                class="tap-btn w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 flex items-center justify-center text-slate-300"
+                title="Previous Day"
+                aria-label="Previous Day"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <input
+                id="session-date-input"
+                type="date"
+                class="bg-slate-900/95 border border-slate-700/90 rounded-lg px-2 py-1 text-xs sm:text-sm font-mono font-extrabold text-white focus:outline-none focus:border-orange-500"
+              />
+              <button
+                id="next-date-btn"
+                type="button"
+                class="tap-btn w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 flex items-center justify-center text-slate-300"
+                title="Next Day"
+                aria-label="Next Day"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -79,8 +95,8 @@
         <div class="flex items-center gap-2 shrink-0">
           <div class="inline-flex flex-col items-end bg-[#0F2342] border border-blue-800/60 rounded-xl px-2.5 py-1">
             <span class="text-[9px] font-extrabold uppercase tracking-wider text-blue-300">Daily Goal</span>
-            <span class="text-xs font-black font-mono text-white">
-              <span id="header-goal-num">100</span> <span class="text-orange-400 font-sans font-bold">Makes</span>
+            <span class="text-xs sm:text-sm font-black font-mono text-white">
+              <span id="header-current-makes" class="text-emerald-400">0</span><span class="text-slate-400">/</span><span id="header-goal-num">100</span>
             </span>
           </div>
           <button
@@ -99,52 +115,48 @@
         </div>
       </div>
 
-      <!-- Segmented Workout Switcher -->
-      <div class="grid grid-cols-2 gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800/90" role="tablist" aria-label="Select Workout">
-        <button
-          id="workout-btn-catch"
-          type="button"
-          data-workout="catchShoot"
-          class="workout-switch-btn tap-btn py-2 px-2.5 rounded-lg text-left transition-all flex items-center justify-between gap-1.5"
-        >
-          <div class="min-w-0">
-            <div class="text-xs font-extrabold truncate">Catch + Shoot</div>
-            <div class="text-[10px] opacity-80 truncate">6 Drills • 5x3 Spots</div>
-          </div>
-          <span class="font-mono text-xs font-black px-1.5 py-0.5 rounded bg-black/25 shrink-0">100</span>
-        </button>
-
-        <button
-          id="workout-btn-footwork"
-          type="button"
-          data-workout="footworkDribble"
-          class="workout-switch-btn tap-btn py-2 px-2.5 rounded-lg text-left transition-all flex items-center justify-between gap-1.5"
-        >
-          <div class="min-w-0">
-            <div class="text-xs font-extrabold truncate">Footwork + Dribble</div>
-            <div class="text-[10px] opacity-80 truncate">7 Drills • 5x3 + Game</div>
-          </div>
-          <span class="font-mono text-xs font-black px-1.5 py-0.5 rounded bg-black/25 shrink-0">135</span>
-        </button>
-      </div>
-
-      <!-- Day 1-7 Tabs + 7-Day Grid Toggle -->
+      <!-- Segmented Workout Switcher + Log History Toggle -->
       <div class="flex items-center gap-2">
-        <div id="day-tabs-container" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          <!-- Injected by JS -->
+        <div class="flex-1 grid grid-cols-2 gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800/90" role="tablist" aria-label="Select Workout">
+          <button
+            id="workout-btn-catch"
+            type="button"
+            data-workout="catchShoot"
+            class="workout-switch-btn tap-btn py-1.5 px-2 rounded-lg text-left transition-all flex items-center justify-between gap-1"
+          >
+            <div class="min-w-0">
+              <div class="text-[11px] sm:text-xs font-extrabold truncate">Catch + Shoot</div>
+              <div class="text-[9px] opacity-80 truncate">5x3 Spots</div>
+            </div>
+            <span class="font-mono text-[11px] font-black px-1.5 py-0.5 rounded bg-black/25 shrink-0">100</span>
+          </button>
+
+          <button
+            id="workout-btn-footwork"
+            type="button"
+            data-workout="footworkDribble"
+            class="workout-switch-btn tap-btn py-1.5 px-2 rounded-lg text-left transition-all flex items-center justify-between gap-1"
+          >
+            <div class="min-w-0">
+              <div class="text-[11px] sm:text-xs font-extrabold truncate">Footwork + Dribble</div>
+              <div class="text-[9px] opacity-80 truncate">5x3 + Game</div>
+            </div>
+            <span class="font-mono text-[11px] font-black px-1.5 py-0.5 rounded bg-black/25 shrink-0">135</span>
+          </button>
         </div>
+
         <button
           id="toggle-grid-btn"
           type="button"
-          class="tap-btn shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-extrabold border border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"
+          class="tap-btn shrink-0 inline-flex flex-col items-center justify-center px-2.5 py-2 rounded-xl text-[10px] font-extrabold border border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"
         >
-          <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5 text-orange-400 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <rect x="3" y="3" width="7" height="7" rx="1"></rect>
             <rect x="14" y="3" width="7" height="7" rx="1"></rect>
             <rect x="14" y="14" width="7" height="7" rx="1"></rect>
             <rect x="3" y="14" width="7" height="7" rx="1"></rect>
           </svg>
-          <span id="toggle-grid-label">7-Day Grid</span>
+          <span id="toggle-grid-label">History</span>
         </button>
       </div>
     </div>
@@ -152,36 +164,26 @@
 
   <main class="max-w-2xl mx-auto px-3.5 pt-3.5 space-y-4">
 
-    <!-- 7-DAY WEEKLY GRID VIEW -->
+    <!-- LOGGED DATES SUMMARY VIEW -->
     <section id="weekly-grid-section" class="hidden bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl">
       <div class="flex items-center justify-between mb-3 gap-2">
         <div>
           <span id="grid-workout-badge" class="text-[10px] font-extrabold uppercase tracking-wider text-orange-400">Catch + Shoot Workout</span>
-          <h2 class="text-base font-black text-white">7-Day Shooting Summary</h2>
+          <h2 class="text-base font-black text-white">Logged Sessions by Date</h2>
         </div>
         <button
           id="close-grid-btn"
           type="button"
           class="tap-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 shrink-0"
         >
-          Back to Day View
+          Back to Workout
         </button>
       </div>
 
       <div class="overflow-x-auto rounded-xl border border-slate-800">
         <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
-              <th class="py-2.5 px-2.5 font-extrabold sticky left-0 bg-slate-950 z-10 min-w-[145px]">DRILL</th>
-              <th class="py-2.5 px-2 text-center font-mono font-bold">D1</th>
-              <th class="py-2.5 px-2 text-center font-mono font-bold">D2</th>
-              <th class="py-2.5 px-2 text-center font-mono font-bold">D3</th>
-              <th class="py-2.5 px-2 text-center font-mono font-bold">D4</th>
-              <th class="py-2.5 px-2 text-center font-mono font-bold">D5</th>
-              <th class="py-2.5 px-2 text-center font-mono font-bold">D6</th>
-              <th class="py-2.5 px-2 text-center font-mono font-bold">D7</th>
-              <th class="py-2.5 px-2.5 text-right font-mono font-extrabold text-orange-400">TOTAL</th>
-            </tr>
+          <thead id="weekly-grid-thead">
+            <!-- Populated by JS -->
           </thead>
           <tbody id="weekly-grid-tbody" class="divide-y divide-slate-800/80">
             <!-- Populated by JS -->
@@ -193,7 +195,7 @@
       </div>
     </section>
 
-    <!-- ACTIVE DAY WORKOUT VIEW -->
+    <!-- ACTIVE DATE WORKOUT VIEW -->
     <div id="active-day-view" class="space-y-4">
 
       <!-- DAILY SUMMARY + PT KNEE COMFORT + WORKOUT NOTES CARD -->
@@ -201,7 +203,7 @@
         <div class="flex items-center justify-between gap-2">
           <div>
             <div class="flex items-center gap-1.5">
-              <span id="active-day-label" class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">DAY 1</span>
+              <span id="active-day-label" class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">NOV 18, 2026</span>
               <span class="text-slate-600">•</span>
               <span id="active-workout-subtitle" class="text-[11px] font-bold text-slate-300">Catch + Shoot Workout</span>
             </div>
@@ -216,7 +218,7 @@
               0.0% (0 att)
             </span>
             <div class="text-[11px] text-slate-400 mt-1 font-mono">
-              Week: <strong id="week-makes-mini" class="text-white">0</strong>/<span id="week-goal-mini">700</span> (<span id="week-pct-mini">0.0%</span>)
+              Total Logged: <strong id="week-makes-mini" class="text-white">0</strong>/<span id="week-goal-mini">0</span> (<span id="week-pct-mini">0.0%</span>)
             </div>
           </div>
         </div>
@@ -294,7 +296,7 @@
             <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
             <path d="M16 16h5v5"></path>
           </svg>
-          <span id="sync-sheets-btn-text">Sync Day 1 to Google Sheets</span>
+          <span id="sync-sheets-btn-text">Sync Session to Google Sheets</span>
         </button>
 
         <div class="grid grid-cols-3 gap-2">
@@ -332,7 +334,7 @@
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
-            <span id="reset-day-label">Reset Day 1</span>
+            <span id="reset-day-label">Reset Date</span>
           </button>
         </div>
       </section>
@@ -372,7 +374,7 @@
           />
         </div>
       </div>
-      <!-- Edit Modal Info -->
+
       <p class="text-[11px] text-slate-400">
         Tip: If Makes starts at 0, it pre-fills with the target (<strong id="edit-modal-target-hint" class="text-slate-200">3</strong>) so you only need to type Total Attempts.
       </p>
@@ -482,14 +484,14 @@
     </div>
   </div>
 
-  <!-- CONFIRM RESET MODAL (NO NATIVE confirm()) -->
+  <!-- CONFIRM RESET MODAL -->
   <div id="confirm-reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-5 shadow-2xl space-y-4">
       <div>
         <span class="text-[11px] font-extrabold uppercase tracking-wider text-rose-400">Confirm Reset</span>
-        <h3 id="confirm-reset-title" class="text-lg font-black text-white">Reset Day 1 Stats?</h3>
+        <h3 id="confirm-reset-title" class="text-lg font-black text-white">Reset Session Stats?</h3>
         <p id="confirm-reset-desc" class="text-xs text-slate-400 mt-1">
-          This will clear all logged makes, attempts, knee comfort status, and notes for Day 1 of the active workout.
+          This will clear all logged makes, attempts, knee comfort status, and notes for this date.
         </p>
       </div>
       <div class="flex items-center gap-2">
@@ -505,7 +507,7 @@
           type="button"
           class="tap-btn flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs"
         >
-          Yes, Reset Day
+          Yes, Reset Date
         </button>
       </div>
     </div>
@@ -514,18 +516,14 @@
   <!-- TOAST NOTIFICATION BANNER -->
   <div
     id="toast-banner"
-    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-200 translate-y-2 max-w-[92vw]"
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-2 transition-all duration-200 bg-slate-900/95 border border-slate-700 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 max-w-[92vw]"
   >
-    <div id="toast-inner" class="bg-slate-800 border border-slate-600 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2">
-      <span id="toast-dot" class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
-      <span id="toast-message">Saved!</span>
-    </div>
+    <span id="toast-dot" class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+    <span id="toast-message" class="truncate">Saved</span>
   </div>
 
   <script>
-    /**
-     * SPOT DEFINITIONS (5 Spots around the arc/mid-range, 3 makes per spot = 15 makes)
-     */
+    // 5-SPOT COURT DEFINITIONS (3 MAKES PER SPOT = 15 MAKES TOTAL)
     const SPOT_DEFS = [
       { index: 0, label: 'Spot 1', courtPos: 'Left Corner', target: 3 },
       { index: 1, label: 'Spot 2', courtPos: 'Left Wing', target: 3 },
@@ -534,53 +532,175 @@
       { index: 4, label: 'Spot 5', courtPos: 'Right Corner', target: 3 }
     ];
 
-    /**
-     * WORKOUT DEFINITIONS
-     * Drills marked with hasSpots: true track Spot 1 - Spot 5 individually (3 makes each = 15 makes).
-     */
+    // WORKOUT DEFINITIONS (5 SPOTS x 5 ADJUSTED TO 5 SPOTS x 3 = 15 MAKES)
     const WORKOUTS = {
       catchShoot: {
         id: 'catchShoot',
         name: 'Catch + Shoot Workout',
         shortName: 'Catch + Shoot',
-        dailyGoal: 100, // (15 * 5) + 25 = 100
+        dailyGoal: 100, // 5 drills x 15 (5 spots x 3) + 25 FT
         drills: [
-          { id: 'cs_1', num: 1, name: '1-2 Catch + Shoot', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: false, hasSpots: true },
-          { id: 'cs_2', num: 2, name: 'Forward Hop', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
-          { id: 'cs_3', num: 3, name: 'Vertical Hop', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
-          { id: 'cs_4', num: 4, name: 'Anchor Step', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: false, hasSpots: true },
-          { id: 'cs_5', num: 5, name: 'Lateral Step Hop', subtitle: '15 ft - 3PT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
-          { id: 'cs_6', num: 6, name: 'Free Throws', subtitle: '25 made free throws', target: 25, plyo: false, hasSpots: false }
+          {
+            id: 'cs_1',
+            num: 1,
+            name: '1-2 Catch + Shoot',
+            subtitle: '15 ft - 3PT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: false
+          },
+          {
+            id: 'cs_2',
+            num: 2,
+            name: 'Forward Hop',
+            subtitle: '15 ft - 3PT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: true
+          },
+          {
+            id: 'cs_3',
+            num: 3,
+            name: 'Vertical Hop',
+            subtitle: '15 ft - 3PT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: true
+          },
+          {
+            id: 'cs_4',
+            num: 4,
+            name: 'Anchor Step',
+            subtitle: '15 ft - 3PT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: false
+          },
+          {
+            id: 'cs_5',
+            num: 5,
+            name: 'Lateral Step Hop',
+            subtitle: '15 ft - 3PT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: true
+          },
+          {
+            id: 'cs_6',
+            num: 6,
+            name: 'Free Throws',
+            subtitle: '25 made free throws',
+            target: 25,
+            hasSpots: false,
+            plyo: false
+          }
         ]
       },
       footworkDribble: {
         id: 'footworkDribble',
         name: 'Footwork + Off-Dribble Workout',
         shortName: 'Footwork + Dribble',
-        dailyGoal: 135, // (15 * 4) + (25 * 3) = 135
+        dailyGoal: 135, // 4 drills x 15 (5 spots x 3) + 3 drills x 25
         drills: [
-          { id: 'fd_1', num: 1, name: '1-2 Square Up', subtitle: '15+ FT | 5 spots x 3', target: 15, plyo: false, hasSpots: true },
-          { id: 'fd_2', num: 2, name: 'Forward Inside Foot Hop', subtitle: '15+ FT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
-          { id: 'fd_3', num: 3, name: '2-Step Outside Foot Hop Square Up', subtitle: '15+ FT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
-          { id: 'fd_4', num: 4, name: 'Shot Fake Lateral Hop', subtitle: '15+ FT | 5 spots x 3', target: 15, plyo: true, hasSpots: true },
-          { id: 'fd_5', num: 5, name: 'Hunt / Slide Hops', subtitle: '15 FT - 3PT | game speed', target: 25, plyo: true, hasSpots: false },
-          { id: 'fd_6', num: 6, name: 'Rip Through 1-Dribble Pull-Ups', subtitle: 'Any spot | game speed', target: 25, plyo: false, hasSpots: false },
-          { id: 'fd_7', num: 7, name: 'Free Throws', subtitle: '25 made free throws', target: 25, plyo: false, hasSpots: false }
+          {
+            id: 'fd_1',
+            num: 1,
+            name: '1-2 Square Up',
+            subtitle: '15+ FT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: false
+          },
+          {
+            id: 'fd_2',
+            num: 2,
+            name: 'Forward Inside Foot Hop',
+            subtitle: '15+ FT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: true
+          },
+          {
+            id: 'fd_3',
+            num: 3,
+            name: '2-Step Outside Foot Hop Square Up',
+            subtitle: '15+ FT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: true
+          },
+          {
+            id: 'fd_4',
+            num: 4,
+            name: 'Shot Fake Lateral Hop',
+            subtitle: '15+ FT | 5 spots x 3',
+            target: 15,
+            hasSpots: true,
+            plyo: true
+          },
+          {
+            id: 'fd_5',
+            num: 5,
+            name: 'Hunt / Slide Hops',
+            subtitle: '15 FT - 3PT | game speed',
+            target: 25,
+            hasSpots: false,
+            plyo: true
+          },
+          {
+            id: 'fd_6',
+            num: 6,
+            name: 'Rip Through 1-Dribble Pull-Ups',
+            subtitle: 'Any spot | game speed',
+            target: 25,
+            hasSpots: false,
+            plyo: false
+          },
+          {
+            id: 'fd_7',
+            num: 7,
+            name: 'Free Throws',
+            subtitle: '25 made free throws',
+            target: 25,
+            hasSpots: false,
+            plyo: false
+          }
         ]
       }
     };
 
-    const STORAGE_KEY = 'tomcat_shooting_tracker_v4';
+    const STORAGE_KEY = 'tomcat_shooting_tracker_v5';
     const WEBHOOK_STORAGE_KEY = 'tomcat_sheets_webhook_url';
-    const DAYS = [1, 2, 3, 4, 5, 6, 7];
 
-    // Helper: Get Monday of current week as YYYY-MM-DD
-    function getDefaultWeekOf() {
+    // Helper: Get local today's date as YYYY-MM-DD
+    function getTodayDateString() {
       const now = new Date();
-      const day = now.getDay();
-      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-      const monday = new Date(now.setDate(diff));
-      return monday.toISOString().split('T')[0];
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    // Helper: Shift a YYYY-MM-DD string by deltaDays
+    function shiftDateString(dateStr, deltaDays) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dt = new Date(y, m - 1, d + deltaDays);
+      const ny = dt.getFullYear();
+      const nm = String(dt.getMonth() + 1).padStart(2, '0');
+      const nd = String(dt.getDate()).padStart(2, '0');
+      return `${ny}-${nm}-${nd}`;
+    }
+
+    // Helper: Format YYYY-MM-DD cleanly (e.g., "Nov 18, 2026" or "Nov 18")
+    function formatDisplayDate(dateStr, includeYear = true) {
+      if (!dateStr || !dateStr.includes('-')) return dateStr || '';
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        ...(includeYear ? { year: 'numeric' } : {})
+      });
     }
 
     // Create blank drill entry (supports 5 spots or single drill total)
@@ -588,13 +708,13 @@
       if (drill.hasSpots) {
         return {
           spots: SPOT_DEFS.map(() => ({ makes: 0, attempts: 0 })),
-          history: [] // entries like { spot: 0..4, type: 'M'|'X' }
+          history: []
         };
       }
       return {
         makes: 0,
         attempts: 0,
-        history: [] // entries like { type: 'M'|'X' }
+        history: []
       };
     }
 
@@ -616,7 +736,7 @@
       };
     }
 
-    // Format spot breakdown summary string (e.g., "S1: 3/4, S2: 3/3, S3: 3/5, S4: 3/4, S5: 3/3")
+    // Format spot breakdown summary string
     function formatSpotsSummary(drill, entry) {
       if (!drill.hasSpots || !Array.isArray(entry.spots)) return '';
       return entry.spots
@@ -638,80 +758,91 @@
       };
     }
 
-    // Create blank 7-day structure for a workout
-    function createEmptyWorkoutDays(workoutKey) {
-      const daysObj = {};
-      DAYS.forEach((dayNum) => {
-        daysObj[dayNum] = createEmptyDayData(workoutKey);
-      });
-      return daysObj;
-    }
-
-    // Build initial default state
+    // Build initial default state keyed by YYYY-MM-DD date strings
     function createInitialState() {
+      const today = getTodayDateString();
       return {
         activeWorkout: 'catchShoot',
-        activeDay: 1,
-        weekOf: getDefaultWeekOf(),
+        activeDate: today,
         showGrid: false,
         collapsedDrills: {},
         data: {
-          catchShoot: createEmptyWorkoutDays('catchShoot'),
-          footworkDribble: createEmptyWorkoutDays('footworkDribble')
+          catchShoot: { [today]: createEmptyDayData('catchShoot') },
+          footworkDribble: { [today]: createEmptyDayData('footworkDribble') }
         }
       };
     }
 
-    // Load & sanitize state from localStorage (with seamless migration from v3 if present)
+    // Sanitize a single saved day object against the workout definition
+    function hydrateDayRecord(workoutKey, savedDay) {
+      const baseDay = createEmptyDayData(workoutKey);
+      if (!savedDay) return baseDay;
+
+      baseDay.kneeComfort = savedDay.kneeComfort || 'Great (0/10)';
+      baseDay.notes = savedDay.notes || '';
+      baseDay.lastSynced = savedDay.lastSynced || null;
+
+      WORKOUTS[workoutKey].drills.forEach((drill) => {
+        const sd = savedDay.drills?.[drill.id];
+        if (sd) {
+          if (drill.hasSpots) {
+            if (Array.isArray(sd.spots) && sd.spots.length === 5) {
+              baseDay.drills[drill.id] = {
+                spots: sd.spots.map((sp) => ({
+                  makes: Number(sp.makes) || 0,
+                  attempts: Number(sp.attempts) || 0
+                })),
+                history: Array.isArray(sd.history) ? sd.history : []
+              };
+            } else if ((Number(sd.makes) || 0) > 0 || (Number(sd.attempts) || 0) > 0) {
+              const spots = SPOT_DEFS.map(() => ({ makes: 0, attempts: 0 }));
+              spots[0] = { makes: Number(sd.makes) || 0, attempts: Number(sd.attempts) || 0 };
+              baseDay.drills[drill.id] = { spots, history: [] };
+            }
+          } else {
+            baseDay.drills[drill.id] = {
+              makes: Number(sd.makes) || 0,
+              attempts: Number(sd.attempts) || 0,
+              history: Array.isArray(sd.history) ? sd.history : []
+            };
+          }
+        }
+      });
+
+      return baseDay;
+    }
+
+    // Load & sanitize state from localStorage (with migration from v4/v3 Day 1-7 keys)
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('tomcat_shooting_tracker_v3');
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('tomcat_shooting_tracker_v4');
         if (!raw) return createInitialState();
         const parsed = JSON.parse(raw);
         const base = createInitialState();
+        const today = getTodayDateString();
 
         base.activeWorkout = WORKOUTS[parsed.activeWorkout] ? parsed.activeWorkout : 'catchShoot';
-        base.activeDay = DAYS.includes(Number(parsed.activeDay)) ? Number(parsed.activeDay) : 1;
-        base.weekOf = parsed.weekOf || getDefaultWeekOf();
+        base.activeDate = typeof parsed.activeDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(parsed.activeDate)
+          ? parsed.activeDate
+          : today;
         base.showGrid = Boolean(parsed.showGrid);
         base.collapsedDrills = parsed.collapsedDrills && typeof parsed.collapsedDrills === 'object' ? parsed.collapsedDrills : {};
 
         Object.keys(WORKOUTS).forEach((wKey) => {
-          DAYS.forEach((dNum) => {
-            const savedDay = parsed.data?.[wKey]?.[dNum];
-            if (savedDay) {
-              base.data[wKey][dNum].kneeComfort = savedDay.kneeComfort || 'Great (0/10)';
-              base.data[wKey][dNum].notes = savedDay.notes || '';
-              base.data[wKey][dNum].lastSynced = savedDay.lastSynced || null;
-              WORKOUTS[wKey].drills.forEach((drill) => {
-                const sd = savedDay.drills?.[drill.id];
-                if (sd) {
-                  if (drill.hasSpots) {
-                    if (Array.isArray(sd.spots) && sd.spots.length === 5) {
-                      base.data[wKey][dNum].drills[drill.id] = {
-                        spots: sd.spots.map((sp) => ({
-                          makes: Number(sp.makes) || 0,
-                          attempts: Number(sp.attempts) || 0
-                        })),
-                        history: Array.isArray(sd.history) ? sd.history : []
-                      };
-                    } else if ((Number(sd.makes) || 0) > 0 || (Number(sd.attempts) || 0) > 0) {
-                      // Migrate legacy drill total into Spot 1 so no prior data is lost
-                      const spots = SPOT_DEFS.map(() => ({ makes: 0, attempts: 0 }));
-                      spots[0] = { makes: Number(sd.makes) || 0, attempts: Number(sd.attempts) || 0 };
-                      base.data[wKey][dNum].drills[drill.id] = { spots, history: [] };
-                    }
-                  } else {
-                    base.data[wKey][dNum].drills[drill.id] = {
-                      makes: Number(sd.makes) || 0,
-                      attempts: Number(sd.attempts) || 0,
-                      history: Array.isArray(sd.history) ? sd.history : []
-                    };
-                  }
-                }
-              });
+          base.data[wKey] = {};
+          const savedMap = parsed.data?.[wKey] || {};
+          Object.keys(savedMap).forEach((key) => {
+            if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+              base.data[wKey][key] = hydrateDayRecord(wKey, savedMap[key]);
+            } else if (/^[1-7]$/.test(key)) {
+              const anchor = parsed.weekOf && /^\d{4}-\d{2}-\d{2}$/.test(parsed.weekOf) ? parsed.weekOf : today;
+              const mappedDate = shiftDateString(anchor, Number(key) - 1);
+              base.data[wKey][mappedDate] = hydrateDayRecord(wKey, savedMap[key]);
             }
           });
+          if (!base.data[wKey][base.activeDate]) {
+            base.data[wKey][base.activeDate] = createEmptyDayData(wKey);
+          }
         });
 
         return base;
@@ -722,8 +853,16 @@
     }
 
     let state = loadState();
-    let editingTarget = null; // { drillId: string, spotIndex: number | null }
+    let editingTarget = null;
     let toastTimer = null;
+
+    function ensureDateRecord(workoutKey, dateStr) {
+      if (!state.data[workoutKey]) state.data[workoutKey] = {};
+      if (!state.data[workoutKey][dateStr]) {
+        state.data[workoutKey][dateStr] = createEmptyDayData(workoutKey);
+      }
+      return state.data[workoutKey][dateStr];
+    }
 
     function saveState() {
       try {
@@ -763,12 +902,12 @@
     }
 
     function getActiveDayRecord() {
-      return state.data[state.activeWorkout][state.activeDay];
+      return ensureDateRecord(state.activeWorkout, state.activeDate);
     }
 
-    function computeDayTotals(workoutKey, dayNum) {
+    function computeDateTotals(workoutKey, dateStr) {
       const wConfig = WORKOUTS[workoutKey];
-      const dayRec = state.data[workoutKey][dayNum];
+      const dayRec = ensureDateRecord(workoutKey, dateStr);
       let makes = 0;
       let attempts = 0;
       wConfig.drills.forEach((d) => {
@@ -779,29 +918,44 @@
       return { makes, attempts, goal: wConfig.dailyGoal };
     }
 
-    function computeWeekTotals(workoutKey) {
+    function getSortedLoggedDates(workoutKey) {
+      const dateMap = state.data[workoutKey] || {};
+      const dates = Object.keys(dateMap)
+        .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
+        .filter((d) => {
+          if (d === state.activeDate) return true;
+          const totals = computeDateTotals(workoutKey, d);
+          return totals.attempts > 0 || Boolean(dateMap[d].notes);
+        })
+        .sort();
+      return dates.length > 0 ? dates : [state.activeDate];
+    }
+
+    function computeAllDatesTotals(workoutKey) {
+      const dates = getSortedLoggedDates(workoutKey);
       let makes = 0;
       let attempts = 0;
-      DAYS.forEach((dNum) => {
-        const dt = computeDayTotals(workoutKey, dNum);
+      dates.forEach((dStr) => {
+        const dt = computeDateTotals(workoutKey, dStr);
         makes += dt.makes;
         attempts += dt.attempts;
       });
       return {
         makes,
         attempts,
-        goal: WORKOUTS[workoutKey].dailyGoal * 7
+        sessionCount: dates.length
       };
     }
 
     // RENDER FUNCTIONS
     function renderAll() {
       const workout = getActiveWorkoutConfig();
-      const dayRecord = getActiveDayRecord();
+      const dayTotals = computeDateTotals(state.activeWorkout, state.activeDate);
 
-      // Update Header Goal & Week Of
+      // Update Header Date Picker & Daily Goal Progress
+      document.getElementById('session-date-input').value = state.activeDate;
+      document.getElementById('header-current-makes').textContent = dayTotals.makes;
       document.getElementById('header-goal-num').textContent = workout.dailyGoal;
-      document.getElementById('week-of-input').value = state.weekOf;
 
       // Update Webhook Indicator Dot
       const webhookUrl = localStorage.getItem(WEBHOOK_STORAGE_KEY);
@@ -817,49 +971,13 @@
         const wKey = btn.getAttribute('data-workout');
         const isActive = wKey === state.activeWorkout;
         if (isActive) {
-          btn.className = 'workout-switch-btn tap-btn py-2 px-2.5 rounded-lg text-left transition-all flex items-center justify-between gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 shadow-md';
+          btn.className = 'workout-switch-btn tap-btn py-1.5 px-2 rounded-lg text-left transition-all flex items-center justify-between gap-1 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 shadow-md';
         } else {
-          btn.className = 'workout-switch-btn tap-btn py-2 px-2.5 rounded-lg text-left transition-all flex items-center justify-between gap-1.5 bg-slate-900/70 hover:bg-slate-800 text-slate-300';
+          btn.className = 'workout-switch-btn tap-btn py-1.5 px-2 rounded-lg text-left transition-all flex items-center justify-between gap-1 bg-slate-900/70 hover:bg-slate-800 text-slate-300';
         }
       });
 
-      // Render Day 1-7 Tabs
-      const dayTabsContainer = document.getElementById('day-tabs-container');
-      dayTabsContainer.innerHTML = '';
-      DAYS.forEach((dNum) => {
-        const totals = computeDayTotals(state.activeWorkout, dNum);
-        const isSelected = dNum === state.activeDay && !state.showGrid;
-        const isComplete = totals.makes >= totals.goal;
-        const hasActivity = totals.attempts > 0;
-
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `tap-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border flex flex-col items-center min-w-[54px] transition-all ${
-          isSelected
-            ? 'bg-orange-500 text-slate-950 border-orange-400 shadow-md shadow-orange-950/50'
-            : isComplete
-              ? 'bg-emerald-950/60 text-emerald-300 border-emerald-700/70'
-              : hasActivity
-                ? 'bg-slate-800 text-white border-slate-600'
-                : 'bg-slate-900/90 text-slate-400 border-slate-800 hover:bg-slate-800'
-        }`;
-
-        btn.innerHTML = `
-          <span>D${dNum}</span>
-          <span class="text-[9px] font-mono ${isSelected ? 'text-slate-900 font-black' : isComplete ? 'text-emerald-400' : 'text-slate-400'}">
-            ${totals.makes}/${totals.goal}
-          </span>
-        `;
-        btn.addEventListener('click', () => {
-          state.activeDay = dNum;
-          state.showGrid = false;
-          saveState();
-          renderAll();
-        });
-        dayTabsContainer.appendChild(btn);
-      });
-
-      // Toggle Grid vs Active Day View
+      // Toggle History Grid vs Active Date View
       const gridSection = document.getElementById('weekly-grid-section');
       const activeDayView = document.getElementById('active-day-view');
       const toggleGridBtn = document.getElementById('toggle-grid-btn');
@@ -868,13 +986,13 @@
       if (state.showGrid) {
         gridSection.classList.remove('hidden');
         activeDayView.classList.add('hidden');
-        toggleGridLabel.textContent = 'Day View';
+        toggleGridLabel.textContent = 'Workout';
         toggleGridBtn.classList.add('border-orange-500', 'text-orange-300');
         renderWeeklyGrid();
       } else {
         gridSection.classList.add('hidden');
         activeDayView.classList.remove('hidden');
-        toggleGridLabel.textContent = '7-Day Grid';
+        toggleGridLabel.textContent = 'History';
         toggleGridBtn.classList.remove('border-orange-500', 'text-orange-300');
         renderActiveDayView();
       }
@@ -883,22 +1001,23 @@
     function renderActiveDayView() {
       const workout = getActiveWorkoutConfig();
       const dayRecord = getActiveDayRecord();
-      const dayTotals = computeDayTotals(state.activeWorkout, state.activeDay);
-      const weekTotals = computeWeekTotals(state.activeWorkout);
+      const dayTotals = computeDateTotals(state.activeWorkout, state.activeDate);
+      const allTotals = computeAllDatesTotals(state.activeWorkout);
+      const formattedDate = formatDisplayDate(state.activeDate, true);
+      const shortDate = formatDisplayDate(state.activeDate, false);
 
-      document.getElementById('active-day-label').textContent = `DAY ${state.activeDay}`;
+      document.getElementById('active-day-label').textContent = formattedDate.toUpperCase();
       document.getElementById('active-workout-subtitle').textContent = workout.name;
       document.getElementById('day-makes-hero').textContent = dayTotals.makes;
       document.getElementById('day-goal-hero').textContent = dayTotals.goal;
       document.getElementById('day-pct-badge').textContent = `${formatPct(dayTotals.makes, dayTotals.attempts)} (${dayTotals.attempts} att)`;
-      document.getElementById('week-makes-mini').textContent = weekTotals.makes;
-      document.getElementById('week-goal-mini').textContent = weekTotals.goal;
-      document.getElementById('week-pct-mini').textContent = formatPct(weekTotals.makes, weekTotals.attempts);
+      document.getElementById('week-makes-mini').textContent = allTotals.makes;
+      document.getElementById('week-goal-mini').textContent = allTotals.attempts;
+      document.getElementById('week-pct-mini').textContent = formatPct(allTotals.makes, allTotals.attempts);
 
       const pctWidth = Math.min(100, Math.round((dayTotals.makes / dayTotals.goal) * 100));
       document.getElementById('day-progress-bar').style.width = `${pctWidth}%`;
 
-      // Last synced timestamp
       const lastSyncedEl = document.getElementById('last-synced-badge');
       lastSyncedEl.textContent = dayRecord.lastSynced ? `Synced ${dayRecord.lastSynced}` : 'Not synced yet';
 
@@ -919,17 +1038,14 @@
         }
       });
 
-      // Workout Notes Input
       const notesInput = document.getElementById('day-notes-input');
       if (notesInput.value !== dayRecord.notes) {
         notesInput.value = dayRecord.notes;
       }
 
-      // Update Bottom Buttons
-      document.getElementById('sync-sheets-btn-text').textContent = `Sync Day ${state.activeDay} to Google Sheets`;
-      document.getElementById('reset-day-label').textContent = `Reset Day ${state.activeDay}`;
+      document.getElementById('sync-sheets-btn-text').textContent = `Sync ${shortDate} to Google Sheets`;
+      document.getElementById('reset-day-label').textContent = `Reset ${shortDate}`;
 
-      // Render Drill Cards
       const container = document.getElementById('drills-container');
       container.innerHTML = '';
 
@@ -948,7 +1064,6 @@
             : 'bg-slate-900/95 border-slate-800'
         }`;
 
-        // Build Spot-by-Spot Rows if this is a 5-spot drill
         let controlsHtml = '';
         if (drill.hasSpots) {
           const spotRowsHtml = SPOT_DEFS.map((spotDef) => {
@@ -1051,7 +1166,6 @@
             </div>
           `;
         } else {
-          // Single-target drill (e.g., Free Throws, Hunt / Slide Hops, Rip Through Pull-Ups)
           controlsHtml = `
             <div class="grid grid-cols-12 gap-2 mt-3">
               <button
@@ -1124,7 +1238,6 @@
               <p class="text-xs font-medium text-slate-400">${drill.subtitle}</p>
             </div>
 
-            <!-- Drill Total Score Display -->
             <div class="text-right shrink-0 bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-1.5">
               <div class="font-mono text-lg font-black leading-none ${isHit ? 'text-emerald-400' : 'text-white'}">
                 ${totals.makes}<span class="text-slate-500 font-bold text-sm">/${totals.attempts}</span>
@@ -1135,7 +1248,6 @@
             </div>
           </div>
 
-          <!-- Drill Progress Bar -->
           <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden mt-3 border border-slate-800/80">
             <div
               class="h-full transition-all duration-200 ${isHit ? 'bg-emerald-400' : 'bg-orange-500'}"
@@ -1149,7 +1261,6 @@
         container.appendChild(card);
       });
 
-      // Attach listeners to drill & spot action buttons
       document.querySelectorAll('.drill-action-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
           const action = btn.getAttribute('data-action');
@@ -1163,19 +1274,38 @@
 
     function renderWeeklyGrid() {
       const workout = getActiveWorkoutConfig();
+      const loggedDates = getSortedLoggedDates(state.activeWorkout);
       document.getElementById('grid-workout-badge').textContent = workout.name;
 
+      const thead = document.getElementById('weekly-grid-thead');
       const tbody = document.getElementById('weekly-grid-tbody');
       const tfoot = document.getElementById('weekly-grid-tfoot');
       tbody.innerHTML = '';
+
+      const dateHeadersHtml = loggedDates
+        .map((dStr) => {
+          const isCurrent = dStr === state.activeDate;
+          return `<th class="py-2.5 px-2 text-center font-mono font-bold whitespace-nowrap ${
+            isCurrent ? 'text-orange-400 underline' : 'text-slate-300'
+          }">${formatDisplayDate(dStr, false)}</th>`;
+        })
+        .join('');
+
+      thead.innerHTML = `
+        <tr class="bg-slate-950 text-slate-300 border-b border-slate-800">
+          <th class="py-2.5 px-2.5 font-extrabold sticky left-0 bg-slate-950 z-10 min-w-[145px]">DRILL</th>
+          ${dateHeadersHtml}
+          <th class="py-2.5 px-2.5 text-right font-mono font-extrabold text-orange-400">TOTAL</th>
+        </tr>
+      `;
 
       workout.drills.forEach((drill) => {
         let rowMakes = 0;
         let rowAttempts = 0;
         let cellsHtml = '';
 
-        DAYS.forEach((dNum) => {
-          const totals = getDrillTotals(drill, state.data[state.activeWorkout][dNum].drills[drill.id]);
+        loggedDates.forEach((dStr) => {
+          const totals = getDrillTotals(drill, ensureDateRecord(state.activeWorkout, dStr).drills[drill.id]);
           rowMakes += totals.makes;
           rowAttempts += totals.attempts;
           const hit = totals.makes >= drill.target;
@@ -1203,17 +1333,16 @@
         tbody.appendChild(tr);
       });
 
-      // Render Daily & Weekly Totals Footer Rows
       let makesCells = '';
       let attemptsCells = '';
       let pctCells = '';
-      let weekMakes = 0;
-      let weekAttempts = 0;
+      let grandMakes = 0;
+      let grandAttempts = 0;
 
-      DAYS.forEach((dNum) => {
-        const dt = computeDayTotals(state.activeWorkout, dNum);
-        weekMakes += dt.makes;
-        weekAttempts += dt.attempts;
+      loggedDates.forEach((dStr) => {
+        const dt = computeDateTotals(state.activeWorkout, dStr);
+        grandMakes += dt.makes;
+        grandAttempts += dt.attempts;
         const hitGoal = dt.makes >= dt.goal;
         makesCells += `<td class="py-2 px-2 text-center ${hitGoal ? 'text-emerald-400 font-black' : 'text-white font-bold'}">${dt.makes}</td>`;
         attemptsCells += `<td class="py-2 px-2 text-center text-slate-300">${dt.attempts}</td>`;
@@ -1224,17 +1353,17 @@
         <tr class="border-b border-slate-800/80">
           <td class="py-2 px-2.5 font-sans font-extrabold text-slate-200 sticky left-0 bg-slate-950 z-10">MAKES</td>
           ${makesCells}
-          <td class="py-2 px-2.5 text-right font-black text-emerald-400">${weekMakes}</td>
+          <td class="py-2 px-2.5 text-right font-black text-emerald-400">${grandMakes}</td>
         </tr>
         <tr class="border-b border-slate-800/80">
           <td class="py-2 px-2.5 font-sans font-extrabold text-slate-400 sticky left-0 bg-slate-950 z-10">ATTEMPTS</td>
           ${attemptsCells}
-          <td class="py-2 px-2.5 text-right font-bold text-slate-300">${weekAttempts}</td>
+          <td class="py-2 px-2.5 text-right font-bold text-slate-300">${grandAttempts}</td>
         </tr>
         <tr>
           <td class="py-2 px-2.5 font-sans font-extrabold text-orange-400 sticky left-0 bg-slate-950 z-10">PERCENT</td>
           ${pctCells}
-          <td class="py-2 px-2.5 text-right font-black text-orange-400">${formatPct(weekMakes, weekAttempts)}</td>
+          <td class="py-2 px-2.5 text-right font-black text-orange-400">${formatPct(grandMakes, grandAttempts)}</td>
         </tr>
       `;
     }
@@ -1312,7 +1441,7 @@
       }
     }
 
-    // EDIT MODAL LOGIC (SUPPORTS INDIVIDUAL SPOTS OR SINGLE-TOTAL DRILLS)
+    // EDIT MODAL LOGIC
     function openEditModal(drillId, spotIndex = null) {
       const workout = getActiveWorkoutConfig();
       const drill = workout.drills.find((d) => d.id === drillId);
@@ -1357,6 +1486,8 @@
       modal.classList.remove('flex');
     }
 
+    document.getElementById('cancel-edit-modal-btn').addEventListener('click', closeEditModal);
+
     document.getElementById('save-edit-modal-btn').addEventListener('click', () => {
       if (!editingTarget) return;
       const { drillId, spotIndex } = editingTarget;
@@ -1375,7 +1506,6 @@
       if (drill.hasSpots && spotIndex !== null) {
         entry.spots[spotIndex].makes = makesVal;
         entry.spots[spotIndex].attempts = attemptsVal;
-        // Clear undo history entries for this manually edited spot
         entry.history = entry.history.filter((h) => h.spot !== spotIndex);
         showToast(`Updated Spot ${spotIndex + 1} (${makesVal}/${attemptsVal})`);
       } else {
@@ -1390,25 +1520,40 @@
       renderAll();
     });
 
-    document.getElementById('cancel-edit-modal-btn').addEventListener('click', closeEditModal);
-
-    // WORKOUT SWITCHER EVENTS
+    // WORKOUT SWITCHER LISTENERS
     document.querySelectorAll('.workout-switch-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const selectedWorkout = btn.getAttribute('data-workout');
-        if (WORKOUTS[selectedWorkout] && selectedWorkout !== state.activeWorkout) {
-          state.activeWorkout = selectedWorkout;
+        const wKey = btn.getAttribute('data-workout');
+        if (WORKOUTS[wKey] && state.activeWorkout !== wKey) {
+          state.activeWorkout = wKey;
+          ensureDateRecord(wKey, state.activeDate);
           saveState();
           renderAll();
-          showToast(`Switched to ${WORKOUTS[selectedWorkout].shortName}`);
         }
       });
     });
 
-    // WEEK OF DATE PICKER
-    document.getElementById('week-of-input').addEventListener('change', (e) => {
-      state.weekOf = e.target.value || getDefaultWeekOf();
+    // SESSION DATE PICKER & PREV/NEXT DAY BUTTONS
+    document.getElementById('session-date-input').addEventListener('change', (e) => {
+      const picked = e.target.value || getTodayDateString();
+      state.activeDate = picked;
+      ensureDateRecord(state.activeWorkout, picked);
       saveState();
+      renderAll();
+    });
+
+    document.getElementById('prev-date-btn').addEventListener('click', () => {
+      state.activeDate = shiftDateString(state.activeDate, -1);
+      ensureDateRecord(state.activeWorkout, state.activeDate);
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById('next-date-btn').addEventListener('click', () => {
+      state.activeDate = shiftDateString(state.activeDate, 1);
+      ensureDateRecord(state.activeWorkout, state.activeDate);
+      saveState();
+      renderAll();
     });
 
     // GRID VIEW TOGGLE
@@ -1452,6 +1597,7 @@
       const workout = getActiveWorkoutConfig();
       const dayRecord = getActiveDayRecord();
       const timestamp = new Date().toLocaleString();
+      const formattedDate = formatDisplayDate(state.activeDate, true);
 
       const rows = workout.drills.map((d) => {
         const entry = dayRecord.drills[d.id];
@@ -1462,8 +1608,8 @@
         return {
           timestamp,
           workout: workout.name,
-          weekOf: state.weekOf,
-          day: `Day ${state.activeDay}`,
+          weekOf: state.activeDate,
+          day: formattedDate,
           drill: `${d.num}. ${d.name} (${d.subtitle})`,
           makes: totals.makes,
           attempts: totals.attempts,
@@ -1479,7 +1625,6 @@
       btnText.textContent = 'Syncing to Google Sheets...';
 
       try {
-        // Use no-cors with text/plain payload so Google Apps Script doPost receives JSON cleanly on iOS Safari
         await fetch(webhookUrl, {
           method: 'POST',
           mode: 'no-cors',
@@ -1491,13 +1636,13 @@
         dayRecord.lastSynced = nowTime;
         saveState();
         renderActiveDayView();
-        showToast(`Synced Day ${state.activeDay} (${workout.shortName}) to Sheets!`);
+        showToast(`Synced ${formattedDate} (${workout.shortName}) to Sheets!`);
       } catch (err) {
         console.error('Sync failed:', err);
         showToast('Sync failed — check internet or Web App URL', 'error');
       } finally {
         btn.disabled = false;
-        btnText.textContent = `Sync Day ${state.activeDay} to Google Sheets`;
+        btnText.textContent = `Sync ${formatDisplayDate(state.activeDate, false)} to Google Sheets`;
       }
     });
 
@@ -1505,11 +1650,12 @@
     document.getElementById('copy-log-btn').addEventListener('click', () => {
       const workout = getActiveWorkoutConfig();
       const dayRecord = getActiveDayRecord();
-      const totals = computeDayTotals(state.activeWorkout, state.activeDay);
+      const totals = computeDateTotals(state.activeWorkout, state.activeDate);
+      const formattedDate = formatDisplayDate(state.activeDate, true);
 
       const lines = [
         `🏀 TomCat Shooting Log — ${workout.name}`,
-        `Week of: ${state.weekOf} | Day ${state.activeDay}`,
+        `Date: ${formattedDate} (${state.activeDate})`,
         `Total: ${totals.makes}/${totals.attempts} (${formatPct(totals.makes, totals.attempts)}) | Goal: ${totals.goal}`,
         `PT Knee Comfort: ${dayRecord.kneeComfort}`,
         dayRecord.notes ? `Notes: ${dayRecord.notes}` : null,
@@ -1518,8 +1664,8 @@
 
       workout.drills.forEach((d) => {
         const entry = dayRecord.drills[d.id];
-        const totals = getDrillTotals(d, entry);
-        lines.push(`${d.num}. ${d.name}: ${totals.makes}/${totals.attempts} (${formatPct(totals.makes, totals.attempts)})`);
+        const drillTotals = getDrillTotals(d, entry);
+        lines.push(`${d.num}. ${d.name}: ${drillTotals.makes}/${drillTotals.attempts} (${formatPct(drillTotals.makes, drillTotals.attempts)})`);
         if (d.hasSpots && Array.isArray(entry.spots)) {
           entry.spots.forEach((sp, idx) => {
             lines.push(`   • Spot ${idx + 1} (${SPOT_DEFS[idx].courtPos}): ${sp.makes}/${sp.attempts}`);
@@ -1545,16 +1691,17 @@
       }
     });
 
-    // EXPORT CSV (BOTH WORKOUTS ACROSS ALL 7 DAYS WITH SPOT 1-5 BREAKDOWN)
+    // EXPORT CSV
     document.getElementById('export-csv-btn').addEventListener('click', () => {
       const csvRows = [
-        ['Player', 'Workout', 'Week Of', 'Day', 'Drill #', 'Drill Name', 'Target', 'Makes', 'Attempts', 'Percentage', 'Spot 1', 'Spot 2', 'Spot 3', 'Spot 4', 'Spot 5', 'Knee Comfort', 'Notes']
+        ['Player', 'Workout', 'Date', 'Drill #', 'Drill Name', 'Target', 'Makes', 'Attempts', 'Percentage', 'Spot 1', 'Spot 2', 'Spot 3', 'Spot 4', 'Spot 5', 'Knee Comfort', 'Notes']
       ];
 
       Object.keys(WORKOUTS).forEach((wKey) => {
         const wConfig = WORKOUTS[wKey];
-        DAYS.forEach((dNum) => {
-          const dayRec = state.data[wKey][dNum];
+        const loggedDates = getSortedLoggedDates(wKey);
+        loggedDates.forEach((dStr) => {
+          const dayRec = ensureDateRecord(wKey, dStr);
           wConfig.drills.forEach((d) => {
             const entry = dayRec.drills[d.id];
             const totals = getDrillTotals(d, entry);
@@ -1565,8 +1712,7 @@
             csvRows.push([
               'TomCat',
               `"${wConfig.name}"`,
-              state.weekOf,
-              `Day ${dNum}`,
+              dStr,
               d.num,
               `"${d.name} (${d.subtitle})"`,
               d.target,
@@ -1594,11 +1740,12 @@
       showToast('Exported TomCat_Shooting_Tracker.csv');
     });
 
-    // RESET DAY MODAL LOGIC
+    // RESET DATE MODAL LOGIC
     document.getElementById('reset-day-btn').addEventListener('click', () => {
       const workout = getActiveWorkoutConfig();
-      document.getElementById('confirm-reset-title').textContent = `Reset Day ${state.activeDay} Stats?`;
-      document.getElementById('confirm-reset-desc').textContent = `This will clear all logged shots and notes for Day ${state.activeDay} of the ${workout.name}.`;
+      const formattedDate = formatDisplayDate(state.activeDate, true);
+      document.getElementById('confirm-reset-title').textContent = `Reset ${formattedDate} Stats?`;
+      document.getElementById('confirm-reset-desc').textContent = `This will clear all logged shots and notes for ${formattedDate} of the ${workout.name}.`;
       const modal = document.getElementById('confirm-reset-modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
@@ -1611,13 +1758,13 @@
     });
 
     document.getElementById('confirm-reset-btn').addEventListener('click', () => {
-      state.data[state.activeWorkout][state.activeDay] = createEmptyDayData(state.activeWorkout);
+      state.data[state.activeWorkout][state.activeDate] = createEmptyDayData(state.activeWorkout);
       saveState();
       const modal = document.getElementById('confirm-reset-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       renderAll();
-      showToast(`Day ${state.activeDay} reset`);
+      showToast(`${formatDisplayDate(state.activeDate, false)} reset`);
     });
 
     // GOOGLE SHEETS SETUP MODAL LOGIC
