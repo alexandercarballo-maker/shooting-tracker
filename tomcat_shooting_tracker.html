@@ -488,15 +488,15 @@
         <input
           id="offline-video-file-input"
           type="file"
-          accept="video/*,.mp4,.mov,.m4v"
-          class="hidden"
+          accept="video/*"
+          class="sr-only"
         />
 
         <div class="flex items-center gap-2">
-          <button
+          <label
             id="pick-offline-video-btn"
-            type="button"
-            class="tap-btn flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 border border-emerald-400/30"
+            for="offline-video-file-input"
+            class="tap-btn cursor-pointer flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 border border-emerald-400/30"
           >
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -504,7 +504,7 @@
               <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
             <span id="pick-offline-video-label">Choose from Files / Photos</span>
-          </button>
+          </label>
 
           <button
             id="delete-offline-video-btn"
@@ -518,11 +518,11 @@
 
       <!-- Optional Web Video Link -->
       <div class="space-y-1.5 pt-1 border-t border-slate-800">
-        <label for="video-url-input" class="block text-xs font-bold text-slate-300">Or Paste Video Link (Optional)</label>
+        <label for="video-url-input" class="block text-xs font-bold text-slate-300">Or Paste Video Link / Repo File Path (Optional)</label>
         <input
           id="video-url-input"
-          type="url"
-          placeholder="https://youtube.com/... or https://icloud.com/..."
+          type="text"
+          placeholder="https://youtube.com/... or videos/drill1.mp4"
           class="w-full bg-slate-950 border border-slate-700 focus:border-orange-500 rounded-xl px-3 py-2 text-xs font-mono text-slate-100 placeholder-slate-600 focus:outline-none"
         />
       </div>
@@ -2138,7 +2138,21 @@
       }
 
       if (webUrl) {
-        window.open(webUrl, '_blank', 'noopener,noreferrer');
+        if (/\.(mp4|mov|m4v|webm)(\?.*)?$/i.test(webUrl)) {
+          document.getElementById('player-drill-badge').textContent = info.badge;
+          document.getElementById('player-drill-title').textContent = info.title;
+          document.getElementById('player-file-info').textContent = webUrl;
+
+          const videoEl = document.getElementById('offline-drill-video');
+          videoEl.src = webUrl;
+
+          const modal = document.getElementById('video-player-modal');
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          videoEl.play().catch(() => {});
+        } else {
+          window.open(webUrl, '_blank', 'noopener,noreferrer');
+        }
       } else {
         showToast('Offline video not found — please re-select it', 'warn');
         openVideoSetupModal(videoKey);
@@ -2204,14 +2218,12 @@
       if (e.target.id === 'video-player-modal') closeVideoPlayerModal();
     });
 
-    document.getElementById('pick-offline-video-btn').addEventListener('click', () => {
-      document.getElementById('offline-video-file-input').click();
-    });
-
     document.getElementById('offline-video-file-input').addEventListener('change', async (e) => {
       const file = e.target.files?.[0];
-      e.target.value = '';
-      if (!file || !editingVideoDrillId) return;
+      if (!file || !editingVideoDrillId) {
+        e.target.value = '';
+        return;
+      }
 
       const pickLabel = document.getElementById('pick-offline-video-label');
       const errorBox = document.getElementById('offline-video-error-box');
@@ -2228,15 +2240,21 @@
           size: file.size || 0
         };
         saveOfflineVideoMeta();
+        e.target.value = '';
         closeVideoSetupModal();
         renderAll();
         showToast('Video saved offline on iPhone!');
       } catch (err) {
         console.error('Failed to store offline video:', err);
+        e.target.value = '';
         pickLabel.textContent = 'Choose from Files / Photos';
-        const reason = err && err.message ? `${err.name || 'Error'}: ${err.message}` : String(err);
+        const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+        const rawReason = err && err.message ? `${err.name || 'Error'}: ${err.message}` : String(err);
+        const friendlyHint = isStandalone
+          ? `${rawReason} — Tip: Apple blocks file uploads inside Home Screen icons. Open your GitHub link directly in regular Safari to save videos, or choose from Photo Library.`
+          : rawReason;
         if (errorBox) {
-          errorBox.textContent = reason;
+          errorBox.textContent = friendlyHint;
           errorBox.classList.remove('hidden');
         }
         showToast('Could not save video — see details above', 'error');
@@ -2262,7 +2280,7 @@
     document.getElementById('save-video-link-btn').addEventListener('click', () => {
       if (!editingVideoDrillId) return;
       let val = document.getElementById('video-url-input').value.trim();
-      if (val && !/^https?:\/\//i.test(val)) {
+      if (val && !/^https?:\/\//i.test(val) && !val.startsWith('/') && !val.startsWith('./') && !/\.(mp4|mov|m4v|webm)/i.test(val)) {
         val = 'https://' + val;
       }
       if (val) {
