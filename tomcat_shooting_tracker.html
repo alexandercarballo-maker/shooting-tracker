@@ -91,22 +91,22 @@
     }
   </style>
 </head>
-<body class="min-h-screen pb-14 selection:bg-orange-500 selection:text-white">
-
-  <!-- TOP STICKY HEADER -->
-  <header class="sticky top-0 z-30 bg-[#090D16]/95 backdrop-blur-md border-b border-slate-800/90 shadow-lg">
-    <div class="max-w-2xl mx-auto px-3.5 pt-3 pb-2.5 space-y-2.5">
-      <!-- Top Row: Date Picker, Current Daily Goal Progress & Settings Gear -->
+      <!-- Top Row: Vitamin Icon Button, Date Picker, Current Daily Goal Progress & Settings Gear -->
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-md shadow-orange-950/50 shrink-0">
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
+          <button
+            id="workout-btn-vitamins"
+            type="button"
+            class="tap-btn relative w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-md shadow-sky-950/50 shrink-0 text-white"
+            title="Daily Vitamins (Pre-Workout Mechanical Drills)"
+            aria-label="Daily Vitamins"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path>
+              <path d="m8.5 8.5 7 7"></path>
             </svg>
-          </div>
+            <span id="vitamins-header-badge" class="hidden"></span>
+          </button>
           <div class="min-w-0">
             <label for="session-date-input" class="block text-[10px] font-extrabold uppercase tracking-wider text-orange-400 mb-0.5">
               Session Date
@@ -214,6 +214,30 @@
   </header>
 
   <main class="max-w-2xl mx-auto px-3.5 pt-3.5 space-y-4">
+
+    <!-- DAILY VITAMINS VIDEO LIBRARY VIEW -->
+    <section id="vitamins-view" class="hidden space-y-3">
+      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-400">02 / DAILY MECHANICAL WORK</span>
+              <span class="text-slate-600">•</span>
+              <span class="text-[11px] font-bold text-slate-300">Pre-Workout Warm-Up</span>
+            </div>
+            <h2 class="text-lg font-black text-white mt-0.5">Daily Vitamins Video Library</h2>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+              Complete these four drills before each shooting workout. Work from 3–4 feet, take your time, and focus on the details of your mechanics.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Daily Vitamin Drill Video Cards -->
+      <div id="vitamins-list-container" class="space-y-3">
+        <!-- Populated by JS -->
+      </div>
+    </section>
 
     <!-- LOGGED DATES SUMMARY VIEW -->
     <section id="weekly-grid-section" class="hidden bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl">
@@ -856,18 +880,52 @@
     const VIDEO_LINKS_STORAGE_KEY = 'tomcat_drill_video_links_v1';
     const OFFLINE_VIDEO_META_KEY = 'tomcat_offline_video_meta_v1';
 
-    // =========================================================================
-    // INDEXEDDB OFFLINE VIDEO STORAGE (WORKS IN AIRPLANE MODE / NO SERVICE)
-    // =========================================================================
-    const VIDEO_DB_NAME = 'TomCatDrillVideosDB';
-    const VIDEO_STORE_NAME = 'videos';
+    // DAILY VITAMINS (PRE-WORKOUT MECHANICAL DRILLS FROM D1 SHOOTER BLUEPRINT)
+    const DAILY_VITAMIN_DRILLS = [
+      {
+        id: 'dv_1',
+        num: 1,
+        name: 'Sequence Pop-Up',
+        subtitle: '25 MAKES / 3-4 FT',
+        focus: 'Establish strong posture and Position 1. Move the basketball to Position 2 first, then add power by driving upward into the release in one smooth, connected sequence.'
+      },
+      {
+        id: 'dv_2',
+        num: 2,
+        name: 'Drop Pop-Up',
+        subtitle: '25 MAKES / 3-4 FT',
+        focus: 'Maintain strong posture and Position 1 while dropping levels through a stationary hip sink. Keep the ball in Position 1 during the hip sink, then move the ball upward first.'
+      },
+      {
+        id: 'dv_3',
+        num: 3,
+        name: 'Pogo Drop Pop-Up',
+        subtitle: '25 REPS / 3-4 FT',
+        focus: 'Stay light on your feet and quickly drop levels—sinking in and out of the hips efficiently while keeping the ball at Position 1 before driving into the release.'
+      },
+      {
+        id: 'dv_4',
+        num: 4,
+        name: 'Seams Drill',
+        subtitle: '25 MAKES / 3-4 FT',
+        focus: 'Handle imperfect passes while consistently finding the seams and aligning your shooting hand with the ball tilt to shoot through the seams for clean rotation.'
+      }
+    ];
+
+    function findDrillById(drillId) {
+      for (const wKey of Object.keys(WORKOUTS)) {
+        const found = WORKOUTS[wKey].drills.find((d) => d.id === drillId);
+        if (found) return found;
+      }
+      return DAILY_VITAMIN_DRILLS.find((d) => d.id === drillId) || null;
+    }
+
+    // OFFLINE VIDEO STORAGE (INDEXEDDB) FOR ZERO-SERVICE GYM PLAYBACK
+    const VIDEO_DB_NAME = 'tomcat_offline_videos_db';
+    const VIDEO_STORE_NAME = 'drill_videos';
 
     function openVideoDB() {
       return new Promise((resolve, reject) => {
-        if (!window.indexedDB) {
-          reject(new Error('IndexedDB not supported'));
-          return;
-        }
         const req = indexedDB.open(VIDEO_DB_NAME, 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
@@ -1056,6 +1114,7 @@
         activeWorkout: 'catchShoot',
         activeDate: today,
         showGrid: false,
+        showVitamins: false,
         collapsedDrills: {},
         data: {
           catchShoot: { [today]: createEmptyDayData('catchShoot') },
@@ -1117,6 +1176,7 @@
           ? parsed.activeDate
           : today;
         base.showGrid = Boolean(parsed.showGrid);
+        base.showVitamins = Boolean(parsed.showVitamins);
         base.collapsedDrills = parsed.collapsedDrills && typeof parsed.collapsedDrills === 'object' ? parsed.collapsedDrills : {};
 
         Object.keys(WORKOUTS).forEach((wKey) => {
@@ -1260,7 +1320,7 @@
       // Update Workout Switcher Buttons
       document.querySelectorAll('.workout-switch-btn').forEach((btn) => {
         const wKey = btn.getAttribute('data-workout');
-        const isActive = wKey === state.activeWorkout;
+        const isActive = !state.showVitamins && wKey === state.activeWorkout;
         if (isActive) {
           btn.className = 'workout-switch-btn tap-btn py-1.5 px-2 rounded-lg text-left transition-all flex items-center justify-between gap-1 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 shadow-md';
         } else {
@@ -1268,25 +1328,168 @@
         }
       });
 
-      // Toggle History Grid vs Active Date View
+      // Update Daily Vitamins Top-Left Icon Button
+      const vitBtn = document.getElementById('workout-btn-vitamins');
+      if (state.showVitamins) {
+        vitBtn.className = 'tap-btn relative w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-500 ring-2 ring-white flex items-center justify-center shadow-lg shadow-sky-900/60 shrink-0 text-slate-950';
+      } else {
+        vitBtn.className = 'tap-btn relative w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 flex items-center justify-center shadow-md shadow-sky-950/50 shrink-0 text-white';
+      }
+
+      // Toggle Vitamins View vs History Grid vs Active Date View
+      const vitaminsView = document.getElementById('vitamins-view');
       const gridSection = document.getElementById('weekly-grid-section');
       const activeDayView = document.getElementById('active-day-view');
       const toggleGridBtn = document.getElementById('toggle-grid-btn');
       const toggleGridLabel = document.getElementById('toggle-grid-label');
 
-      if (state.showGrid) {
+      if (state.showVitamins) {
+        vitaminsView.classList.remove('hidden');
+        gridSection.classList.add('hidden');
+        activeDayView.classList.add('hidden');
+        toggleGridLabel.textContent = 'History';
+        toggleGridBtn.classList.remove('border-orange-500', 'text-orange-300');
+        renderVitaminsView();
+      } else if (state.showGrid) {
+        vitaminsView.classList.add('hidden');
         gridSection.classList.remove('hidden');
         activeDayView.classList.add('hidden');
         toggleGridLabel.textContent = 'Workout';
         toggleGridBtn.classList.add('border-orange-500', 'text-orange-300');
         renderWeeklyGrid();
       } else {
+        vitaminsView.classList.add('hidden');
         gridSection.classList.add('hidden');
         activeDayView.classList.remove('hidden');
         toggleGridLabel.textContent = 'History';
         toggleGridBtn.classList.remove('border-orange-500', 'text-orange-300');
         renderActiveDayView();
       }
+    }
+
+    function renderVitaminsView() {
+      const container = document.getElementById('vitamins-list-container');
+      container.innerHTML = '';
+
+      function buildVitaminSlotHtml(drillId, slotKey, label) {
+        const storageKey = `${drillId}_${slotKey}`;
+        const legacyKey = slotKey === 'demo' ? drillId : null;
+        const offlineMeta = offlineVideoMeta[storageKey] || (legacyKey ? offlineVideoMeta[legacyKey] : null);
+        const activeKey = offlineVideoMeta[storageKey] ? storageKey : (legacyKey && offlineVideoMeta[legacyKey] ? legacyKey : storageKey);
+        const videoUrl = drillVideoLinks[storageKey] || (legacyKey ? drillVideoLinks[legacyKey] : null);
+
+        if (offlineMeta) {
+          return `
+            <div class="flex items-center gap-1.5">
+              <button
+                type="button"
+                data-action="play-offline-video"
+                data-drill="${drillId}"
+                data-key="${activeKey}"
+                data-label="${label}"
+                class="vitamin-video-btn tap-btn flex-1 py-2.5 px-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-sm border border-emerald-400/30 flex items-center justify-center gap-1.5"
+              >
+                <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>${label}</span>
+              </button>
+              <button
+                type="button"
+                data-action="video-setup"
+                data-drill="${drillId}"
+                data-key="${activeKey}"
+                data-label="${label}"
+                class="vitamin-video-btn tap-btn py-2.5 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 shrink-0"
+                title="Edit ${label} Video"
+              >
+                Edit
+              </button>
+            </div>
+          `;
+        } else if (videoUrl) {
+          return `
+            <div class="flex items-center gap-1.5">
+              <a
+                href="${videoUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="tap-btn flex-1 py-2.5 px-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-black text-xs shadow-sm border border-sky-400/30 flex items-center justify-center gap-1.5"
+              >
+                <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>${label}</span>
+              </a>
+              <button
+                type="button"
+                data-action="video-setup"
+                data-drill="${drillId}"
+                data-key="${storageKey}"
+                data-label="${label}"
+                class="vitamin-video-btn tap-btn py-2.5 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 shrink-0"
+                title="Edit ${label} Video"
+              >
+                Edit
+              </button>
+            </div>
+          `;
+        } else {
+          return `
+            <button
+              type="button"
+              data-action="video-setup"
+              data-drill="${drillId}"
+              data-key="${storageKey}"
+              data-label="${label}"
+              class="vitamin-video-btn tap-btn w-full py-2.5 px-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-sky-300 font-extrabold text-xs border border-slate-700 flex items-center justify-center gap-1"
+            >
+              <span>+ ${label}</span>
+            </button>
+          `;
+        }
+      }
+
+      DAILY_VITAMIN_DRILLS.forEach((drill) => {
+        const demoHtml = buildVitaminSlotHtml(drill.id, 'demo', 'Demo');
+        const breakdownHtml = buildVitaminSlotHtml(drill.id, 'breakdown', 'Breakdown');
+
+        const card = document.createElement('article');
+        card.className = 'rounded-2xl p-3.5 bg-slate-900/95 border border-slate-800 shadow-lg';
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-400">
+                  VITAMIN 0${drill.num}
+                </span>
+                <span class="text-[10px] font-mono font-bold text-slate-400">
+                  ${drill.subtitle}
+                </span>
+              </div>
+              <h3 class="text-base font-black text-white mt-1 leading-snug">${drill.name}</h3>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">${drill.focus}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-slate-800/80">
+            ${demoHtml}
+            ${breakdownHtml}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.querySelectorAll('.vitamin-video-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const action = btn.getAttribute('data-action');
+          const drillId = btn.getAttribute('data-drill');
+          const storageKey = btn.getAttribute('data-key');
+          const label = btn.getAttribute('data-label');
+          const drill = findDrillById(drillId);
+          if (!drill) return;
+          if (action === 'play-offline-video') {
+            playOfflineVideo(drill, storageKey, label);
+          } else if (action === 'video-setup') {
+            openVideoSetupModal(drillId, storageKey, label);
+          }
+        });
+      });
     }
 
     function renderActiveDayView() {
@@ -1296,6 +1499,7 @@
       const allTotals = computeAllDatesTotals(state.activeWorkout);
       const formattedDate = formatDisplayDate(state.activeDate, true);
       const shortDate = formatDisplayDate(state.activeDate, false);
+      const spotsList = getWorkoutSpots(state.activeWorkout);
 
       document.getElementById('active-day-label').textContent = formattedDate.toUpperCase();
       document.getElementById('active-workout-subtitle').textContent = workout.name;
@@ -1347,8 +1551,76 @@
         const progressPct = Math.min(100, Math.round((totals.makes / drill.target) * 100));
         const shotPct = formatPct(totals.makes, totals.attempts);
         const isCollapsed = Boolean(state.collapsedDrills[drill.id]);
-        const offlineMeta = offlineVideoMeta[drill.id] || null;
-        const videoUrl = drillVideoLinks[drill.id] || '';
+        const offlineMeta = offlineVideoMeta[drill.id];
+        const videoUrl = drillVideoLinks[drill.id];
+
+        let videoActionHtml = '';
+        if (offlineMeta) {
+          videoActionHtml = `
+            <div class="inline-flex items-center gap-1 mt-1.5">
+              <button
+                type="button"
+                data-action="play-offline-video"
+                data-drill="${drill.id}"
+                class="drill-action-btn tap-btn inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40"
+              >
+                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>Watch Demo</span>
+              </button>
+              <button
+                type="button"
+                data-action="video-setup"
+                data-drill="${drill.id}"
+                class="drill-action-btn tap-btn p-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700"
+                title="Change Drill Video"
+                aria-label="Change Drill Video"
+              >
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+        } else if (videoUrl) {
+          videoActionHtml = `
+            <div class="inline-flex items-center gap-1 mt-1.5">
+              <a
+                href="${videoUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="tap-btn inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/35"
+              >
+                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>Watch Demo</span>
+              </a>
+              <button
+                type="button"
+                data-action="video-setup"
+                data-drill="${drill.id}"
+                class="drill-action-btn tap-btn p-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700"
+                title="Change Drill Video"
+                aria-label="Change Drill Video"
+              >
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+        } else {
+          videoActionHtml = `
+            <button
+              type="button"
+              data-action="video-setup"
+              data-drill="${drill.id}"
+              class="drill-action-btn tap-btn mt-1.5 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700/80"
+            >
+              <span>+ Video</span>
+            </button>
+          `;
+        }
 
         const card = document.createElement('article');
         card.className = `rounded-2xl p-3.5 border transition-all shadow-lg ${
@@ -1359,7 +1631,7 @@
 
         let controlsHtml = '';
         if (drill.hasSpots) {
-          const spotRowsHtml = getWorkoutSpots(state.activeWorkout).map((spotDef) => {
+          const spotRowsHtml = spotsList.map((spotDef) => {
             const sp = entry.spots[spotDef.index];
             const spotHit = sp.makes >= spotDef.target;
             const spotPct = formatPct(sp.makes, sp.attempts);
@@ -1503,64 +1775,6 @@
           `;
         }
 
-        // Video pill badge integrated cleanly into the drill header badge row
-        let videoBadgeHtml = '';
-        if (offlineMeta) {
-          videoBadgeHtml = `
-            <button
-              type="button"
-              data-action="play-offline-video"
-              data-drill="${drill.id}"
-              class="drill-action-btn tap-btn inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40"
-            >
-              <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-              <span>Watch Demo</span>
-            </button>
-            <button
-              type="button"
-              data-action="video-setup"
-              data-drill="${drill.id}"
-              class="drill-action-btn tap-btn text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700"
-              title="Change or Remove Video"
-            >
-              Edit Video
-            </button>
-          `;
-        } else if (videoUrl) {
-          videoBadgeHtml = `
-            <a
-              href="${videoUrl.replace(/"/g, '&quot;')}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="tap-btn inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40"
-            >
-              <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-              <span>Watch Demo</span>
-            </a>
-            <button
-              type="button"
-              data-action="video-setup"
-              data-drill="${drill.id}"
-              class="drill-action-btn tap-btn text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700"
-              title="Change or Remove Video"
-            >
-              Edit Video
-            </button>
-          `;
-        } else {
-          videoBadgeHtml = `
-            <button
-              type="button"
-              data-action="video-setup"
-              data-drill="${drill.id}"
-              class="drill-action-btn tap-btn inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-orange-300 border border-slate-700/80"
-            >
-              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-              <span>+ Video</span>
-            </button>
-          `;
-        }
-
         card.innerHTML = `
           <div class="flex items-start justify-between gap-2">
             <div class="min-w-0">
@@ -1584,10 +1798,10 @@
                        </span>`
                     : ''
                 }
-                ${videoBadgeHtml}
               </div>
               <h3 class="text-base font-black text-white mt-1 leading-snug">${drill.name}</h3>
               <p class="text-xs font-medium text-slate-400">${drill.subtitle}</p>
+              ${videoActionHtml}
             </div>
 
             <div class="text-right shrink-0 bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-1.5">
@@ -1804,11 +2018,12 @@
     }
 
     // OFFLINE VIDEO PLAYER & SETUP MODAL LOGIC
-    async function playOfflineVideo(drill) {
+    async function playOfflineVideo(drill, storageKey = null, label = 'DEMO') {
+      const key = storageKey || drill.id;
       try {
-        const blob = await getOfflineVideoBlob(drill.id);
+        const blob = await getOfflineVideoBlob(key);
         if (!blob) {
-          delete offlineVideoMeta[drill.id];
+          delete offlineVideoMeta[key];
           saveOfflineVideoMeta();
           renderAll();
           showToast('Video not found — please re-select', 'warn');
@@ -1823,8 +2038,9 @@
         const videoEl = document.getElementById('offline-drill-video');
         videoEl.src = activePlayerObjectUrl;
 
-        const meta = offlineVideoMeta[drill.id];
-        document.getElementById('player-drill-badge').textContent = `DRILL ${drill.num} DEMO`;
+        const meta = offlineVideoMeta[key];
+        const prefix = drill.id.startsWith('dv_') ? `VITAMIN 0${drill.num}` : `DRILL ${drill.num}`;
+        document.getElementById('player-drill-badge').textContent = `${prefix} ${label.toUpperCase()}`;
         document.getElementById('player-drill-title').textContent = drill.name;
         document.getElementById('player-file-info').textContent = meta
           ? `${meta.name} (${formatBytes(meta.size)})`
@@ -1856,16 +2072,17 @@
 
     document.getElementById('close-player-modal-btn').addEventListener('click', closeVideoPlayerModal);
 
-    function openVideoSetupModal(drillId) {
-      const workout = getActiveWorkoutConfig();
-      const drill = workout.drills.find((d) => d.id === drillId);
+    function openVideoSetupModal(drillId, storageKey = null, label = 'DEMO') {
+      const drill = findDrillById(drillId);
       if (!drill) return;
 
-      editingVideoDrillId = drillId;
-      const existingUrl = drillVideoLinks[drillId] || '';
-      const existingOffline = offlineVideoMeta[drillId] || null;
+      const key = storageKey || drillId;
+      editingVideoDrillId = key;
+      const existingUrl = drillVideoLinks[key] || '';
+      const existingOffline = offlineVideoMeta[key] || null;
 
-      document.getElementById('video-modal-drill-num').textContent = `DRILL ${drill.num} DEMO`;
+      const prefix = drillId.startsWith('dv_') ? `VITAMIN 0${drill.num}` : `DRILL ${drill.num}`;
+      document.getElementById('video-modal-drill-num').textContent = `${prefix} ${label.toUpperCase()}`;
       document.getElementById('video-modal-drill-name').textContent = drill.name;
 
       const offlineStatus = document.getElementById('offline-video-status-text');
@@ -2061,13 +2278,22 @@
     document.querySelectorAll('.workout-switch-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const wKey = btn.getAttribute('data-workout');
-        if (WORKOUTS[wKey] && state.activeWorkout !== wKey) {
+        if (WORKOUTS[wKey] && (state.activeWorkout !== wKey || state.showVitamins)) {
           state.activeWorkout = wKey;
+          state.showVitamins = false;
           ensureDateRecord(wKey, state.activeDate);
           saveState();
           renderAll();
         }
       });
+    });
+
+    // DAILY VITAMINS BUTTON & ACTIONS
+    document.getElementById('workout-btn-vitamins').addEventListener('click', () => {
+      state.showVitamins = !state.showVitamins;
+      if (state.showVitamins) state.showGrid = false;
+      saveState();
+      renderAll();
     });
 
     // SESSION DATE PICKER & PREV/NEXT DAY BUTTONS
@@ -2096,6 +2322,7 @@
     // GRID VIEW TOGGLE
     document.getElementById('toggle-grid-btn').addEventListener('click', () => {
       state.showGrid = !state.showGrid;
+      if (state.showGrid) state.showVitamins = false;
       saveState();
       renderAll();
     });
