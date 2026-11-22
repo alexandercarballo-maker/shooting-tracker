@@ -483,11 +483,12 @@
       <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-3 space-y-2.5">
         <div class="text-xs font-extrabold text-emerald-400">Offline Video (Works Without Service)</div>
         <p id="offline-video-status-text" class="text-[11px] text-slate-400">No offline video saved yet.</p>
+        <p id="offline-video-error-box" class="hidden text-[11px] font-mono text-rose-300 bg-rose-950/70 border border-rose-800/70 rounded-lg p-2 break-words"></p>
 
         <input
           id="offline-video-file-input"
           type="file"
-          accept="video/*"
+          accept="video/*,.mp4,.mov,.m4v"
           class="hidden"
         />
 
@@ -876,6 +877,7 @@
     const WEBHOOK_STORAGE_KEY = 'tomcat_sheets_webhook_url';
     const VIDEO_LINKS_STORAGE_KEY = 'tomcat_drill_video_links_v1';
     const OFFLINE_VIDEO_META_KEY = 'tomcat_offline_video_meta_v1';
+    const VIDEO_CACHE_NAME = 'tomcat-drill-videos-cache-v1';
     const VIDEO_DB_NAME = 'TomCatDrillVideosDB';
     const VIDEO_STORE_NAME = 'videos';
 
@@ -944,11 +946,32 @@
     }
 
     async function saveOfflineVideoBlob(drillId, file) {
-      // Convert File to ArrayBuffer first to avoid iOS Safari IndexedDB File serialization bugs
-      const arrayBuffer = await file.arrayBuffer();
       const mimeType = file.type || 'video/mp4';
-      const db = await openVideoDB();
+      const arrayBuffer = await file.arrayBuffer();
+      if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+        throw new Error('Selected file is empty (0 bytes). If it is in iCloud Drive, download it in the Files app first.');
+      }
 
+      // Primary: Cache Storage API (works reliably in iOS Safari & Home Screen Web Apps for large videos)
+      if ('caches' in window) {
+        try {
+          const cache = await caches.open(VIDEO_CACHE_NAME);
+          const response = new Response(arrayBuffer, {
+            status: 200,
+            headers: {
+              'Content-Type': mimeType,
+              'Content-Length': String(arrayBuffer.byteLength)
+            }
+          });
+          await cache.put(`/offline-drill-video/${encodeURIComponent(drillId)}`, response);
+          return;
+        } catch (cacheErr) {
+          console.warn('Cache API storage failed, falling back to IndexedDB:', cacheErr);
+        }
+      }
+
+      // Fallback: IndexedDB
+      const db = await openVideoDB();
       return new Promise((resolve, reject) => {
         const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
         const store = tx.objectStore(VIDEO_STORE_NAME);
@@ -967,6 +990,30 @@
     }
 
     async function getOfflineVideoRecord(drillId) {
+      const meta = offlineVideoMeta[drillId] || {};
+
+      // Primary: Check Cache Storage API first
+      if ('caches' in window) {
+        try {
+          const cache = await caches.open(VIDEO_CACHE_NAME);
+          const cachedResp = await cache.match(`/offline-drill-video/${encodeURIComponent(drillId)}`);
+          if (cachedResp) {
+            const blob = await cachedResp.blob();
+            if (blob && blob.size > 0) {
+              return {
+                drillId,
+                blob,
+                name: meta.name || 'Drill Demo.mp4',
+                size: meta.size || blob.size
+              };
+            }
+          }
+        } catch (cacheErr) {
+          console.warn('Cache API read failed, checking IndexedDB:', cacheErr);
+        }
+      }
+
+      // Fallback: Check IndexedDB
       const db = await openVideoDB();
       return new Promise((resolve, reject) => {
         const tx = db.transaction(VIDEO_STORE_NAME, 'readonly');
@@ -984,81 +1031,26 @@
     }
 
     async function deleteOfflineVideoRecord(drillId) {
-      const db = await openVideoDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
-        const store = tx.objectStore(VIDEO_STORE_NAME);
-        store.delete(drillId);
-        tx.oncomplete = () => resolve();
-        tx.onerror = (e) => reject(e.target.error);
-      });
-    }
-
-    // Lookup drill metadata across workouts and Daily Vitamins
-    function findDrillInfoByKey(videoKey) {
-      if (videoKey.startsWith('dv_')) {
-        const parts = videoKey.split('_');
-        const baseId = `${parts[0]}_${parts[1]}`;
-        const slot = parts[2] === 'breakdown' ? 'Breakdown' : 'Demo';
-        const vDrill = DAILY_VITAMIN_DRILLS.find((d) => d.id === baseId);
-        if (vDrill) {
-          return {
-            badge: `VITAMIN 0${vDrill.num} • ${slot.toUpperCase()}`,
-            title: `${vDrill.name} (${slot})`
-          };
-        }
-      }
-      for (const wKey of Object.keys(WORKOUTS)) {
-        const found = WORKOUTS[wKey].drills.find((d) => d.id === videoKey);
-        if (found) {
-          return {
-            badge: `DRILL ${found.num} DEMO`,
-            title: found.name
-          };
-        }
-      }
-      return { badge: 'DRILL VIDEO', title: 'Demo Video' };
-    }
-
-    // Play video (prioritizes offline iPhone video, falls back to external URL)
-    async function playDrillVideo(videoKey) {
-      const info = findDrillInfoByKey(videoKey);
-
-      if (offlineVideoMeta[videoKey]) {
+      if ('caches' in window) {
         try {
-          const rec = await getOfflineVideoRecord(videoKey);
-          if (rec && rec.blob) {
-            if (activeObjectUrl) {
-              URL.revokeObjectURL(activeObjectUrl);
-              activeObjectUrl = null;
-            }
-            activeObjectUrl = URL.createObjectURL(rec.blob);
-            document.getElementById('player-drill-badge').textContent = info.badge;
-            document.getElementById('player-drill-title').textContent = info.title;
-            document.getElementById('player-file-info').textContent = `${rec.name} (${formatFileSize(rec.size)})`;
-
-            const videoEl = document.getElementById('offline-drill-video');
-            videoEl.src = activeObjectUrl;
-
-            const modal = document.getElementById('video-player-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            videoEl.play().catch(() => {});
-            return;
-          } else {
-            delete offlineVideoMeta[videoKey];
-            saveOfflineVideoMeta();
-          }
-        } catch (err) {
-          console.error('Offline video read error:', err);
+          const cache = await caches.open(VIDEO_CACHE_NAME);
+          await cache.delete(`/offline-drill-video/${encodeURIComponent(drillId)}`);
+        } catch (e) {
+          console.warn(e);
         }
       }
 
-      const url = drillVideoLinks[videoKey];
-      if (url) {
-        window.open(url, '_blank', 'noopener,noreferrer');
-      } else {
-        openVideoSetupModal(videoKey);
+      try {
+        const db = await openVideoDB();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+          const store = tx.objectStore(VIDEO_STORE_NAME);
+          store.delete(drillId);
+          tx.oncomplete = () => resolve();
+          tx.onerror = (e) => reject(e.target.error);
+        });
+      } catch (e) {
+        console.warn(e);
       }
     }
 
@@ -2095,6 +2087,12 @@
       document.getElementById('video-modal-drill-num').textContent = info.badge;
       document.getElementById('video-modal-drill-name').textContent = info.title;
 
+      const errorBox = document.getElementById('offline-video-error-box');
+      if (errorBox) {
+        errorBox.textContent = '';
+        errorBox.classList.add('hidden');
+      }
+
       const offlineMeta = offlineVideoMeta[videoKey];
       const statusText = document.getElementById('offline-video-status-text');
       const pickLabel = document.getElementById('pick-offline-video-label');
@@ -2150,6 +2148,11 @@
       if (!file || !editingVideoDrillId) return;
 
       const pickLabel = document.getElementById('pick-offline-video-label');
+      const errorBox = document.getElementById('offline-video-error-box');
+      if (errorBox) {
+        errorBox.textContent = '';
+        errorBox.classList.add('hidden');
+      }
       pickLabel.textContent = 'Saving to iPhone...';
 
       try {
@@ -2165,8 +2168,12 @@
       } catch (err) {
         console.error('Failed to store offline video:', err);
         pickLabel.textContent = 'Choose from Files / Photos';
-        const reason = err && err.name ? `${err.name}: ${err.message}` : 'Check available storage or file download';
-        showToast(`Could not save video (${reason})`, 'error');
+        const reason = err && err.message ? `${err.name || 'Error'}: ${err.message}` : String(err);
+        if (errorBox) {
+          errorBox.textContent = reason;
+          errorBox.classList.remove('hidden');
+        }
+        showToast('Could not save video — see details above', 'error');
       }
     });
 
