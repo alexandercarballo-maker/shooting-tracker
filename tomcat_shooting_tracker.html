@@ -944,20 +944,25 @@
     }
 
     async function saveOfflineVideoBlob(drillId, file) {
+      // Convert File to ArrayBuffer first to avoid iOS Safari IndexedDB File serialization bugs
+      const arrayBuffer = await file.arrayBuffer();
+      const mimeType = file.type || 'video/mp4';
       const db = await openVideoDB();
+
       return new Promise((resolve, reject) => {
         const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
         const store = tx.objectStore(VIDEO_STORE_NAME);
         store.put({
           drillId,
-          blob: file,
+          buffer: arrayBuffer,
           name: file.name || 'Drill Demo.mp4',
-          size: file.size || 0,
-          type: file.type || 'video/mp4',
+          size: file.size || arrayBuffer.byteLength || 0,
+          type: mimeType,
           savedAt: Date.now()
         });
         tx.oncomplete = () => resolve();
-        tx.onerror = (e) => reject(e.target.error);
+        tx.onerror = (e) => reject(e.target.error || tx.error || new Error('IndexedDB write failed'));
+        tx.onabort = (e) => reject(e.target.error || tx.error || new Error('IndexedDB transaction aborted'));
       });
     }
 
@@ -967,7 +972,13 @@
         const tx = db.transaction(VIDEO_STORE_NAME, 'readonly');
         const store = tx.objectStore(VIDEO_STORE_NAME);
         const req = store.get(drillId);
-        req.onsuccess = () => resolve(req.result || null);
+        req.onsuccess = () => {
+          const res = req.result || null;
+          if (res && !res.blob && res.buffer) {
+            res.blob = new Blob([res.buffer], { type: res.type || 'video/mp4' });
+          }
+          resolve(res);
+        };
         req.onerror = (e) => reject(e.target.error);
       });
     }
@@ -2154,7 +2165,8 @@
       } catch (err) {
         console.error('Failed to store offline video:', err);
         pickLabel.textContent = 'Choose from Files / Photos';
-        showToast('Could not save video — check available iPhone storage', 'error');
+        const reason = err && err.name ? `${err.name}: ${err.message}` : 'Check available storage or file download';
+        showToast(`Could not save video (${reason})`, 'error');
       }
     });
 
