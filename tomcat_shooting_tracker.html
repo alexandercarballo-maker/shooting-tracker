@@ -3,7 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TomCat Hoops" />
+  <link id="apple-touch-icon-link" rel="apple-touch-icon" sizes="180x180" href="" />
+  <link id="favicon-link" rel="icon" type="image/png" href="" />
   <title>TomCat Shooting Tracker</title>
+  <script>
+    // Generate a crisp 180x180 basketball app icon for iOS Home Screen
+    (function () {
+      try {
+        var canvas = document.createElement('canvas');
+        canvas.width = 180;
+        canvas.height = 180;
+        var ctx = canvas.getContext('2d');
+
+        // Dark slate background
+        ctx.fillStyle = '#090D16';
+        ctx.fillRect(0, 0, 180, 180);
+
+        // Orange basketball circle
+        var grad = ctx.createLinearGradient(30, 30, 150, 150);
+        grad.addColorStop(0, '#F97316');
+        grad.addColorStop(1, '#C2410C');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(90, 90, 62, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Basketball seams
+        ctx.strokeStyle = '#090D16';
+        ctx.lineWidth = 4.5;
+        ctx.beginPath();
+        ctx.moveTo(28, 90);
+        ctx.lineTo(152, 90);
+        ctx.moveTo(90, 28);
+        ctx.lineTo(90, 152);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(42, 90, 44, -Math.PI * 0.36, Math.PI * 0.36);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(138, 90, 44, Math.PI * 0.64, Math.PI * 1.36);
+        ctx.stroke();
+
+        var dataUrl = canvas.toDataURL('image/png');
+        document.getElementById('apple-touch-icon-link').href = dataUrl;
+        document.getElementById('favicon-link').href = dataUrl;
+      } catch (e) {}
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -641,14 +692,27 @@
   </div>
 
   <script>
-    // 5-SPOT COURT DEFINITIONS (3 MAKES PER SPOT = 15 MAKES TOTAL)
-    const SPOT_DEFS = [
-      { index: 0, label: 'Spot 1', courtPos: 'Left Corner', target: 3 },
-      { index: 1, label: 'Spot 2', courtPos: 'Left Wing', target: 3 },
-      { index: 2, label: 'Spot 3', courtPos: 'Top of Key', target: 3 },
-      { index: 3, label: 'Spot 4', courtPos: 'Right Wing', target: 3 },
-      { index: 4, label: 'Spot 5', courtPos: 'Right Corner', target: 3 }
-    ];
+    // 5-SPOT COURT DEFINITIONS PER WORKOUT (3 MAKES PER SPOT = 15 MAKES TOTAL)
+    const WORKOUT_SPOTS = {
+      catchShoot: [
+        { index: 0, label: 'Spot 1', courtPos: 'Left Corner', target: 3 },
+        { index: 1, label: 'Spot 2', courtPos: 'Left Wing', target: 3 },
+        { index: 2, label: 'Spot 3', courtPos: 'Top of Key', target: 3 },
+        { index: 3, label: 'Spot 4', courtPos: 'Right Wing', target: 3 },
+        { index: 4, label: 'Spot 5', courtPos: 'Right Corner', target: 3 }
+      ],
+      footworkDribble: [
+        { index: 0, label: 'Spot 1', courtPos: 'Left Short Corner', target: 3 },
+        { index: 1, label: 'Spot 2', courtPos: 'Left Elbow', target: 3 },
+        { index: 2, label: 'Spot 3', courtPos: 'Nail', target: 3 },
+        { index: 3, label: 'Spot 4', courtPos: 'Right Elbow', target: 3 },
+        { index: 4, label: 'Spot 5', courtPos: 'Right Short Corner', target: 3 }
+      ]
+    };
+
+    function getWorkoutSpots(workoutKey = state?.activeWorkout || 'catchShoot') {
+      return WORKOUT_SPOTS[workoutKey] || WORKOUT_SPOTS.catchShoot;
+    }
 
     // WORKOUT DEFINITIONS (5 SPOTS x 5 ADJUSTED TO 5 SPOTS x 3 = 15 MAKES)
     const WORKOUTS = {
@@ -926,7 +990,7 @@
     function createEmptyDrillEntry(drill) {
       if (drill.hasSpots) {
         return {
-          spots: SPOT_DEFS.map(() => ({ makes: 0, attempts: 0 })),
+          spots: getWorkoutSpots().map(() => ({ makes: 0, attempts: 0 })),
           history: []
         };
       }
@@ -956,10 +1020,11 @@
     }
 
     // Format spot breakdown summary string
-    function formatSpotsSummary(drill, entry) {
+    function formatSpotsSummary(drill, entry, workoutKey = state.activeWorkout) {
       if (!drill.hasSpots || !Array.isArray(entry.spots)) return '';
+      const spotsList = getWorkoutSpots(workoutKey);
       return entry.spots
-        .map((s, idx) => `Spot ${idx + 1} (${SPOT_DEFS[idx].courtPos}): ${s.makes}/${s.attempts}`)
+        .map((s, idx) => `Spot ${idx + 1} (${spotsList[idx].courtPos}): ${s.makes}/${s.attempts}`)
         .join(' | ');
     }
 
@@ -967,7 +1032,14 @@
     function createEmptyDayData(workoutKey) {
       const drillsObj = {};
       WORKOUTS[workoutKey].drills.forEach((d) => {
-        drillsObj[d.id] = createEmptyDrillEntry(d);
+        if (d.hasSpots) {
+          drillsObj[d.id] = {
+            spots: getWorkoutSpots(workoutKey).map(() => ({ makes: 0, attempts: 0 })),
+            history: []
+          };
+        } else {
+          drillsObj[d.id] = createEmptyDrillEntry(d);
+        }
       });
       return {
         kneeComfort: 'Great (0/10)',
@@ -1014,7 +1086,7 @@
                 history: Array.isArray(sd.history) ? sd.history : []
               };
             } else if ((Number(sd.makes) || 0) > 0 || (Number(sd.attempts) || 0) > 0) {
-              const spots = SPOT_DEFS.map(() => ({ makes: 0, attempts: 0 }));
+              const spots = getWorkoutSpots(workoutKey).map(() => ({ makes: 0, attempts: 0 }));
               spots[0] = { makes: Number(sd.makes) || 0, attempts: Number(sd.attempts) || 0 };
               baseDay.drills[drill.id] = { spots, history: [] };
             }
@@ -1287,7 +1359,7 @@
 
         let controlsHtml = '';
         if (drill.hasSpots) {
-          const spotRowsHtml = SPOT_DEFS.map((spotDef) => {
+          const spotRowsHtml = getWorkoutSpots(state.activeWorkout).map((spotDef) => {
             const sp = entry.spots[spotDef.index];
             const spotHit = sp.makes >= spotDef.target;
             const spotPct = formatPct(sp.makes, sp.attempts);
@@ -1919,7 +1991,7 @@
       const attemptsInput = document.getElementById('edit-attempts-input');
 
       if (drill.hasSpots && spotIndex !== null) {
-        const spotDef = SPOT_DEFS[spotIndex];
+        const spotDef = getWorkoutSpots(state.activeWorkout)[spotIndex];
         const sp = entry.spots[spotIndex];
         document.getElementById('edit-modal-drill-num').textContent = `DRILL ${drill.num} • ${spotDef.label.toUpperCase()}`;
         document.getElementById('edit-modal-drill-name').textContent = `${drill.name} (${spotDef.courtPos})`;
@@ -2067,7 +2139,7 @@
       const rows = workout.drills.map((d) => {
         const entry = dayRecord.drills[d.id];
         const totals = getDrillTotals(d, entry);
-        const spotDetail = d.hasSpots ? formatSpotsSummary(d, entry) : '';
+        const spotDetail = d.hasSpots ? formatSpotsSummary(d, entry, state.activeWorkout) : '';
         const combinedNotes = [spotDetail, dayRecord.notes || ''].filter(Boolean).join(' — ');
 
         return {
@@ -2132,8 +2204,9 @@
         const drillTotals = getDrillTotals(d, entry);
         lines.push(`${d.num}. ${d.name}: ${drillTotals.makes}/${drillTotals.attempts} (${formatPct(drillTotals.makes, drillTotals.attempts)})`);
         if (d.hasSpots && Array.isArray(entry.spots)) {
+          const spotsList = getWorkoutSpots(state.activeWorkout);
           entry.spots.forEach((sp, idx) => {
-            lines.push(`   • Spot ${idx + 1} (${SPOT_DEFS[idx].courtPos}): ${sp.makes}/${sp.attempts}`);
+            lines.push(`   • Spot ${idx + 1} (${spotsList[idx].courtPos}): ${sp.makes}/${sp.attempts}`);
           });
         }
       });
