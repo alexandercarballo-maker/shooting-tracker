@@ -2079,6 +2079,72 @@
       renderAll();
     });
 
+    // FIND DRILL OR VITAMIN METADATA BY KEY
+    function findDrillInfoByKey(videoKey) {
+      if (videoKey.startsWith('dv_')) {
+        const isBreakdown = videoKey.endsWith('_breakdown');
+        const baseId = videoKey.replace(/_(demo|breakdown)$/, '');
+        const vit = DAILY_VITAMIN_DRILLS.find((v) => v.id === baseId);
+        if (vit) {
+          return {
+            badge: `VITAMIN 0${vit.num} • ${isBreakdown ? 'BREAKDOWN' : 'DEMO'}`,
+            title: vit.name
+          };
+        }
+      }
+      for (const wKey of Object.keys(WORKOUTS)) {
+        const found = WORKOUTS[wKey].drills.find((d) => d.id === videoKey);
+        if (found) {
+          return {
+            badge: `${WORKOUTS[wKey].shortName.toUpperCase()} • DRILL ${found.num}`,
+            title: found.name
+          };
+        }
+      }
+      return { badge: 'DRILL VIDEO', title: 'Drill Demonstration' };
+    }
+
+    // PLAY SAVED OFFLINE VIDEO OR OPEN WEB LINK
+    async function playDrillVideo(videoKey) {
+      const info = findDrillInfoByKey(videoKey);
+      const offlineMeta = offlineVideoMeta[videoKey];
+      const webUrl = drillVideoLinks[videoKey];
+
+      if (offlineMeta) {
+        try {
+          const record = await getOfflineVideoRecord(videoKey);
+          if (record && record.blob) {
+            if (activeObjectUrl) {
+              URL.revokeObjectURL(activeObjectUrl);
+            }
+            activeObjectUrl = URL.createObjectURL(record.blob);
+
+            document.getElementById('player-drill-badge').textContent = info.badge;
+            document.getElementById('player-drill-title').textContent = info.title;
+            document.getElementById('player-file-info').textContent = `${record.name} (${formatFileSize(record.size)})`;
+
+            const videoEl = document.getElementById('offline-drill-video');
+            videoEl.src = activeObjectUrl;
+
+            const modal = document.getElementById('video-player-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            videoEl.play().catch(() => {});
+            return;
+          }
+        } catch (err) {
+          console.error('Error reading offline video:', err);
+        }
+      }
+
+      if (webUrl) {
+        window.open(webUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        showToast('Offline video not found — please re-select it', 'warn');
+        openVideoSetupModal(videoKey);
+      }
+    }
+
     // VIDEO SETUP MODAL LOGIC
     function openVideoSetupModal(videoKey) {
       const info = findDrillInfoByKey(videoKey);
