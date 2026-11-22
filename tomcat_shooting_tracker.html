@@ -6,55 +6,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="TomCat Hoops" />
-  <link id="apple-touch-icon-link" rel="apple-touch-icon" sizes="180x180" href="" />
-  <link id="favicon-link" rel="icon" type="image/png" href="" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230F172A'/%3E%3Cstop offset='100%25' stop-color='%23070B14'/%3E%3C/linearGradient%3E%3ClinearGradient id='ball' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23F97316'/%3E%3Cstop offset='100%25' stop-color='%23EA580C'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' fill='url(%23bg)'/%3E%3Ccircle cx='90' cy='90' r='58' fill='url(%23ball)' stroke='%23FDBA74' stroke-width='3'/%3E%3Cpath d='M32 90 H148 M90 32 V148 M50 48 Q90 90 50 132 M130 48 Q90 90 130 132' fill='none' stroke='%23090D16' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E" />
   <title>TomCat Shooting Tracker</title>
-  <script>
-    // Generate a crisp 180x180 basketball app icon for iOS Home Screen
-    (function () {
-      try {
-        var canvas = document.createElement('canvas');
-        canvas.width = 180;
-        canvas.height = 180;
-        var ctx = canvas.getContext('2d');
-
-        // Dark slate background
-        ctx.fillStyle = '#090D16';
-        ctx.fillRect(0, 0, 180, 180);
-
-        // Orange basketball circle
-        var grad = ctx.createLinearGradient(30, 30, 150, 150);
-        grad.addColorStop(0, '#F97316');
-        grad.addColorStop(1, '#C2410C');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(90, 90, 62, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Basketball seams
-        ctx.strokeStyle = '#090D16';
-        ctx.lineWidth = 4.5;
-        ctx.beginPath();
-        ctx.moveTo(28, 90);
-        ctx.lineTo(152, 90);
-        ctx.moveTo(90, 28);
-        ctx.lineTo(90, 152);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(42, 90, 44, -Math.PI * 0.36, Math.PI * 0.36);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(138, 90, 44, Math.PI * 0.64, Math.PI * 1.36);
-        ctx.stroke();
-
-        var dataUrl = canvas.toDataURL('image/png');
-        document.getElementById('apple-touch-icon-link').href = dataUrl;
-        document.getElementById('favicon-link').href = dataUrl;
-      } catch (e) {}
-    })();
-  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -883,18 +836,14 @@
       }
     };
 
-    const STORAGE_KEY = 'tomcat_shooting_tracker_v5';
-    const WEBHOOK_STORAGE_KEY = 'tomcat_sheets_webhook_url';
-    const VIDEO_LINKS_STORAGE_KEY = 'tomcat_drill_video_links_v1';
-    const OFFLINE_VIDEO_META_KEY = 'tomcat_offline_video_meta_v1';
-
-    // DAILY VITAMINS (PRE-WORKOUT MECHANICAL DRILLS FROM D1 SHOOTER BLUEPRINT)
+    // DAILY VITAMINS (PRE-WORKOUT MECHANICAL DRILLS FROM THOMAS D1 PLAN)
     const DAILY_VITAMIN_DRILLS = [
       {
         id: 'dv_1',
         num: 1,
         name: 'Sequence Pop-Up',
         subtitle: '25 MAKES / 3-4 FT',
+        hasBreakdown: true,
         focus: 'Establish strong posture and Position 1. Move the basketball to Position 2 first, then add power by driving upward into the release in one smooth, connected sequence.'
       },
       {
@@ -902,88 +851,38 @@
         num: 2,
         name: 'Drop Pop-Up',
         subtitle: '25 MAKES / 3-4 FT',
-        focus: 'Maintain strong posture and Position 1 while dropping levels through a stationary hip sink. Keep the ball in Position 1 during the hip sink, then move the ball upward first.'
+        hasBreakdown: true,
+        focus: 'Maintain strong posture and Position 1 during a stationary hip sink, then move the ball upward first while keeping power underneath it into the release.'
       },
       {
         id: 'dv_3',
         num: 3,
         name: 'Pogo Drop Pop-Up',
         subtitle: '25 REPS / 3-4 FT',
-        focus: 'Stay light on your feet and quickly drop levels—sinking in and out of the hips efficiently while keeping the ball at Position 1 before driving into the release.'
+        hasBreakdown: true,
+        focus: 'Stay light on your feet and quickly sink in and out of the hips. Keep the basketball at Position 1 throughout the hip sink before moving the ball upward into the release.'
       },
       {
         id: 'dv_4',
         num: 4,
         name: 'Seams Drill',
         subtitle: '25 MAKES / 3-4 FT',
-        focus: 'Handle imperfect passes while consistently finding the seams and aligning your shooting hand with the ball tilt to shoot through the seams for clean rotation.'
+        hasBreakdown: false,
+        focus: 'Handle imperfect passes while consistently finding the seams and establishing proper shooting-hand placement to shoot through the seams for better rotation.'
       }
     ];
 
-    function findDrillById(drillId) {
-      for (const wKey of Object.keys(WORKOUTS)) {
-        const found = WORKOUTS[wKey].drills.find((d) => d.id === drillId);
-        if (found) return found;
-      }
-      return DAILY_VITAMIN_DRILLS.find((d) => d.id === drillId) || null;
-    }
+    const STORAGE_KEY = 'tomcat_shooting_tracker_v5';
+    const WEBHOOK_STORAGE_KEY = 'tomcat_sheets_webhook_url';
+    const VIDEO_LINKS_STORAGE_KEY = 'tomcat_drill_video_links_v1';
+    const OFFLINE_VIDEO_META_KEY = 'tomcat_offline_video_meta_v1';
+    const VIDEO_DB_NAME = 'TomCatDrillVideosDB';
+    const VIDEO_STORE_NAME = 'videos';
 
-    // OFFLINE VIDEO STORAGE (INDEXEDDB) FOR ZERO-SERVICE GYM PLAYBACK
-    const VIDEO_DB_NAME = 'tomcat_offline_videos_db';
-    const VIDEO_STORE_NAME = 'drill_videos';
-
-    function openVideoDB() {
-      return new Promise((resolve, reject) => {
-        const req = indexedDB.open(VIDEO_DB_NAME, 1);
-        req.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
-            db.createObjectStore(VIDEO_STORE_NAME);
-          }
-        };
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    async function saveOfflineVideoBlob(drillId, file) {
-      const db = await openVideoDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
-        tx.objectStore(VIDEO_STORE_NAME).put(file, drillId);
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    }
-
-    async function getOfflineVideoBlob(drillId) {
-      const db = await openVideoDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(VIDEO_STORE_NAME, 'readonly');
-        const req = tx.objectStore(VIDEO_STORE_NAME).get(drillId);
-        req.onsuccess = () => resolve(req.result || null);
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    async function deleteOfflineVideoBlob(drillId) {
-      const db = await openVideoDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
-        tx.objectStore(VIDEO_STORE_NAME).delete(drillId);
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    }
-
-    function loadOfflineVideoMeta() {
-      try {
-        const raw = localStorage.getItem(OFFLINE_VIDEO_META_KEY);
-        return raw ? JSON.parse(raw) : {};
-      } catch (e) {
-        return {};
-      }
-    }
+    let drillVideoLinks = loadVideoLinks();
+    let offlineVideoMeta = loadOfflineVideoMeta();
+    let editingVideoDrillId = null;
+    let activeObjectUrl = null;
 
     function loadVideoLinks() {
       try {
@@ -991,19 +890,6 @@
         return raw ? JSON.parse(raw) : {};
       } catch (e) {
         return {};
-      }
-    }
-
-    let offlineVideoMeta = loadOfflineVideoMeta();
-    let drillVideoLinks = loadVideoLinks();
-    let editingVideoDrillId = null;
-    let activePlayerObjectUrl = null;
-
-    function saveOfflineVideoMeta() {
-      try {
-        localStorage.setItem(OFFLINE_VIDEO_META_KEY, JSON.stringify(offlineVideoMeta));
-      } catch (e) {
-        console.error('Failed to save offline video metadata:', e);
       }
     }
 
@@ -1015,10 +901,168 @@
       }
     }
 
-    function formatBytes(bytes) {
+    function loadOfflineVideoMeta() {
+      try {
+        const raw = localStorage.getItem(OFFLINE_VIDEO_META_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveOfflineVideoMeta() {
+      try {
+        localStorage.setItem(OFFLINE_VIDEO_META_KEY, JSON.stringify(offlineVideoMeta));
+      } catch (e) {
+        console.error('Failed to save offline video metadata:', e);
+      }
+    }
+
+    function formatFileSize(bytes) {
       if (!bytes) return '';
       const mb = bytes / (1024 * 1024);
       return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
+    }
+
+    // IndexedDB helpers for storing video files offline on iPhone
+    function openVideoDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error('Offline storage not supported in this browser'));
+          return;
+        }
+        const request = indexedDB.open(VIDEO_DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
+            db.createObjectStore(VIDEO_STORE_NAME, { keyPath: 'drillId' });
+          }
+        };
+        request.onsuccess = (e) => resolve(e.target.result);
+        request.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function saveOfflineVideoBlob(drillId, file) {
+      const db = await openVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(VIDEO_STORE_NAME);
+        store.put({
+          drillId,
+          blob: file,
+          name: file.name || 'Drill Demo.mp4',
+          size: file.size || 0,
+          type: file.type || 'video/mp4',
+          savedAt: Date.now()
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function getOfflineVideoRecord(drillId) {
+      const db = await openVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readonly');
+        const store = tx.objectStore(VIDEO_STORE_NAME);
+        const req = store.get(drillId);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function deleteOfflineVideoRecord(drillId) {
+      const db = await openVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(VIDEO_STORE_NAME);
+        store.delete(drillId);
+        tx.oncomplete = () => resolve();
+        tx.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    // Lookup drill metadata across workouts and Daily Vitamins
+    function findDrillInfoByKey(videoKey) {
+      if (videoKey.startsWith('dv_')) {
+        const parts = videoKey.split('_');
+        const baseId = `${parts[0]}_${parts[1]}`;
+        const slot = parts[2] === 'breakdown' ? 'Breakdown' : 'Demo';
+        const vDrill = DAILY_VITAMIN_DRILLS.find((d) => d.id === baseId);
+        if (vDrill) {
+          return {
+            badge: `VITAMIN 0${vDrill.num} • ${slot.toUpperCase()}`,
+            title: `${vDrill.name} (${slot})`
+          };
+        }
+      }
+      for (const wKey of Object.keys(WORKOUTS)) {
+        const found = WORKOUTS[wKey].drills.find((d) => d.id === videoKey);
+        if (found) {
+          return {
+            badge: `DRILL ${found.num} DEMO`,
+            title: found.name
+          };
+        }
+      }
+      return { badge: 'DRILL VIDEO', title: 'Demo Video' };
+    }
+
+    // Play video (prioritizes offline iPhone video, falls back to external URL)
+    async function playDrillVideo(videoKey) {
+      const info = findDrillInfoByKey(videoKey);
+
+      if (offlineVideoMeta[videoKey]) {
+        try {
+          const rec = await getOfflineVideoRecord(videoKey);
+          if (rec && rec.blob) {
+            if (activeObjectUrl) {
+              URL.revokeObjectURL(activeObjectUrl);
+              activeObjectUrl = null;
+            }
+            activeObjectUrl = URL.createObjectURL(rec.blob);
+            document.getElementById('player-drill-badge').textContent = info.badge;
+            document.getElementById('player-drill-title').textContent = info.title;
+            document.getElementById('player-file-info').textContent = `${rec.name} (${formatFileSize(rec.size)})`;
+
+            const videoEl = document.getElementById('offline-drill-video');
+            videoEl.src = activeObjectUrl;
+
+            const modal = document.getElementById('video-player-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            videoEl.play().catch(() => {});
+            return;
+          } else {
+            delete offlineVideoMeta[videoKey];
+            saveOfflineVideoMeta();
+          }
+        } catch (err) {
+          console.error('Offline video read error:', err);
+        }
+      }
+
+      const url = drillVideoLinks[videoKey];
+      if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        openVideoSetupModal(videoKey);
+      }
+    }
+
+    function closeVideoPlayerModal() {
+      const videoEl = document.getElementById('offline-drill-video');
+      videoEl.pause();
+      videoEl.removeAttribute('src');
+      videoEl.load();
+      if (activeObjectUrl) {
+        URL.revokeObjectURL(activeObjectUrl);
+        activeObjectUrl = null;
+      }
+      const modal = document.getElementById('video-player-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
     }
 
     // Helper: Get local today's date as YYYY-MM-DD
@@ -1056,7 +1100,7 @@
     function createEmptyDrillEntry(drill) {
       if (drill.hasSpots) {
         return {
-          spots: getWorkoutSpots().map(() => ({ makes: 0, attempts: 0 })),
+          spots: getWorkoutSpots('catchShoot').map(() => ({ makes: 0, attempts: 0 })),
           history: []
         };
       }
@@ -1088,9 +1132,9 @@
     // Format spot breakdown summary string
     function formatSpotsSummary(drill, entry, workoutKey = state.activeWorkout) {
       if (!drill.hasSpots || !Array.isArray(entry.spots)) return '';
-      const spotsList = getWorkoutSpots(workoutKey);
+      const spotDefs = getWorkoutSpots(workoutKey);
       return entry.spots
-        .map((s, idx) => `Spot ${idx + 1} (${spotsList[idx].courtPos}): ${s.makes}/${s.attempts}`)
+        .map((s, idx) => `Spot ${idx + 1} (${spotDefs[idx].courtPos}): ${s.makes}/${s.attempts}`)
         .join(' | ');
     }
 
@@ -1098,14 +1142,7 @@
     function createEmptyDayData(workoutKey) {
       const drillsObj = {};
       WORKOUTS[workoutKey].drills.forEach((d) => {
-        if (d.hasSpots) {
-          drillsObj[d.id] = {
-            spots: getWorkoutSpots(workoutKey).map(() => ({ makes: 0, attempts: 0 })),
-            history: []
-          };
-        } else {
-          drillsObj[d.id] = createEmptyDrillEntry(d);
-        }
+        drillsObj[d.id] = createEmptyDrillEntry(d);
       });
       return {
         kneeComfort: 'Great (0/10)',
@@ -1170,7 +1207,7 @@
       return baseDay;
     }
 
-    // Load & sanitize state from localStorage (with migration from v4/v3 Day 1-7 keys)
+    // Load & sanitize state from localStorage
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('tomcat_shooting_tracker_v4');
@@ -1306,7 +1343,100 @@
       };
     }
 
-    // RENDER FUNCTIONS
+    // RENDER DAILY VITAMINS VIDEO LIBRARY VIEW
+    function buildVitaminSlotHtml(drillId, slotType, label) {
+      const storageKey = `${drillId}_${slotType}`;
+      const offlineMeta = offlineVideoMeta[storageKey];
+      const videoUrl = drillVideoLinks[storageKey];
+      const hasVideo = Boolean(offlineMeta || videoUrl);
+
+      if (hasVideo) {
+        return `
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              data-video-id="${storageKey}"
+              class="play-vitamin-video-btn tap-btn flex-1 py-2 px-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-extrabold text-[11px] flex items-center justify-center gap-1.5"
+            >
+              <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>${label}</span>
+            </button>
+            <button
+              type="button"
+              data-video-id="${storageKey}"
+              class="edit-vitamin-video-btn tap-btn p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-white"
+              title="Change ${label} Video"
+              aria-label="Change ${label} Video"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <button
+          type="button"
+          data-video-id="${storageKey}"
+          class="edit-vitamin-video-btn tap-btn w-full py-2 px-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white font-bold text-[11px] flex items-center justify-center gap-1.5"
+        >
+          <svg class="w-3.5 h-3.5 text-sky-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Add ${label}</span>
+        </button>
+      `;
+    }
+
+    function renderVitaminsView() {
+      const container = document.getElementById('vitamins-list-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      DAILY_VITAMIN_DRILLS.forEach((drill) => {
+        const hasBreakdown = drill.hasBreakdown !== false;
+        const demoHtml = buildVitaminSlotHtml(drill.id, 'demo', 'Demo');
+        const breakdownHtml = hasBreakdown ? buildVitaminSlotHtml(drill.id, 'breakdown', 'Breakdown') : '';
+
+        const card = document.createElement('article');
+        card.className = 'rounded-2xl p-3.5 bg-slate-900/95 border border-slate-800 shadow-lg';
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-400">
+                  VITAMIN 0${drill.num}
+                </span>
+                <span class="text-[10px] font-mono font-bold text-slate-400">
+                  ${drill.subtitle}
+                </span>
+              </div>
+              <h3 class="text-base font-black text-white mt-1 leading-snug">${drill.name}</h3>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">${drill.focus}</p>
+            </div>
+          </div>
+          <div class="grid ${hasBreakdown ? 'grid-cols-2' : 'grid-cols-1'} gap-2 mt-3 pt-2.5 border-t border-slate-800/80">
+            ${demoHtml}
+            ${breakdownHtml}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      container.querySelectorAll('.play-vitamin-video-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const videoId = btn.getAttribute('data-video-id');
+          playDrillVideo(videoId);
+        });
+      });
+
+      container.querySelectorAll('.edit-vitamin-video-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const videoId = btn.getAttribute('data-video-id');
+          openVideoSetupModal(videoId);
+        });
+      });
+    }
+
+    // MAIN RENDER FUNCTION
     function renderAll() {
       const workout = getActiveWorkoutConfig();
       const dayTotals = computeDateTotals(state.activeWorkout, state.activeDate);
@@ -1325,6 +1455,16 @@
         statusDot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-[#090D16]';
       }
 
+      // Highlight top-left Vitamin button when Daily Vitamins view is active
+      const vitBtn = document.getElementById('workout-btn-vitamins');
+      if (vitBtn) {
+        if (state.showVitamins) {
+          vitBtn.className = 'tap-btn relative w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-500 ring-2 ring-white flex items-center justify-center shadow-md shadow-sky-950/60 shrink-0 text-slate-950';
+        } else {
+          vitBtn.className = 'tap-btn relative w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-md shadow-sky-950/50 shrink-0 text-white';
+        }
+      }
+
       // Update Workout Switcher Buttons
       document.querySelectorAll('.workout-switch-btn').forEach((btn) => {
         const wKey = btn.getAttribute('data-workout');
@@ -1336,15 +1476,7 @@
         }
       });
 
-      // Update Daily Vitamins Top-Left Icon Button
-      const vitBtn = document.getElementById('workout-btn-vitamins');
-      if (state.showVitamins) {
-        vitBtn.className = 'tap-btn relative w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-500 ring-2 ring-white flex items-center justify-center shadow-lg shadow-sky-900/60 shrink-0 text-slate-950';
-      } else {
-        vitBtn.className = 'tap-btn relative w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 flex items-center justify-center shadow-md shadow-sky-950/50 shrink-0 text-white';
-      }
-
-      // Toggle Vitamins View vs History Grid vs Active Date View
+      // Toggle between Daily Vitamins, History Grid, and Active Workout View
       const vitaminsView = document.getElementById('vitamins-view');
       const gridSection = document.getElementById('weekly-grid-section');
       const activeDayView = document.getElementById('active-day-view');
@@ -1375,131 +1507,6 @@
       }
     }
 
-    function renderVitaminsView() {
-      const container = document.getElementById('vitamins-list-container');
-      container.innerHTML = '';
-
-      function buildVitaminSlotHtml(drillId, slotKey, label) {
-        const storageKey = `${drillId}_${slotKey}`;
-        const legacyKey = slotKey === 'demo' ? drillId : null;
-        const offlineMeta = offlineVideoMeta[storageKey] || (legacyKey ? offlineVideoMeta[legacyKey] : null);
-        const activeKey = offlineVideoMeta[storageKey] ? storageKey : (legacyKey && offlineVideoMeta[legacyKey] ? legacyKey : storageKey);
-        const videoUrl = drillVideoLinks[storageKey] || (legacyKey ? drillVideoLinks[legacyKey] : null);
-
-        if (offlineMeta) {
-          return `
-            <div class="flex items-center gap-1.5">
-              <button
-                type="button"
-                data-action="play-offline-video"
-                data-drill="${drillId}"
-                data-key="${activeKey}"
-                data-label="${label}"
-                class="vitamin-video-btn tap-btn flex-1 py-2.5 px-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-sm border border-emerald-400/30 flex items-center justify-center gap-1.5"
-              >
-                <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                <span>${label}</span>
-              </button>
-              <button
-                type="button"
-                data-action="video-setup"
-                data-drill="${drillId}"
-                data-key="${activeKey}"
-                data-label="${label}"
-                class="vitamin-video-btn tap-btn py-2.5 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 shrink-0"
-                title="Edit ${label} Video"
-              >
-                Edit
-              </button>
-            </div>
-          `;
-        } else if (videoUrl) {
-          return `
-            <div class="flex items-center gap-1.5">
-              <a
-                href="${videoUrl}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="tap-btn flex-1 py-2.5 px-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-black text-xs shadow-sm border border-sky-400/30 flex items-center justify-center gap-1.5"
-              >
-                <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                <span>${label}</span>
-              </a>
-              <button
-                type="button"
-                data-action="video-setup"
-                data-drill="${drillId}"
-                data-key="${storageKey}"
-                data-label="${label}"
-                class="vitamin-video-btn tap-btn py-2.5 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 shrink-0"
-                title="Edit ${label} Video"
-              >
-                Edit
-              </button>
-            </div>
-          `;
-        } else {
-          return `
-            <button
-              type="button"
-              data-action="video-setup"
-              data-drill="${drillId}"
-              data-key="${storageKey}"
-              data-label="${label}"
-              class="vitamin-video-btn tap-btn w-full py-2.5 px-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-sky-300 font-extrabold text-xs border border-slate-700 flex items-center justify-center gap-1"
-            >
-              <span>+ ${label}</span>
-            </button>
-          `;
-        }
-      }
-
-      DAILY_VITAMIN_DRILLS.forEach((drill) => {
-        const demoHtml = buildVitaminSlotHtml(drill.id, 'demo', 'Demo');
-        const breakdownHtml = buildVitaminSlotHtml(drill.id, 'breakdown', 'Breakdown');
-
-        const card = document.createElement('article');
-        card.className = 'rounded-2xl p-3.5 bg-slate-900/95 border border-slate-800 shadow-lg';
-        card.innerHTML = `
-          <div class="flex items-start justify-between gap-2">
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-400">
-                  VITAMIN 0${drill.num}
-                </span>
-                <span class="text-[10px] font-mono font-bold text-slate-400">
-                  ${drill.subtitle}
-                </span>
-              </div>
-              <h3 class="text-base font-black text-white mt-1 leading-snug">${drill.name}</h3>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">${drill.focus}</p>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-slate-800/80">
-            ${demoHtml}
-            ${breakdownHtml}
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      document.querySelectorAll('.vitamin-video-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const action = btn.getAttribute('data-action');
-          const drillId = btn.getAttribute('data-drill');
-          const storageKey = btn.getAttribute('data-key');
-          const label = btn.getAttribute('data-label');
-          const drill = findDrillById(drillId);
-          if (!drill) return;
-          if (action === 'play-offline-video') {
-            playOfflineVideo(drill, storageKey, label);
-          } else if (action === 'video-setup') {
-            openVideoSetupModal(drillId, storageKey, label);
-          }
-        });
-      });
-    }
-
     function renderActiveDayView() {
       const workout = getActiveWorkoutConfig();
       const dayRecord = getActiveDayRecord();
@@ -1507,7 +1514,7 @@
       const allTotals = computeAllDatesTotals(state.activeWorkout);
       const formattedDate = formatDisplayDate(state.activeDate, true);
       const shortDate = formatDisplayDate(state.activeDate, false);
-      const spotsList = getWorkoutSpots(state.activeWorkout);
+      const activeSpotDefs = getWorkoutSpots(state.activeWorkout);
 
       document.getElementById('active-day-label').textContent = formattedDate.toUpperCase();
       document.getElementById('active-workout-subtitle').textContent = workout.name;
@@ -1559,76 +1566,42 @@
         const progressPct = Math.min(100, Math.round((totals.makes / drill.target) * 100));
         const shotPct = formatPct(totals.makes, totals.attempts);
         const isCollapsed = Boolean(state.collapsedDrills[drill.id]);
+
         const offlineMeta = offlineVideoMeta[drill.id];
         const videoUrl = drillVideoLinks[drill.id];
+        const hasVideo = Boolean(offlineMeta || videoUrl);
 
-        let videoActionHtml = '';
-        if (offlineMeta) {
-          videoActionHtml = `
-            <div class="inline-flex items-center gap-1 mt-1.5">
+        const videoBadgeHtml = hasVideo
+          ? `<div class="inline-flex items-center">
               <button
                 type="button"
-                data-action="play-offline-video"
+                data-action="watch-video"
                 data-drill="${drill.id}"
-                class="drill-action-btn tap-btn inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40"
+                class="drill-action-btn tap-btn inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-l-md bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40"
               >
-                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>Watch Demo</span>
               </button>
               <button
                 type="button"
-                data-action="video-setup"
+                data-action="edit-video"
                 data-drill="${drill.id}"
-                class="drill-action-btn tap-btn p-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700"
+                class="drill-action-btn tap-btn inline-flex items-center px-1.5 py-0.5 rounded-r-md bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border-y border-r border-slate-700"
                 title="Change Drill Video"
                 aria-label="Change Drill Video"
               >
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
               </button>
-            </div>
-          `;
-        } else if (videoUrl) {
-          videoActionHtml = `
-            <div class="inline-flex items-center gap-1 mt-1.5">
-              <a
-                href="${videoUrl}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="tap-btn inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/35"
-              >
-                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                <span>Watch Demo</span>
-              </a>
-              <button
-                type="button"
-                data-action="video-setup"
-                data-drill="${drill.id}"
-                class="drill-action-btn tap-btn p-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700"
-                title="Change Drill Video"
-                aria-label="Change Drill Video"
-              >
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-              </button>
-            </div>
-          `;
-        } else {
-          videoActionHtml = `
-            <button
+            </div>`
+          : `<button
               type="button"
-              data-action="video-setup"
+              data-action="edit-video"
               data-drill="${drill.id}"
-              class="drill-action-btn tap-btn mt-1.5 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700/80"
+              class="drill-action-btn tap-btn inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700/80"
             >
-              <span>+ Video</span>
-            </button>
-          `;
-        }
+              <svg class="w-2.5 h-2.5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Video</span>
+            </button>`;
 
         const card = document.createElement('article');
         card.className = `rounded-2xl p-3.5 border transition-all shadow-lg ${
@@ -1639,7 +1612,7 @@
 
         let controlsHtml = '';
         if (drill.hasSpots) {
-          const spotRowsHtml = spotsList.map((spotDef) => {
+          const spotRowsHtml = activeSpotDefs.map((spotDef) => {
             const sp = entry.spots[spotDef.index];
             const spotHit = sp.makes >= spotDef.target;
             const spotPct = formatPct(sp.makes, sp.attempts);
@@ -1792,6 +1765,7 @@
                 }">
                   DRILL ${drill.num}
                 </span>
+                ${videoBadgeHtml}
                 ${
                   drill.plyo
                     ? `<span class="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30">
@@ -1809,7 +1783,6 @@
               </div>
               <h3 class="text-base font-black text-white mt-1 leading-snug">${drill.name}</h3>
               <p class="text-xs font-medium text-slate-400">${drill.subtitle}</p>
-              ${videoActionHtml}
             </div>
 
             <div class="text-right shrink-0 bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-1.5">
@@ -1944,21 +1917,20 @@
 
     // DRILL & SPOT LOGGING HANDLERS
     function handleDrillAction(drillId, action, spotIndex = null) {
+      if (action === 'watch-video') {
+        playDrillVideo(drillId);
+        return;
+      }
+      if (action === 'edit-video') {
+        openVideoSetupModal(drillId);
+        return;
+      }
+
       const workout = getActiveWorkoutConfig();
       const drill = workout.drills.find((d) => d.id === drillId);
       const dayRecord = getActiveDayRecord();
       const entry = dayRecord.drills[drillId];
       if (!drill || !entry) return;
-
-      if (action === 'play-offline-video') {
-        playOfflineVideo(drill);
-        return;
-      }
-
-      if (action === 'video-setup') {
-        openVideoSetupModal(drillId);
-        return;
-      }
 
       if (action === 'toggle-spots') {
         state.collapsedDrills[drillId] = !state.collapsedDrills[drillId];
@@ -2024,184 +1996,6 @@
         openEditModal(drillId, null);
       }
     }
-
-    // OFFLINE VIDEO PLAYER & SETUP MODAL LOGIC
-    async function playOfflineVideo(drill, storageKey = null, label = 'DEMO') {
-      const key = storageKey || drill.id;
-      try {
-        const blob = await getOfflineVideoBlob(key);
-        if (!blob) {
-          delete offlineVideoMeta[key];
-          saveOfflineVideoMeta();
-          renderAll();
-          showToast('Video not found — please re-select', 'warn');
-          return;
-        }
-
-        if (activePlayerObjectUrl) {
-          URL.revokeObjectURL(activePlayerObjectUrl);
-        }
-        activePlayerObjectUrl = URL.createObjectURL(blob);
-
-        const videoEl = document.getElementById('offline-drill-video');
-        videoEl.src = activePlayerObjectUrl;
-
-        const meta = offlineVideoMeta[key];
-        const prefix = drill.id.startsWith('dv_') ? `VITAMIN 0${drill.num}` : `DRILL ${drill.num}`;
-        document.getElementById('player-drill-badge').textContent = `${prefix} ${label.toUpperCase()}`;
-        document.getElementById('player-drill-title').textContent = drill.name;
-        document.getElementById('player-file-info').textContent = meta
-          ? `${meta.name} (${formatBytes(meta.size)})`
-          : 'Saved on iPhone';
-
-        const modal = document.getElementById('video-player-modal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        videoEl.play().catch(() => {});
-      } catch (err) {
-        console.error('Error playing offline video:', err);
-        showToast('Unable to play offline video', 'error');
-      }
-    }
-
-    function closeVideoPlayerModal() {
-      const videoEl = document.getElementById('offline-drill-video');
-      videoEl.pause();
-      videoEl.removeAttribute('src');
-      videoEl.load();
-      if (activePlayerObjectUrl) {
-        URL.revokeObjectURL(activePlayerObjectUrl);
-        activePlayerObjectUrl = null;
-      }
-      const modal = document.getElementById('video-player-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    document.getElementById('close-player-modal-btn').addEventListener('click', closeVideoPlayerModal);
-
-    function openVideoSetupModal(drillId, storageKey = null, label = 'DEMO') {
-      const drill = findDrillById(drillId);
-      if (!drill) return;
-
-      const key = storageKey || drillId;
-      editingVideoDrillId = key;
-      const existingUrl = drillVideoLinks[key] || '';
-      const existingOffline = offlineVideoMeta[key] || null;
-
-      const prefix = drillId.startsWith('dv_') ? `VITAMIN 0${drill.num}` : `DRILL ${drill.num}`;
-      document.getElementById('video-modal-drill-num').textContent = `${prefix} ${label.toUpperCase()}`;
-      document.getElementById('video-modal-drill-name').textContent = drill.name;
-
-      const offlineStatus = document.getElementById('offline-video-status-text');
-      const pickLabel = document.getElementById('pick-offline-video-label');
-      const deleteOfflineBtn = document.getElementById('delete-offline-video-btn');
-
-      if (existingOffline) {
-        offlineStatus.innerHTML = `<span class="text-emerald-300 font-bold">Saved Offline:</span> ${existingOffline.name} (${formatBytes(existingOffline.size)})`;
-        pickLabel.textContent = 'Replace Offline Video';
-        deleteOfflineBtn.classList.remove('hidden');
-      } else {
-        offlineStatus.textContent = 'No offline video saved yet.';
-        pickLabel.textContent = 'Choose from Files / Photos';
-        deleteOfflineBtn.classList.add('hidden');
-      }
-
-      const input = document.getElementById('video-url-input');
-      const removeBtn = document.getElementById('remove-video-link-btn');
-      input.value = existingUrl;
-      if (existingUrl) {
-        removeBtn.classList.remove('hidden');
-      } else {
-        removeBtn.classList.add('hidden');
-      }
-
-      const modal = document.getElementById('video-setup-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeVideoSetupModal() {
-      editingVideoDrillId = null;
-      document.getElementById('offline-video-file-input').value = '';
-      const modal = document.getElementById('video-setup-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    document.getElementById('pick-offline-video-btn').addEventListener('click', () => {
-      document.getElementById('offline-video-file-input').click();
-    });
-
-    document.getElementById('offline-video-file-input').addEventListener('change', async (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (!file || !editingVideoDrillId) return;
-
-      const pickLabel = document.getElementById('pick-offline-video-label');
-      const prevText = pickLabel.textContent;
-      pickLabel.textContent = 'Saving...';
-
-      try {
-        await saveOfflineVideoBlob(editingVideoDrillId, file);
-        offlineVideoMeta[editingVideoDrillId] = {
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          savedAt: Date.now()
-        };
-        saveOfflineVideoMeta();
-        closeVideoSetupModal();
-        renderAll();
-        showToast('Video saved offline on device!');
-      } catch (err) {
-        console.error('Failed to save offline video:', err);
-        showToast('Error saving video to device', 'error');
-        pickLabel.textContent = prevText;
-      }
-    });
-
-    document.getElementById('delete-offline-video-btn').addEventListener('click', async () => {
-      if (!editingVideoDrillId) return;
-      try {
-        await deleteOfflineVideoBlob(editingVideoDrillId);
-      } catch (e) {
-        console.error(e);
-      }
-      delete offlineVideoMeta[editingVideoDrillId];
-      saveOfflineVideoMeta();
-      closeVideoSetupModal();
-      renderAll();
-      showToast('Offline video removed');
-    });
-
-    document.getElementById('cancel-video-modal-btn').addEventListener('click', closeVideoSetupModal);
-
-    document.getElementById('remove-video-link-btn').addEventListener('click', () => {
-      if (!editingVideoDrillId) return;
-      delete drillVideoLinks[editingVideoDrillId];
-      saveVideoLinks();
-      closeVideoSetupModal();
-      renderAll();
-      showToast('Video link cleared');
-    });
-
-    document.getElementById('save-video-link-btn').addEventListener('click', () => {
-      if (!editingVideoDrillId) return;
-      let val = document.getElementById('video-url-input').value.trim();
-      if (val && !/^https?:\/\//i.test(val)) {
-        val = 'https://' + val;
-      }
-      if (val) {
-        drillVideoLinks[editingVideoDrillId] = val;
-        showToast('Video link saved!');
-      } else {
-        delete drillVideoLinks[editingVideoDrillId];
-        showToast('Video link cleared');
-      }
-      saveVideoLinks();
-      closeVideoSetupModal();
-      renderAll();
-    });
 
     // EDIT MODAL LOGIC
     function openEditModal(drillId, spotIndex = null) {
@@ -2282,11 +2076,144 @@
       renderAll();
     });
 
+    // VIDEO SETUP MODAL LOGIC
+    function openVideoSetupModal(videoKey) {
+      const info = findDrillInfoByKey(videoKey);
+      editingVideoDrillId = videoKey;
+
+      document.getElementById('video-modal-drill-num').textContent = info.badge;
+      document.getElementById('video-modal-drill-name').textContent = info.title;
+
+      const offlineMeta = offlineVideoMeta[videoKey];
+      const statusText = document.getElementById('offline-video-status-text');
+      const pickLabel = document.getElementById('pick-offline-video-label');
+      const deleteOfflineBtn = document.getElementById('delete-offline-video-btn');
+
+      if (offlineMeta) {
+        statusText.textContent = `Saved: ${offlineMeta.name} (${formatFileSize(offlineMeta.size)})`;
+        statusText.className = 'text-[11px] font-bold text-emerald-300 truncate';
+        pickLabel.textContent = 'Replace Offline Video';
+        deleteOfflineBtn.classList.remove('hidden');
+      } else {
+        statusText.textContent = 'No offline video saved yet.';
+        statusText.className = 'text-[11px] text-slate-400';
+        pickLabel.textContent = 'Choose from Files / Photos';
+        deleteOfflineBtn.classList.add('hidden');
+      }
+
+      const existingUrl = drillVideoLinks[videoKey] || '';
+      const urlInput = document.getElementById('video-url-input');
+      urlInput.value = existingUrl;
+
+      const removeLinkBtn = document.getElementById('remove-video-link-btn');
+      if (existingUrl) {
+        removeLinkBtn.classList.remove('hidden');
+      } else {
+        removeLinkBtn.classList.add('hidden');
+      }
+
+      const modal = document.getElementById('video-setup-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeVideoSetupModal() {
+      editingVideoDrillId = null;
+      const modal = document.getElementById('video-setup-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.getElementById('close-player-modal-btn').addEventListener('click', closeVideoPlayerModal);
+    document.getElementById('video-player-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'video-player-modal') closeVideoPlayerModal();
+    });
+
+    document.getElementById('pick-offline-video-btn').addEventListener('click', () => {
+      document.getElementById('offline-video-file-input').click();
+    });
+
+    document.getElementById('offline-video-file-input').addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      e.target.value = '';
+      if (!file || !editingVideoDrillId) return;
+
+      const pickLabel = document.getElementById('pick-offline-video-label');
+      pickLabel.textContent = 'Saving to iPhone...';
+
+      try {
+        await saveOfflineVideoBlob(editingVideoDrillId, file);
+        offlineVideoMeta[editingVideoDrillId] = {
+          name: file.name || 'Drill Demo.mp4',
+          size: file.size || 0
+        };
+        saveOfflineVideoMeta();
+        closeVideoSetupModal();
+        renderAll();
+        showToast('Video saved offline on iPhone!');
+      } catch (err) {
+        console.error('Failed to store offline video:', err);
+        pickLabel.textContent = 'Choose from Files / Photos';
+        showToast('Could not save video — check available iPhone storage', 'error');
+      }
+    });
+
+    document.getElementById('delete-offline-video-btn').addEventListener('click', async () => {
+      if (!editingVideoDrillId) return;
+      try {
+        await deleteOfflineVideoRecord(editingVideoDrillId);
+      } catch (err) {
+        console.error(err);
+      }
+      delete offlineVideoMeta[editingVideoDrillId];
+      saveOfflineVideoMeta();
+      closeVideoSetupModal();
+      renderAll();
+      showToast('Offline video deleted');
+    });
+
+    document.getElementById('cancel-video-modal-btn').addEventListener('click', closeVideoSetupModal);
+
+    document.getElementById('save-video-link-btn').addEventListener('click', () => {
+      if (!editingVideoDrillId) return;
+      let val = document.getElementById('video-url-input').value.trim();
+      if (val && !/^https?:\/\//i.test(val)) {
+        val = 'https://' + val;
+      }
+      if (val) {
+        drillVideoLinks[editingVideoDrillId] = val;
+        showToast('Video link saved!');
+      } else {
+        delete drillVideoLinks[editingVideoDrillId];
+        showToast('Video link cleared');
+      }
+      saveVideoLinks();
+      closeVideoSetupModal();
+      renderAll();
+    });
+
+    document.getElementById('remove-video-link-btn').addEventListener('click', () => {
+      if (!editingVideoDrillId) return;
+      delete drillVideoLinks[editingVideoDrillId];
+      saveVideoLinks();
+      closeVideoSetupModal();
+      renderAll();
+      showToast('Video link removed');
+    });
+
+    // DAILY VITAMINS TOP-LEFT ICON TOGGLE
+    document.getElementById('workout-btn-vitamins').addEventListener('click', () => {
+      state.showVitamins = !state.showVitamins;
+      state.showGrid = false;
+      saveState();
+      renderAll();
+    });
+
     // WORKOUT SWITCHER LISTENERS
     document.querySelectorAll('.workout-switch-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const wKey = btn.getAttribute('data-workout');
-        if (WORKOUTS[wKey] && (state.activeWorkout !== wKey || state.showVitamins)) {
+        if (WORKOUTS[wKey]) {
           state.activeWorkout = wKey;
           state.showVitamins = false;
           ensureDateRecord(wKey, state.activeDate);
@@ -2294,14 +2221,6 @@
           renderAll();
         }
       });
-    });
-
-    // DAILY VITAMINS BUTTON & ACTIONS
-    document.getElementById('workout-btn-vitamins').addEventListener('click', () => {
-      state.showVitamins = !state.showVitamins;
-      if (state.showVitamins) state.showGrid = false;
-      saveState();
-      renderAll();
     });
 
     // SESSION DATE PICKER & PREV/NEXT DAY BUTTONS
@@ -2329,8 +2248,8 @@
 
     // GRID VIEW TOGGLE
     document.getElementById('toggle-grid-btn').addEventListener('click', () => {
+      state.showVitamins = false;
       state.showGrid = !state.showGrid;
-      if (state.showGrid) state.showVitamins = false;
       saveState();
       renderAll();
     });
@@ -2424,6 +2343,7 @@
       const dayRecord = getActiveDayRecord();
       const totals = computeDateTotals(state.activeWorkout, state.activeDate);
       const formattedDate = formatDisplayDate(state.activeDate, true);
+      const spotDefs = getWorkoutSpots(state.activeWorkout);
 
       const lines = [
         `🏀 TomCat Shooting Log — ${workout.name}`,
@@ -2439,9 +2359,8 @@
         const drillTotals = getDrillTotals(d, entry);
         lines.push(`${d.num}. ${d.name}: ${drillTotals.makes}/${drillTotals.attempts} (${formatPct(drillTotals.makes, drillTotals.attempts)})`);
         if (d.hasSpots && Array.isArray(entry.spots)) {
-          const spotsList = getWorkoutSpots(state.activeWorkout);
           entry.spots.forEach((sp, idx) => {
-            lines.push(`   • Spot ${idx + 1} (${spotsList[idx].courtPos}): ${sp.makes}/${sp.attempts}`);
+            lines.push(`   • Spot ${idx + 1} (${spotDefs[idx].courtPos}): ${sp.makes}/${sp.attempts}`);
           });
         }
       });
