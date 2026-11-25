@@ -907,21 +907,35 @@ function doGet(e) {
         activeVideoObjectUrl = null;
       }
 
-      if (hasOfflineVideo(vitId)) {
-        try {
-          const blob = await getLocalVideoBlob(vitId);
-          if (blob) {
-            activeVideoObjectUrl = URL.createObjectURL(blob);
-            document.getElementById('video-modal-source').textContent = `Local Device File (${offlineVideoMeta[vitId].name})`;
-            body.innerHTML = `<video src="${activeVideoObjectUrl}" controls autoplay playsinline class="w-full h-full object-contain"></video>`;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            return;
-          }
-        } catch (e) {}
+      const candidateKeys = [vitId, `${vitId}_demo`];
+      for (const k of candidateKeys) {
+        if (hasOfflineVideo(k)) {
+          try {
+            const blob = await getLocalVideoBlob(k);
+            if (blob) {
+              activeVideoObjectUrl = URL.createObjectURL(blob);
+              document.getElementById('video-modal-source').textContent = `Local Device File (${offlineVideoMeta[k].name})`;
+              body.innerHTML = `<video src="${activeVideoObjectUrl}" controls autoplay playsinline webkit-playsinline preload="metadata" class="w-full h-full object-contain"></video>`;
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+              return;
+            }
+          } catch (e) {}
+        }
       }
 
-      const savedUrl = normalizeVideoUrl((videoLinks[vitId] && videoLinks[vitId].demo) || defaultPath);
+      const savedUrl = normalizeVideoUrl((videoLinks[vitId] && videoLinks[vitId].demo) || '');
+      if (!savedUrl) {
+        document.getElementById('video-modal-source').textContent = 'No video linked yet';
+        body.innerHTML = '';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        const fakeVid = {};
+        attachVideoFallbackHandler(fakeVid, vitId, 'Vitamin Demo', () => openVitaminVideo(vitId, titleText, defaultPath));
+        fakeVid.onerror();
+        return;
+      }
+
       document.getElementById('video-modal-source').textContent = savedUrl;
       body.innerHTML = buildVideoEmbedHTML(savedUrl);
       modal.classList.remove('hidden');
@@ -1322,7 +1336,7 @@ function doGet(e) {
       if (gdMatch) {
         return `<iframe src="https://drive.google.com/file/d/${gdMatch[1]}/preview" class="w-full h-full border-0" allow="autoplay"></iframe>`;
       }
-      return `<video src="${escapeHtml(url)}" controls autoplay playsinline class="w-full h-full object-contain"></video>`;
+      return `<video src="${escapeHtml(url)}" controls autoplay playsinline webkit-playsinline preload="metadata" class="w-full h-full object-contain"></video>`;
     }
 
     function closeVideoModal() {
@@ -2225,10 +2239,12 @@ function doGet(e) {
     function renderVitaminsView() {
       const container = document.getElementById('vitamins-list');
       container.innerHTML = DAILY_VITAMINS.map(vit => {
-        const offlineSaved = hasOfflineVideo(vit.id);
+        const offlineSaved = hasOfflineVideo(vit.id) || hasOfflineVideo(`${vit.id}_demo`);
         const offlineBreakdownSaved = hasOfflineVideo(`${vit.id}_breakdown`);
         const savedUrl = (videoLinks[vit.id] && videoLinks[vit.id].demo) || '';
         const savedBreakdownUrl = (videoLinks[vit.id] && videoLinks[vit.id].breakdown) || '';
+        const hasDemo = offlineSaved || !!savedUrl.trim();
+        const hasBreakdown = offlineBreakdownSaved || !!savedBreakdownUrl.trim();
         const isDrawerOpen = openVideoDrawerDrillId === vit.id;
         return `
           <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2.5 flex flex-col justify-between">
@@ -2242,12 +2258,12 @@ function doGet(e) {
 
             <div class="space-y-2 pt-2 border-t border-slate-800/80">
               <div class="flex items-center gap-2 flex-wrap">
-                <button onclick="openVitaminVideo('${vit.id}', '${escapeHtml(vit.title)}', '${escapeHtml(vit.defaultPath)}')" class="flex-1 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-1.5 transition">
+                <button onclick="openVitaminVideo('${vit.id}', '${escapeHtml(vit.title)}', '${escapeHtml(vit.defaultPath)}')" class="flex-1 py-2 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition ${hasDemo ? 'bg-amber-500 hover:bg-amber-400 text-slate-950' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'}">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                   Demo
                 </button>
                 ${vit.hasBreakdown ? `
-                  <button onclick="openDrillVideo('${vit.id}', 'breakdown', '${escapeHtml(vit.title)} — Breakdown')" class="py-2 px-3 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-purple-300 font-extrabold text-xs flex items-center justify-center gap-1 transition">
+                  <button onclick="openDrillVideo('${vit.id}', 'breakdown', '${escapeHtml(vit.title)} — Breakdown')" class="py-2 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1 transition ${hasBreakdown ? 'bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-purple-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'}">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     Breakdown
                   </button>
@@ -2265,7 +2281,7 @@ function doGet(e) {
                       ${offlineSaved ? `<button onclick="removeOfflineVideo('${vit.id}')" class="text-[10px] text-rose-400 hover:underline">Remove File</button>` : ''}
                       <label class="cursor-pointer px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
                         Save Offline File
-                        <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}', 'Vitamin Demo')" class="hidden" />
+                        <input type="file" accept="video/*,.mp4,.mov,.m4v,.webm" onchange="handleOfflineVideoUpload(event, '${vit.id}', 'Vitamin Demo')" class="hidden" />
                       </label>
                     </div>
                   </div>
@@ -2277,7 +2293,7 @@ function doGet(e) {
                         ${offlineBreakdownSaved ? `<button onclick="removeOfflineVideo('${vit.id}_breakdown')" class="text-[10px] text-rose-400 hover:underline">Remove File</button>` : ''}
                         <label class="cursor-pointer px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold">
                           Save Offline File
-                          <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}_breakdown', 'Vitamin Breakdown')" class="hidden" />
+                          <input type="file" accept="video/*,.mp4,.mov,.m4v,.webm" onchange="handleOfflineVideoUpload(event, '${vit.id}_breakdown', 'Vitamin Breakdown')" class="hidden" />
                         </label>
                       </div>
                     </div>
