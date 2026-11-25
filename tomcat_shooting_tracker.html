@@ -414,10 +414,7 @@
     <div id="vitamins-view" class="hidden space-y-4">
       <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
         <div class="flex items-center justify-between">
-          <div>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400">02 / Daily Mechanical Work • 100 Makes</span>
-            <h2 class="text-base font-extrabold text-white mt-0.5">Daily Vitamins (3–4 Feet)</h2>
-          </div>
+          <h2 class="text-base font-extrabold text-white">Daily Vitamins (3–4 Feet)</h2>
           <button onclick="closeSpecialViews()" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
             Back to Workout
           </button>
@@ -1190,10 +1187,17 @@ function doGet(e) {
       const session = getActiveSession();
       const spot = session.drills[drillId].spots[spotIdx];
       if (field === 'makes') {
-        const nextMakes = Math.max(0, spot.makes + delta);
-        const diff = nextMakes - spot.makes;
-        spot.makes = nextMakes;
-        spot.attempts = Math.max(spot.makes, spot.attempts + diff);
+        if (spot.makes > 0 && delta < 0) {
+          spot.makes = Math.max(0, spot.makes + delta);
+          spot.attempts = Math.max(spot.makes, spot.attempts + delta);
+        } else if (delta < 0 && spot.attempts > 0) {
+          spot.attempts = Math.max(0, spot.attempts + delta);
+        } else {
+          const nextMakes = Math.max(0, spot.makes + delta);
+          const diff = nextMakes - spot.makes;
+          spot.makes = nextMakes;
+          spot.attempts = Math.max(spot.makes, spot.attempts + diff);
+        }
       } else {
         spot.attempts = Math.max(spot.makes, spot.attempts + delta);
       }
@@ -2161,12 +2165,10 @@ function doGet(e) {
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     Demo
                   </button>
-                  ${hasBreakdown ? `
-                    <button onclick="openDrillVideo('${drill.id}', 'breakdown', '${escapeHtml(drill.name)}')" class="px-2 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition">
-                      <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                      Breakdown
-                    </button>
-                  ` : ''}
+                  <button onclick="openDrillVideo('${drill.id}', 'breakdown', '${escapeHtml(drill.name)}')" class="px-2 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition ${hasBreakdown ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30' : 'bg-slate-800 text-slate-400 hover:text-slate-200'}">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    Breakdown
+                  </button>
                   <button onclick="toggleVideoDrawer('${drill.id}')" class="px-2 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-[11px] font-semibold text-slate-300 transition">
                     ${isDrawerOpen ? 'Close Video' : '+ Video'}
                   </button>
