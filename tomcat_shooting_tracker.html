@@ -618,17 +618,34 @@
         <pre id="apps-script-code" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-[10px] font-mono text-slate-300 overflow-x-auto leading-relaxed">function doPost(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName("Shooting Log") || ss.insertSheet("Shooting Log");
+  var headers = ["Timestamp", "Workout", "Date", "Formatted Date", "Drill", "Makes", "Misses", "Attempts", "Percentage", "Knee Comfort", "Notes"];
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(["Timestamp", "Workout", "Week Of", "Day", "Drill", "Makes", "Attempts", "Percentage", "Knee Comfort", "Notes"]);
+    sheet.appendRow(headers);
   }
   var data = JSON.parse(e.postData.contents);
   var rows = data.rows || [];
+  var existing = sheet.getDataRange().getValues();
+
   rows.forEach(function(r) {
-    sheet.appendRow([
+    var misses = Math.max(0, Number(r.attempts || 0) - Number(r.makes || 0));
+    var rowValues = [
       r.timestamp, r.workout, r.weekOf, r.day,
-      r.drill, r.makes, r.attempts, r.percentage,
+      r.drill, Number(r.makes || 0), misses, Number(r.attempts || 0), r.percentage,
       r.kneeComfort, r.notes
-    ]);
+    ];
+    var updated = false;
+    for (var i = 1; i &lt; existing.length; i++) {
+      if (String(existing[i][1]) === String(r.workout) &amp;&amp;
+          String(existing[i][2]) === String(r.weekOf) &amp;&amp;
+          String(existing[i][4]) === String(r.drill)) {
+        sheet.getRange(i + 1, 1, 1, rowValues.length).setValues([rowValues]);
+        updated = true;
+        break;
+      }
+    }
+    if (!updated) {
+      sheet.appendRow(rowValues);
+    }
   });
   return ContentService.createTextOutput(JSON.stringify({ status: "ok", count: rows.length }))
     .setMimeType(ContentService.MimeType.JSON);
@@ -2394,6 +2411,9 @@
       const rows = workout.drills.map((d) => {
         const entry = dayRecord.drills[d.id];
         const totals = getDrillTotals(d, entry);
+        const makes = Number(totals.makes) || 0;
+        const attempts = Number(totals.attempts) || 0;
+        const misses = Math.max(0, attempts - makes);
         const spotDetail = d.hasSpots ? formatSpotsSummary(d, entry, state.activeWorkout) : '';
         const combinedNotes = [spotDetail, dayRecord.notes || ''].filter(Boolean).join(' — ');
 
@@ -2403,9 +2423,10 @@
           weekOf: state.activeDate,
           day: formattedDate,
           drill: `${d.num}. ${d.name} (${d.subtitle})`,
-          makes: totals.makes,
-          attempts: totals.attempts,
-          percentage: formatPct(totals.makes, totals.attempts),
+          makes,
+          misses,
+          attempts,
+          percentage: formatPct(makes, attempts),
           kneeComfort: dayRecord.kneeComfort,
           notes: combinedNotes
         };
