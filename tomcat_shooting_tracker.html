@@ -2090,9 +2090,9 @@ function doGet(e) {
                           <span class="text-xs font-extrabold text-white">${SPOT_LABELS[sIdx]}</span>
                           <span class="text-[10px] font-medium text-slate-400 truncate">(${spotZoneLabel})</span>
                         </div>
-                        <div class="flex items-center gap-2 mt-0.5 text-[11px] font-mono">
-                          <span class="${sDone ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}">${s.makes}/${drill.targetMakesPerSpot} makes</span>
-                          <span class="text-slate-500">• ${s.attempts} att (${formatPct(s.makes, s.attempts)})</span>
+                        <div class="flex items-baseline gap-2 mt-0.5 font-mono">
+                          <span class="${sDone ? 'text-emerald-400' : 'text-amber-400'} text-sm font-black">${s.makes}/${s.attempts}</span>
+                          <span class="text-xs font-bold text-slate-300">${formatPct(s.makes, s.attempts)}</span>
                         </div>
                       </div>
 
@@ -2148,10 +2148,10 @@ function doGet(e) {
                 </div>
 
                 <div class="text-right shrink-0">
-                  <div class="font-mono text-sm font-black ${goalMet ? 'text-emerald-400' : 'text-amber-400'}">
-                    ${totals.makes}/${drill.targetMakes}
+                  <div class="font-mono text-base sm:text-lg font-black leading-none ${goalMet ? 'text-emerald-400' : 'text-amber-400'}">
+                    ${totals.makes}/${totals.attempts}
                   </div>
-                  <div class="font-mono text-[10px] text-slate-400">${pctStr} (${totals.attempts})</div>
+                  <div class="font-mono text-xs sm:text-sm font-bold text-slate-300 mt-1">${pctStr}</div>
                 </div>
               </div>
 
