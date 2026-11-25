@@ -55,16 +55,19 @@
           </svg>
         </div>
         <div class="truncate">
-          <div class="flex items-center gap-1.5">
-            <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-white truncate">TomCat Hoops</h1>
-            <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">Thomas</span>
-          </div>
-          <p class="text-[11px] text-slate-400 truncate">Off-Season Shooting &amp; Footwork</p>
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white truncate">TomCat Hoops</h1>
         </div>
       </div>
 
       <!-- Navigation & Settings Controls -->
       <div class="flex items-center gap-1.5 shrink-0">
+        <button id="toggle-vitamins-btn" onclick="toggleVitaminsView()" class="flex items-center gap-1 px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-amber-400 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span class="hidden sm:inline">Daily Vitamins</span>
+        </button>
+
         <button id="toggle-hotzones-btn" onclick="toggleHotZonesView()" class="flex items-center gap-1 px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-rose-400 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
@@ -118,30 +121,16 @@
         </button>
       </section>
 
-      <!-- Workout & Daily Vitamins Selector -->
-      <section class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-1.5 grid grid-cols-3 gap-1.5">
-        <button id="workout-btn-catch_shoot" onclick="selectWorkout('catch_shoot')" class="py-2.5 px-2 rounded-xl text-left transition flex flex-col justify-between">
-          <div class="flex items-center justify-between w-full">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider opacity-80">Workout 1</span>
-            <span id="workout-badge-catch_shoot" class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/25">0/100</span>
-          </div>
-          <div class="text-xs sm:text-sm font-extrabold mt-0.5 leading-tight">Catch + Shoot</div>
+      <!-- Workout Selector -->
+      <section class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-1.5 grid grid-cols-2 gap-1.5">
+        <button id="workout-btn-catch_shoot" onclick="selectWorkout('catch_shoot')" class="py-3 px-3.5 rounded-xl text-left transition flex items-center justify-between gap-2">
+          <span class="text-base sm:text-lg font-black tracking-tight leading-tight">Catch and Shoot</span>
+          <span id="workout-badge-catch_shoot" class="text-xs sm:text-sm font-mono font-black px-2.5 py-1 rounded-lg bg-black/25 shrink-0">0/150</span>
         </button>
 
-        <button id="workout-btn-footwork_dribble" onclick="selectWorkout('footwork_dribble')" class="py-2.5 px-2 rounded-xl text-left transition flex flex-col justify-between">
-          <div class="flex items-center justify-between w-full">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider opacity-80">Workout 2</span>
-            <span id="workout-badge-footwork_dribble" class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/25">0/155</span>
-          </div>
-          <div class="text-xs sm:text-sm font-extrabold mt-0.5 leading-tight">Footwork + Dribble</div>
-        </button>
-
-        <button id="workout-btn-vitamins" onclick="selectVitaminsView()" class="py-2.5 px-2 rounded-xl text-left transition flex flex-col justify-between bg-slate-950/60 text-slate-300 hover:bg-slate-800">
-          <div class="flex items-center justify-between w-full">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">Daily Prep</span>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">4 Clips</span>
-          </div>
-          <div class="text-xs sm:text-sm font-extrabold mt-0.5 leading-tight text-white">Daily Vitamins</div>
+        <button id="workout-btn-footwork_dribble" onclick="selectWorkout('footwork_dribble')" class="py-3 px-3.5 rounded-xl text-left transition flex items-center justify-between gap-2">
+          <span class="text-base sm:text-lg font-black tracking-tight leading-tight">Footwork</span>
+          <span id="workout-badge-footwork_dribble" class="text-xs sm:text-sm font-mono font-black px-2.5 py-1 rounded-lg bg-black/25 shrink-0">0/175</span>
         </button>
       </section>
     </div>
@@ -316,6 +305,30 @@
             <span id="hz-overall-summary" class="font-mono font-bold text-slate-200">0-0 (0.0%)</span>
           </div>
 
+          <!-- Overall Zone Summary Cards -->
+          <div class="grid grid-cols-4 gap-2">
+            <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 text-center">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Overall Zones</div>
+              <div id="hz-stat-overall-pct" class="font-mono text-base sm:text-lg font-black text-emerald-400 mt-0.5">0.0%</div>
+              <div id="hz-stat-overall-sub" class="font-mono text-[10px] text-slate-500">0/0</div>
+            </div>
+            <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 text-center">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Perimeter (C+S)</div>
+              <div id="hz-stat-outer-pct" class="font-mono text-sm sm:text-base font-extrabold text-amber-400 mt-0.5">0.0%</div>
+              <div id="hz-stat-outer-sub" class="font-mono text-[10px] text-slate-500">0/0</div>
+            </div>
+            <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 text-center">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Footwork Spots</div>
+              <div id="hz-stat-inner-pct" class="font-mono text-sm sm:text-base font-extrabold text-sky-400 mt-0.5">0.0%</div>
+              <div id="hz-stat-inner-sub" class="font-mono text-[10px] text-slate-500">0/0</div>
+            </div>
+            <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 text-center">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Free Throws</div>
+              <div id="hz-stat-ft-pct" class="font-mono text-sm sm:text-base font-extrabold text-purple-400 mt-0.5">0.0%</div>
+              <div id="hz-stat-ft-sub" class="font-mono text-[10px] text-slate-500">0/0</div>
+            </div>
+          </div>
+
           <!-- Interactive Half-Court SVG -->
           <div class="w-full max-w-xl mx-auto rounded-2xl overflow-hidden border-2 border-slate-700 bg-slate-950 shadow-inner">
             <svg id="hotzones-svg" viewBox="0 0 500 450" class="w-full h-auto block select-none"></svg>
@@ -326,22 +339,28 @@
         <div class="lg:col-span-5 space-y-4">
           <!-- Filters & CSV Import -->
           <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-            <div class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Court Filters</div>
+            <div class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Workout &amp; Drill Explorer</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2.5">
               <div>
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Timeframe</label>
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">1. Select Workout</label>
+                <select id="hz-workout-select" onchange="onHotZoneWorkoutChange()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-none focus:border-amber-500">
+                  <option value="all">All Workouts Combined</option>
+                  <option value="catch_shoot">Catch and Shoot (Outer Ring)</option>
+                  <option value="footwork_dribble">Footwork (Inner Ring)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">2. Select Specific Drill</label>
+                <select id="hz-drill-select" onchange="renderHotZonesView()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-none focus:border-amber-500">
+                  <option value="all">All Drills in Selection</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">3. Timeframe</label>
                 <select id="hz-timeframe-select" onchange="renderHotZonesView()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-none focus:border-amber-500">
                   <option value="all">All Logged Sessions</option>
                   <option value="week">Last 7 Days</option>
                   <option value="selected">Selected Session Date</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Drill Filter</label>
-                <select id="hz-drill-select" onchange="renderHotZonesView()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-none focus:border-amber-500">
-                  <option value="all">All Spot Drills (Outer + Inner)</option>
-                  <option value="catch_shoot">Workout 1: Catch + Shoot Only</option>
-                  <option value="footwork_dribble">Workout 2: Footwork + Dribble Only</option>
                 </select>
               </div>
             </div>
@@ -375,6 +394,18 @@
               <p class="text-slate-500">Tap any outer 3PT wedge, inner mid-range wedge, or the Free Throw circle to see Thomas's exact numbers by drill.</p>
             </div>
           </section>
+
+          <!-- Drill-by-Drill Spot Heatmap Breakdown -->
+          <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Drill Spot Matrix</span>
+                <h3 id="hz-matrix-title" class="text-sm font-extrabold text-white">5-Spot Breakdown by Drill</h3>
+              </div>
+              <span class="text-[10px] text-slate-400">Tap drill to isolate on court</span>
+            </div>
+            <div id="hz-drill-matrix-list" class="space-y-2"></div>
+          </section>
         </div>
 
       </div>
@@ -385,14 +416,14 @@
       <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
         <div class="flex items-center justify-between">
           <div>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400">Daily Prep &amp; Mechanics</span>
-            <h2 class="text-base font-extrabold text-white mt-0.5">Daily Vitamins</h2>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400">02 / Daily Mechanical Work • 100 Makes</span>
+            <h2 class="text-base font-extrabold text-white mt-0.5">Daily Vitamins (3–4 Feet)</h2>
           </div>
           <button onclick="closeSpecialViews()" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
             Back to Workout
           </button>
         </div>
-        <p class="text-xs text-slate-400">Reference clips for warm-up ball handling, shooting base, footwork, and touch before logging shots.</p>
+        <p class="text-xs text-slate-400">Complete these four drills (25 makes/reps each) before every shooting workout. Work from 3–4 feet, take your time, and focus on Position 1, hip sink timing, and seams.</p>
         <div id="vitamins-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </section>
     </div>
@@ -565,43 +596,41 @@ function doGet(e) {
       catch_shoot: {
         id: 'catch_shoot',
         tag: 'Workout 1',
-        title: 'Catch + Shoot',
-        subtitle: '5 Spots • 3 Makes per Spot + Free Throws',
+        title: 'Catch and Shoot',
+        subtitle: '5 Drills (5 Spots x 3) + 25 Free Throws • 100 Makes',
         goalMakes: 100,
         drills: [
-          { id: 'cs_1', name: '1-2 Catch + Shoot', cue: 'Step into shot smoothly, knees bent, eyes on rim early', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
-          { id: 'cs_2', name: 'Free Throws', cue: 'Consistent pre-shot routine, follow through high & hold', type: 'freethrow', targetMakes: 10 },
-          { id: 'cs_3', name: 'Forward Hop Catch + Shoot', cue: 'Hop forward into balance, land on balls of feet, quick release', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
-          { id: 'cs_4', name: 'Free Throws', cue: 'Deep breath, knees bend together, hold follow-through', type: 'freethrow', targetMakes: 10 },
-          { id: 'cs_5', name: 'Lateral Step Hop (Left & Right)', cue: 'Push laterally into hop, square shoulders in air, no drift', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
-          { id: 'cs_6', name: 'Free Throws', cue: 'Simulate game fatigue, lock in focus and rhythm', type: 'freethrow', targetMakes: 10 },
-          { id: 'cs_7', name: 'Backpedal Catch + Shoot', cue: 'Quick backpedal, plant back foot to brake, pop straight up', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
-          { id: 'cs_8', name: 'Free Throws', cue: 'Finish strong—lock in mechanical consistency', type: 'freethrow', targetMakes: 10 }
+          { id: 'cs_1', name: '1-2 Catch + Shoot', cue: '15 ft - 3PT | 5 spots x 3', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
+          { id: 'cs_2', name: 'Forward Hop', cue: '15 ft - 3PT | 5 spots x 3', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
+          { id: 'cs_3', name: 'Vertical Hop', cue: '15 ft - 3PT | 5 spots x 3', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
+          { id: 'cs_4', name: 'Anchor Step', cue: '15 ft - 3PT | 5 spots x 3', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
+          { id: 'cs_5', name: 'Lateral Step Hop', cue: '15 ft - 3PT | 5 spots x 3', type: 'spots', spotsCount: 5, targetMakesPerSpot: 3, targetMakes: 15 },
+          { id: 'cs_6', name: 'Free Throws', cue: '25 made free throws', type: 'freethrow', targetMakes: 25 }
         ]
       },
       footwork_dribble: {
         id: 'footwork_dribble',
         tag: 'Workout 2',
-        title: 'Footwork + Dribble',
-        subtitle: '5 Spots • 4 Makes per Spot + 25 FT Sets',
+        title: 'Footwork',
+        subtitle: '4 Drills (5 Spots x 4) + 2 Game-Speed Sets + 25 Free Throws • 155 Makes',
         goalMakes: 155,
         drills: [
-          { id: 'fd_1', name: 'Turnaround Pivot (Left & Right)', cue: 'Chin ball, sharp reverse/forward pivot, balanced base', type: 'spots', spotsCount: 5, targetMakesPerSpot: 4, targetMakes: 20 },
-          { id: 'fd_2', name: 'Free Throws', cue: 'Slow down heart rate, smooth one-motion lift', type: 'freethrow', targetMakes: 25 },
-          { id: 'fd_3', name: 'Shot Fake 1-Dribble Pull-Up (L & R)', cue: 'Sell fake with eyes & ball, low explosive first step', type: 'spots', spotsCount: 5, targetMakesPerSpot: 4, targetMakes: 20 },
-          { id: 'fd_4', name: 'Free Throws', cue: 'Consistent release point, soft touch on rim', type: 'freethrow', targetMakes: 25 },
-          { id: 'fd_5', name: 'Shot Fake Lateral Hop (L & R)', cue: 'Sell shot fake, lateral hop out of closeout, quick trigger', type: 'spots', spotsCount: 5, targetMakesPerSpot: 4, targetMakes: 20 },
-          { id: 'fd_6', name: 'Free Throws', cue: 'Final 25—stay locked in through all 25 makes', type: 'freethrow', targetMakes: 25 },
-          { id: 'fd_7', name: '2-Dribble Pull-Up (Left & Right)', cue: 'Attack downhill with pace, hard pound pickup into jump stop', type: 'spots', spotsCount: 5, targetMakesPerSpot: 4, targetMakes: 20 }
+          { id: 'fd_1', name: '1-2 Square Up', cue: '15+ FT | 5 spots x 4', type: 'spots', spotsCount: 5, targetMakesPerSpot: 4, targetMakes: 20 },
+          { id: 'fd_2', name: 'Forward Inside Foot Hop', cue: '15+ FT | 5 spots x 4', type: 'spots', spotsCount: 5, targetMakesPerSpot: 4, targetMakes: 20 },
+          { id: 'fd_3', name: '2-Step Outside Foot Hop Square Up', cue: '15+ FT | 5 spots x 4', type: 'spots', spotsCount: 5, targetMakesPerSpot: 4, targetMakes: 20 },
+          { id: 'fd_4', name: 'Shot Fake Lateral Hop', cue: '15+ FT | 5 spots x 4', type: 'spots', spotsCount: 5, targetMakesPerSpot: 4, targetMakes: 20 },
+          { id: 'fd_5', name: 'Hunt / Slide Hops', cue: '15 FT - 3PT | game speed (25 makes)', type: 'freethrow', targetMakes: 25 },
+          { id: 'fd_6', name: 'Rip Through 1-Dribble Pull-Ups', cue: 'Any spot | game speed (25 makes)', type: 'freethrow', targetMakes: 25 },
+          { id: 'fd_7', name: 'Free Throws', cue: '25 made free throws', type: 'freethrow', targetMakes: 25 }
         ]
       }
     };
 
     const DAILY_VITAMINS = [
-      { id: 'vit_1', title: 'Daily Vitamin #1 — Stationary Ball Handling & Fingertip Control', cue: '5 mins • Keep eyes up, pound the ball below knee height, crisp crossovers & wraps', defaultPath: 'videos/vitamin-1.mp4' },
-      { id: 'vit_2', title: 'Daily Vitamin #2 — Form Shooting & One-Hand Set Mechanics', cue: '25 makes • Close range, elbow tucked under ball, hold follow-through until ball hits floor', defaultPath: 'videos/vitamin-2.mp4' },
-      { id: 'vit_3', title: 'Daily Vitamin #3 — Triple-Threat Pivots & Footwork Balance', cue: '3 mins • Low athletic stance, sharp front & reverse pivots without drifting', defaultPath: 'videos/vitamin-3.mp4' },
-      { id: 'vit_4', title: 'Daily Vitamin #4 — Soft-Touch Mikan & Finishes Around Rim', cue: '20 makes • High off the glass, soft fingertips, use both hands cleanly', defaultPath: 'videos/vitamin-4.mp4' }
+      { id: 'vit_1', title: '01 • Sequence Pop-Up (25 Makes / 3–4 ft)', cue: 'Establish strong posture & Position 1. Move ball to Position 2 first, then drive upward into release in one smooth sequence.', defaultPath: 'videos/vitamin-1.mp4', hasBreakdown: true },
+      { id: 'vit_2', title: '02 • Drop Pop-Up (25 Makes / 3–4 ft)', cue: 'Maintain Position 1 during a stationary hip sink. Keep ball at Position 1 until hips sink, then move ball upward first before driving up.', defaultPath: 'videos/vitamin-2.mp4', hasBreakdown: true },
+      { id: 'vit_3', title: '03 • Pogo Drop Pop-Up (25 Reps / 3–4 ft)', cue: 'Stay light on feet and sink in and out of hips efficiently. Hold Position 1 through hip sink, then move ball upward before release.', defaultPath: 'videos/vitamin-3.mp4', hasBreakdown: true },
+      { id: 'vit_4', title: '04 • Seams Drill (25 Makes / 3–4 ft)', cue: 'Handle imperfect passes, find seams quickly, align ball tilt with shooting hand, and shoot through seams for clean rotation.', defaultPath: 'videos/vitamin-4.mp4', hasBreakdown: false }
     ];
 
     const DEFAULT_DRILL_VIDEOS = {
@@ -611,8 +640,6 @@ function doGet(e) {
       cs_4: { demo: 'videos/cs-4-demo.mp4', breakdown: '' },
       cs_5: { demo: 'videos/cs-5-demo.mp4', breakdown: '' },
       cs_6: { demo: 'videos/cs-6-demo.mp4', breakdown: '' },
-      cs_7: { demo: 'videos/cs-7-demo.mp4', breakdown: '' },
-      cs_8: { demo: 'videos/cs-8-demo.mp4', breakdown: '' },
       fd_1: { demo: 'videos/fd-1-demo.mp4', breakdown: '' },
       fd_2: { demo: 'videos/fd-2-demo.mp4', breakdown: '' },
       fd_3: { demo: 'videos/fd-3-demo.mp4', breakdown: '' },
@@ -844,6 +871,15 @@ function doGet(e) {
       showingVitamins = true;
       showingHistory = false;
       showingHotZones = false;
+      renderAll();
+    }
+
+    function toggleVitaminsView() {
+      showingVitamins = !showingVitamins;
+      if (showingVitamins) {
+        showingHistory = false;
+        showingHotZones = false;
+      }
       renderAll();
     }
 
@@ -1179,12 +1215,76 @@ function doGet(e) {
     // =========================================================================
     // 7. HOT ZONES COURT VISUALIZER
     // =========================================================================
+    function onHotZoneWorkoutChange() {
+      populateHotZoneDrillOptions();
+      renderHotZonesView();
+    }
+
+    function populateHotZoneDrillOptions() {
+      const workoutFilter = document.getElementById('hz-workout-select') ? document.getElementById('hz-workout-select').value : 'all';
+      const drillSelect = document.getElementById('hz-drill-select');
+      if (!drillSelect) return;
+
+      const prevVal = drillSelect.value;
+      drillSelect.innerHTML = `<option value="all">All Drills in Selection</option>`;
+
+      const workoutKeys = workoutFilter === 'all' ? ['catch_shoot', 'footwork_dribble'] : [workoutFilter];
+      workoutKeys.forEach(wKey => {
+        const w = WORKOUTS[wKey];
+        w.drills.forEach((d, idx) => {
+          if (d.type === 'spots') {
+            const opt = document.createElement('option');
+            opt.value = d.id;
+            opt.textContent = workoutFilter === 'all'
+              ? `${w.title}: #${idx + 1} ${d.name}`
+              : `#${idx + 1} ${d.name}`;
+            drillSelect.appendChild(opt);
+          }
+        });
+      });
+
+      if ([...drillSelect.options].some(o => o.value === prevVal)) {
+        drillSelect.value = prevVal;
+      } else {
+        drillSelect.value = 'all';
+      }
+    }
+
+    function selectHotZoneDrillFromMatrix(workoutKey, drillId) {
+      const wSel = document.getElementById('hz-workout-select');
+      const dSel = document.getElementById('hz-drill-select');
+      if (wSel) wSel.value = workoutKey;
+      populateHotZoneDrillOptions();
+      if (dSel) {
+        dSel.value = dSel.value === drillId ? 'all' : drillId;
+      }
+      renderHotZonesView();
+    }
+
     function aggregateHotZonesData() {
       const outer = Array.from({ length: 5 }, () => ({ makes: 0, attempts: 0, drills: {} }));
       const inner = Array.from({ length: 5 }, () => ({ makes: 0, attempts: 0, drills: {} }));
       const ft = { makes: 0, attempts: 0, drills: {} };
+      const perDrillSpots = {};
+
+      Object.values(WORKOUTS).forEach(w => {
+        w.drills.forEach((d, idx) => {
+          if (d.type === 'spots') {
+            perDrillSpots[d.id] = {
+              drillId: d.id,
+              workoutKey: w.id,
+              workoutTitle: w.title,
+              label: `#${idx + 1} ${d.name}`,
+              spots: Array.from({ length: 5 }, () => ({ makes: 0, attempts: 0 })),
+              makes: 0,
+              attempts: 0
+            };
+          }
+        });
+      });
 
       const timeframe = document.getElementById('hz-timeframe-select') ? document.getElementById('hz-timeframe-select').value : 'all';
+      const workoutFilter = document.getElementById('hz-workout-select') ? document.getElementById('hz-workout-select').value : 'all';
       const drillFilter = document.getElementById('hz-drill-select') ? document.getElementById('hz-drill-select').value : 'all';
 
       const todayISO = getTodayISO();
@@ -1195,9 +1295,22 @@ function doGet(e) {
       if (importedHotZoneRows && importedHotZoneRows.length > 0) {
         importedHotZoneRows.forEach(r => {
           const wKey = r.workoutKey;
-          if (drillFilter === 'catch_shoot' && wKey !== 'catch_shoot') return;
-          if (drillFilter === 'footwork_dribble' && wKey !== 'footwork_dribble') return;
-          if (drillFilter !== 'all' && drillFilter !== 'catch_shoot' && drillFilter !== 'footwork_dribble' && r.drillId !== drillFilter) return;
+          if (workoutFilter !== 'all' && wKey !== workoutFilter) return;
+
+          // Match drill in perDrillSpots
+          const cleanName = String(r.drillName || '').replace(/^#\d+\s*/, '').trim().toLowerCase();
+          const matchedDef = WORKOUTS[wKey].drills.find(d => d.name.toLowerCase() === cleanName);
+
+          if (!r.isFT && r.spots && r.spots.length === 5 && matchedDef && perDrillSpots[matchedDef.id]) {
+            r.spots.forEach((s, idx) => {
+              perDrillSpots[matchedDef.id].spots[idx].makes += s.makes;
+              perDrillSpots[matchedDef.id].spots[idx].attempts += s.attempts;
+              perDrillSpots[matchedDef.id].makes += s.makes;
+              perDrillSpots[matchedDef.id].attempts += s.attempts;
+            });
+          }
+
+          if (drillFilter !== 'all' && (!matchedDef || matchedDef.id !== drillFilter)) return;
 
           if (r.isFT) {
             ft.makes += r.makes;
@@ -1216,7 +1329,7 @@ function doGet(e) {
             });
           }
         });
-        return { outer, inner, ft };
+        return { outer, inner, ft, perDrillSpots };
       }
 
       const allDates = Object.keys(appState.sessions || {}).sort();
@@ -1227,22 +1340,33 @@ function doGet(e) {
         const dayObj = appState.sessions[dateStr];
         ['catch_shoot', 'footwork_dribble'].forEach(wKey => {
           if (!dayObj[wKey]) return;
-          if (drillFilter === 'catch_shoot' && wKey !== 'catch_shoot') return;
-          if (drillFilter === 'footwork_dribble' && wKey !== 'footwork_dribble') return;
+          if (workoutFilter !== 'all' && wKey !== workoutFilter) return;
 
           const workout = WORKOUTS[wKey];
           workout.drills.forEach((d, idx) => {
-            if (drillFilter !== 'all' && drillFilter !== 'catch_shoot' && drillFilter !== 'footwork_dribble' && d.id !== drillFilter) return;
             const dState = dayObj[wKey].drills[d.id];
             if (!dState) return;
             const drillLabel = `#${idx + 1} ${d.name}`;
 
+            if (d.type === 'spots' && dState.spots && perDrillSpots[d.id]) {
+              dState.spots.forEach((s, sIdx) => {
+                perDrillSpots[d.id].spots[sIdx].makes += (s.makes || 0);
+                perDrillSpots[d.id].spots[sIdx].attempts += (s.attempts || 0);
+                perDrillSpots[d.id].makes += (s.makes || 0);
+                perDrillSpots[d.id].attempts += (s.attempts || 0);
+              });
+            }
+
+            if (drillFilter !== 'all' && d.id !== drillFilter) return;
+
             if (d.type === 'freethrow') {
-              ft.makes += (dState.makes || 0);
-              ft.attempts += (dState.attempts || 0);
-              if (!ft.drills[drillLabel]) ft.drills[drillLabel] = { makes: 0, attempts: 0 };
-              ft.drills[drillLabel].makes += (dState.makes || 0);
-              ft.drills[drillLabel].attempts += (dState.attempts || 0);
+              if (d.name.toLowerCase().includes('free throw')) {
+                ft.makes += (dState.makes || 0);
+                ft.attempts += (dState.attempts || 0);
+                if (!ft.drills[drillLabel]) ft.drills[drillLabel] = { makes: 0, attempts: 0 };
+                ft.drills[drillLabel].makes += (dState.makes || 0);
+                ft.drills[drillLabel].attempts += (dState.attempts || 0);
+              }
             } else if (d.type === 'spots' && dState.spots) {
               const targetArr = wKey === 'footwork_dribble' ? inner : outer;
               dState.spots.forEach((s, sIdx) => {
@@ -1257,7 +1381,7 @@ function doGet(e) {
         });
       });
 
-      return { outer, inner, ft };
+      return { outer, inner, ft, perDrillSpots };
     }
 
     function getZoneFillColor(makes, attempts) {
@@ -1286,27 +1410,33 @@ function doGet(e) {
     }
 
     function renderHotZonesView() {
-      // Populate drill filter dropdown once if needed
       const drillSelect = document.getElementById('hz-drill-select');
-      if (drillSelect && drillSelect.options.length === 3) {
-        Object.values(WORKOUTS).forEach(w => {
-          w.drills.forEach((d, idx) => {
-            if (d.type === 'spots') {
-              const opt = document.createElement('option');
-              opt.value = d.id;
-              opt.textContent = `${w.tag}: #${idx + 1} ${d.name}`;
-              drillSelect.appendChild(opt);
-            }
-          });
-        });
+      if (drillSelect && drillSelect.options.length <= 1) {
+        populateHotZoneDrillOptions();
       }
 
-      const { outer, inner, ft } = aggregateHotZonesData();
-      let totalMakes = ft.makes;
-      let totalAtt = ft.attempts;
-      outer.forEach(z => { totalMakes += z.makes; totalAtt += z.attempts; });
-      inner.forEach(z => { totalMakes += z.makes; totalAtt += z.attempts; });
+      const workoutFilter = document.getElementById('hz-workout-select') ? document.getElementById('hz-workout-select').value : 'all';
+      const activeDrillFilter = drillSelect ? drillSelect.value : 'all';
+      const { outer, inner, ft, perDrillSpots } = aggregateHotZonesData();
+
+      let outerMakes = 0, outerAtt = 0;
+      outer.forEach(z => { outerMakes += z.makes; outerAtt += z.attempts; });
+
+      let innerMakes = 0, innerAtt = 0;
+      inner.forEach(z => { innerMakes += z.makes; innerAtt += z.attempts; });
+
+      const totalMakes = outerMakes + innerMakes + ft.makes;
+      const totalAtt = outerAtt + innerAtt + ft.attempts;
+
       document.getElementById('hz-overall-summary').textContent = `${totalMakes}-${totalAtt} (${formatPct(totalMakes, totalAtt)})`;
+      document.getElementById('hz-stat-overall-pct').textContent = formatPct(totalMakes, totalAtt);
+      document.getElementById('hz-stat-overall-sub').textContent = `${totalMakes}/${totalAtt}`;
+      document.getElementById('hz-stat-outer-pct').textContent = formatPct(outerMakes, outerAtt);
+      document.getElementById('hz-stat-outer-sub').textContent = `${outerMakes}/${outerAtt}`;
+      document.getElementById('hz-stat-inner-pct').textContent = formatPct(innerMakes, innerAtt);
+      document.getElementById('hz-stat-inner-sub').textContent = `${innerMakes}/${innerAtt}`;
+      document.getElementById('hz-stat-ft-pct').textContent = formatPct(ft.makes, ft.attempts);
+      document.getElementById('hz-stat-ft-sub').textContent = `${ft.makes}/${ft.attempts}`;
 
       const svg = document.getElementById('hotzones-svg');
       const cx = 250;
@@ -1376,6 +1506,62 @@ function doGet(e) {
       `;
 
       svg.innerHTML = svgHtml;
+
+      // Render Drill-by-Drill 5-Spot Heatmap Matrix
+      const matrixContainer = document.getElementById('hz-drill-matrix-list');
+      const matrixTitle = document.getElementById('hz-matrix-title');
+      if (matrixContainer) {
+        const wKeys = workoutFilter === 'all' ? ['catch_shoot', 'footwork_dribble'] : [workoutFilter];
+        if (matrixTitle) {
+          matrixTitle.textContent = workoutFilter === 'all'
+            ? 'All Spot Drills (5-Spot Breakdown)'
+            : `${WORKOUTS[workoutFilter].title} — Drill Spot Hot Zones`;
+        }
+
+        const cards = [];
+        wKeys.forEach(wKey => {
+          WORKOUTS[wKey].drills.forEach(d => {
+            if (d.type !== 'spots') return;
+            const entry = perDrillSpots[d.id];
+            if (!entry) return;
+            const isSelected = activeDrillFilter === d.id;
+            const zoneNames = wKey === 'footwork_dribble' ? INNER_ZONE_NAMES : OUTER_ZONE_NAMES;
+
+            const spotCellsHtml = entry.spots.map((sp, idx) => {
+              const pct = sp.attempts > 0 ? Math.round((sp.makes / sp.attempts) * 100) : null;
+              let cellBg = 'bg-slate-950/90 border-slate-800 text-slate-500';
+              if (pct !== null) {
+                if (pct >= 70) cellBg = 'bg-rose-600/30 border-rose-500/60 text-rose-200';
+                else if (pct >= 55) cellBg = 'bg-amber-600/30 border-amber-500/60 text-amber-200';
+                else cellBg = 'bg-blue-600/30 border-blue-500/60 text-blue-200';
+              }
+              return `
+                <div class="rounded-lg border p-1.5 text-center ${cellBg}" title="${zoneNames[idx]}">
+                  <div class="text-[9px] font-bold uppercase opacity-80">S${idx + 1}</div>
+                  <div class="font-mono text-[11px] font-black">${pct !== null ? pct + '%' : '—'}</div>
+                  <div class="font-mono text-[9px] opacity-80">${sp.makes}/${sp.attempts}</div>
+                </div>
+              `;
+            }).join('');
+
+            cards.push(`
+              <div onclick="selectHotZoneDrillFromMatrix('${wKey}', '${d.id}')" class="cursor-pointer rounded-xl p-2.5 border transition ${isSelected ? 'bg-slate-800/90 border-amber-500' : 'bg-slate-950/70 hover:bg-slate-800/50 border-slate-800'}">
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                  <div class="min-w-0">
+                    <span class="text-[9px] font-bold uppercase tracking-wider ${wKey === 'catch_shoot' ? 'text-amber-400' : 'text-sky-400'}">${entry.workoutTitle}</span>
+                    <div class="text-xs font-extrabold text-white truncate">${escapeHtml(entry.label)}</div>
+                  </div>
+                  <span class="font-mono text-xs font-black text-emerald-400 shrink-0">${formatPct(entry.makes, entry.attempts)} (${entry.makes}/${entry.attempts})</span>
+                </div>
+                <div class="grid grid-cols-5 gap-1">
+                  ${spotCellsHtml}
+                </div>
+              </div>
+            `);
+          });
+        });
+        matrixContainer.innerHTML = cards.join('');
+      }
 
       if (selectedHotZone) {
         inspectHotZone(selectedHotZone.ring, selectedHotZone.index, true);
@@ -1528,16 +1714,15 @@ function doGet(e) {
         badge.textContent = `${totals.makes}/${totals.goal}`;
         const isSelected = !showingHistory && !showingVitamins && !showingHotZones && appState.activeWorkout === wKey;
         btn.className = isSelected
-          ? 'py-2.5 px-2.5 rounded-xl text-left transition flex flex-col justify-between bg-gradient-to-br from-amber-500 to-orange-600 text-slate-950 shadow-lg shadow-orange-500/20'
-          : 'py-2.5 px-2.5 rounded-xl text-left transition flex flex-col justify-between bg-slate-950/60 text-slate-300 hover:bg-slate-800';
+          ? 'py-3 px-3.5 rounded-xl text-left transition flex items-center justify-between gap-2 bg-gradient-to-br from-amber-500 to-orange-600 text-slate-950 shadow-lg shadow-orange-500/20'
+          : 'py-3 px-3.5 rounded-xl text-left transition flex items-center justify-between gap-2 bg-slate-950/60 text-slate-300 hover:bg-slate-800';
       });
 
-      const vitBtn = document.getElementById('workout-btn-vitamins');
-      vitBtn.className = showingVitamins
-        ? 'py-2.5 px-2.5 rounded-xl text-left transition flex flex-col justify-between bg-gradient-to-br from-amber-500 to-orange-600 text-slate-950 shadow-lg shadow-orange-500/20'
-        : 'py-2.5 px-2.5 rounded-xl text-left transition flex flex-col justify-between bg-slate-950/60 text-slate-300 hover:bg-slate-800';
-
       // Top bar button active states
+      document.getElementById('toggle-vitamins-btn').className = showingVitamins
+        ? 'flex items-center gap-1 px-2.5 py-2 rounded-xl bg-amber-500 text-slate-950 border border-amber-400 text-xs font-bold transition'
+        : 'flex items-center gap-1 px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-amber-400 transition';
+
       document.getElementById('toggle-hotzones-btn').className = showingHotZones
         ? 'flex items-center gap-1 px-2.5 py-2 rounded-xl bg-rose-600 text-white border border-rose-500 text-xs font-bold transition'
         : 'flex items-center gap-1 px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-rose-400 transition';
@@ -1784,7 +1969,9 @@ function doGet(e) {
       const container = document.getElementById('vitamins-list');
       container.innerHTML = DAILY_VITAMINS.map(vit => {
         const offlineSaved = hasOfflineVideo(vit.id);
+        const offlineBreakdownSaved = hasOfflineVideo(`${vit.id}_breakdown`);
         const savedUrl = (videoLinks[vit.id] && videoLinks[vit.id].demo) || '';
+        const savedBreakdownUrl = (videoLinks[vit.id] && videoLinks[vit.id].breakdown) || '';
         return `
           <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2.5 flex flex-col justify-between">
             <div>
@@ -1796,18 +1983,33 @@ function doGet(e) {
             </div>
 
             <div class="space-y-2 pt-2 border-t border-slate-800/80">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <button onclick="openVitaminVideo('${vit.id}', '${escapeHtml(vit.title)}', '${escapeHtml(vit.defaultPath)}')" class="flex-1 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-1.5 transition">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                  Watch Clip
+                  Demo
                 </button>
+                ${vit.hasBreakdown ? `
+                  <button onclick="openDrillVideo('${vit.id}', 'breakdown', '${escapeHtml(vit.title)} — Breakdown')" class="py-2 px-3 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-purple-300 font-extrabold text-xs flex items-center justify-center gap-1 transition">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    Breakdown
+                  </button>
+                ` : ''}
                 <label class="cursor-pointer py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1 transition">
-                  Save Offline
-                  <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}', 'Vitamin')" class="hidden" />
+                  Save Demo
+                  <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}', 'Vitamin Demo')" class="hidden" />
                 </label>
-                ${offlineSaved ? `<button onclick="removeOfflineVideo('${vit.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-slate-700" title="Remove Offline File">&times;</button>` : ''}
+                ${offlineSaved ? `<button onclick="removeOfflineVideo('${vit.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-slate-700" title="Remove Offline Demo">&times;</button>` : ''}
               </div>
-              <input type="url" value="${escapeHtml(savedUrl)}" onchange="saveDrillVideoLink('${vit.id}', 'demo', this.value)" placeholder="Optional custom video URL..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-300 focus:outline-none focus:border-amber-500" />
+              <input type="url" value="${escapeHtml(savedUrl)}" onchange="saveDrillVideoLink('${vit.id}', 'demo', this.value)" placeholder="Paste Demo video URL..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-300 focus:outline-none focus:border-amber-500" />
+              ${vit.hasBreakdown ? `
+                <div class="flex items-center gap-1.5">
+                  <input type="url" value="${escapeHtml(savedBreakdownUrl)}" onchange="saveDrillVideoLink('${vit.id}', 'breakdown', this.value)" placeholder="Paste Breakdown video URL..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-300 focus:outline-none focus:border-purple-500" />
+                  <label class="cursor-pointer py-1.5 px-2.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold text-[10px] shrink-0">
+                    ${offlineBreakdownSaved ? 'Saved' : 'Save Breakdown'}
+                    <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}_breakdown', 'Vitamin Breakdown')" class="hidden" />
+                  </label>
+                </div>
+              ` : ''}
             </div>
           </div>
         `;
