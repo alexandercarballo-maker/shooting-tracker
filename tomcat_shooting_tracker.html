@@ -758,6 +758,7 @@ function doGet(e) {
     function toggleVideoDrawer(drillId) {
       openVideoDrawerDrillId = openVideoDrawerDrillId === drillId ? null : drillId;
       renderActiveDayView();
+      if (showingVitamins) renderVitaminsView();
     }
 
     function saveDrillVideoLink(drillId, slot, value) {
@@ -2228,6 +2229,7 @@ function doGet(e) {
         const offlineBreakdownSaved = hasOfflineVideo(`${vit.id}_breakdown`);
         const savedUrl = (videoLinks[vit.id] && videoLinks[vit.id].demo) || '';
         const savedBreakdownUrl = (videoLinks[vit.id] && videoLinks[vit.id].breakdown) || '';
+        const isDrawerOpen = openVideoDrawerDrillId === vit.id;
         return `
           <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2.5 flex flex-col justify-between">
             <div>
@@ -2250,20 +2252,37 @@ function doGet(e) {
                     Breakdown
                   </button>
                 ` : ''}
-                <label class="cursor-pointer py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1 transition">
-                  Save Demo
-                  <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}', 'Vitamin Demo')" class="hidden" />
-                </label>
-                ${offlineSaved ? `<button onclick="removeOfflineVideo('${vit.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-slate-700" title="Remove Offline Demo">&times;</button>` : ''}
+                <button onclick="toggleVideoDrawer('${vit.id}')" class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">
+                  ${isDrawerOpen ? 'Close Video' : '+ Video'}
+                </button>
               </div>
-              <input type="url" value="${escapeHtml(savedUrl)}" onchange="saveDrillVideoLink('${vit.id}', 'demo', this.value)" placeholder="Paste Demo video URL..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-300 focus:outline-none focus:border-amber-500" />
-              ${vit.hasBreakdown ? `
-                <div class="flex items-center gap-1.5">
-                  <input type="url" value="${escapeHtml(savedBreakdownUrl)}" onchange="saveDrillVideoLink('${vit.id}', 'breakdown', this.value)" placeholder="Paste Breakdown video URL..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-300 focus:outline-none focus:border-purple-500" />
-                  <label class="cursor-pointer py-1.5 px-2.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold text-[10px] shrink-0">
-                    ${offlineBreakdownSaved ? 'Saved' : 'Save Breakdown'}
-                    <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}_breakdown', 'Vitamin Breakdown')" class="hidden" />
-                  </label>
+
+              ${isDrawerOpen ? `
+                <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2 text-xs">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-[11px] font-bold text-slate-300">Demo Video (Offline or URL)</span>
+                    <div class="flex items-center gap-1.5">
+                      ${offlineSaved ? `<button onclick="removeOfflineVideo('${vit.id}')" class="text-[10px] text-rose-400 hover:underline">Remove File</button>` : ''}
+                      <label class="cursor-pointer px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
+                        Save Offline File
+                        <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}', 'Vitamin Demo')" class="hidden" />
+                      </label>
+                    </div>
+                  </div>
+                  <input type="url" value="${escapeHtml(savedUrl)}" onchange="saveDrillVideoLink('${vit.id}', 'demo', this.value)" placeholder="Paste Demo video URL..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-300 focus:outline-none focus:border-amber-500" />
+                  ${vit.hasBreakdown ? `
+                    <div class="flex items-center justify-between gap-2 pt-1">
+                      <span class="text-[11px] font-bold text-slate-300">Breakdown Clip (Optional)</span>
+                      <div class="flex items-center gap-1.5">
+                        ${offlineBreakdownSaved ? `<button onclick="removeOfflineVideo('${vit.id}_breakdown')" class="text-[10px] text-rose-400 hover:underline">Remove File</button>` : ''}
+                        <label class="cursor-pointer px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold">
+                          Save Offline File
+                          <input type="file" accept="video/*" onchange="handleOfflineVideoUpload(event, '${vit.id}_breakdown', 'Vitamin Breakdown')" class="hidden" />
+                        </label>
+                      </div>
+                    </div>
+                    <input type="url" value="${escapeHtml(savedBreakdownUrl)}" onchange="saveDrillVideoLink('${vit.id}', 'breakdown', this.value)" placeholder="Paste Breakdown video URL..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-[11px] text-slate-300 focus:outline-none focus:border-purple-500" />
+                  ` : ''}
                 </div>
               ` : ''}
             </div>
