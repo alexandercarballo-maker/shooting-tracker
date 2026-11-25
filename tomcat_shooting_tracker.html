@@ -51,9 +51,9 @@
 
   <!-- TOP STICKY HEADER -->
   <header class="sticky top-0 z-30 bg-[#090D16] safe-top-header border-b border-slate-800/90 shadow-lg">
-    <div class="max-w-2xl mx-auto px-3.5 pt-3 pb-2.5 space-y-2.5">
+    <div class="max-w-2xl lg:max-w-6xl mx-auto px-3.5 lg:px-6 pt-3 pb-2.5 space-y-2.5 lg:space-y-0 lg:flex lg:items-center lg:justify-between lg:gap-4">
       <!-- Top Row: Vitamin Icon Button, Date Picker, Current Daily Goal Progress & Settings Gear -->
-      <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center justify-between gap-2 lg:gap-3">
         <div class="flex items-center gap-2.5 min-w-0">
           <button
             id="workout-btn-vitamins"
@@ -104,7 +104,7 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2 shrink-0">
+        <div class="flex items-center gap-2 shrink-0 lg:hidden">
           <div class="inline-flex flex-col items-end bg-[#0F2342] border border-blue-800/60 rounded-xl px-2.5 py-1">
             <span class="text-[9px] font-extrabold uppercase tracking-wider text-blue-300">Daily Goal</span>
             <span class="text-xs sm:text-sm font-black font-mono text-white">
@@ -128,13 +128,13 @@
       </div>
 
       <!-- Segmented Workout Switcher + Hot Zones + Log History Toggle -->
-      <div class="flex items-center gap-1.5">
+      <div class="flex items-center gap-1.5 lg:flex-1 lg:max-w-2xl">
         <div class="flex-1 grid grid-cols-2 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800/90" role="tablist" aria-label="Select Workout">
           <button
             id="workout-btn-catch"
             type="button"
             data-workout="catchShoot"
-            class="workout-switch-btn tap-btn py-1.5 px-2 rounded-lg text-left transition-all flex items-center justify-between gap-1"
+            class="workout-switch-btn tap-btn py-1.5 px-2 lg:px-3 rounded-lg text-left transition-all flex items-center justify-between gap-1"
           >
             <div class="min-w-0">
               <div class="text-[11px] sm:text-xs font-extrabold truncate">Catch + Shoot</div>
@@ -147,7 +147,7 @@
             id="workout-btn-footwork"
             type="button"
             data-workout="footworkDribble"
-            class="workout-switch-btn tap-btn py-1.5 px-2 rounded-lg text-left transition-all flex items-center justify-between gap-1"
+            class="workout-switch-btn tap-btn py-1.5 px-2 lg:px-3 rounded-lg text-left transition-all flex items-center justify-between gap-1"
           >
             <div class="min-w-0">
               <div class="text-[11px] sm:text-xs font-extrabold truncate">Footwork + Dribble</div>
@@ -160,9 +160,9 @@
         <button
           id="toggle-hotzones-btn"
           type="button"
-          class="tap-btn shrink-0 inline-flex flex-col items-center justify-center px-2 py-2 rounded-xl text-[10px] font-extrabold border border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"
+          class="tap-btn shrink-0 inline-flex flex-col lg:flex-row items-center justify-center gap-0.5 lg:gap-1.5 px-2 lg:px-3 py-2 lg:py-2.5 rounded-xl text-[10px] lg:text-xs font-extrabold border border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"
         >
-          <svg class="w-3.5 h-3.5 text-rose-400 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path d="M12 2c.5 4-2 6.5-2 10a4 4 0 0 0 8 0c0-2.5-1.5-4.5-2-6 .5 2-.5 3.5-2 3.5-1 0-1.5-1-1.5-2.5 0-2 1-3.5-.5-5Z"></path>
             <path d="M5 19h14"></path>
           </svg>
@@ -172,9 +172,9 @@
         <button
           id="toggle-grid-btn"
           type="button"
-          class="tap-btn shrink-0 inline-flex flex-col items-center justify-center px-2 py-2 rounded-xl text-[10px] font-extrabold border border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"
+          class="tap-btn shrink-0 inline-flex flex-col lg:flex-row items-center justify-center gap-0.5 lg:gap-1.5 px-2 lg:px-3 py-2 lg:py-2.5 rounded-xl text-[10px] lg:text-xs font-extrabold border border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"
         >
-          <svg class="w-3.5 h-3.5 text-orange-400 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <rect x="3" y="3" width="7" height="7" rx="1"></rect>
             <rect x="14" y="3" width="7" height="7" rx="1"></rect>
             <rect x="14" y="14" width="7" height="7" rx="1"></rect>
@@ -183,23 +183,46 @@
           <span id="toggle-grid-label">History</span>
         </button>
       </div>
+
+      <!-- Desktop Right Controls: Daily Goal + Settings Gear -->
+      <div class="hidden lg:flex items-center gap-2.5 shrink-0">
+        <div class="inline-flex flex-col items-end bg-[#0F2342] border border-blue-800/60 rounded-xl px-3 py-1">
+          <span class="text-[9px] font-extrabold uppercase tracking-wider text-blue-300">Daily Goal</span>
+          <span class="text-sm font-black font-mono text-white">
+            <span id="desktop-header-current-makes" class="text-emerald-400">0</span><span class="text-slate-400">/</span><span id="desktop-header-goal-num">100</span>
+          </span>
+        </div>
+        <button
+          id="desktop-open-sheets-setup-btn"
+          type="button"
+          class="tap-btn relative w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white"
+          title="Google Sheets Setup"
+          aria-label="Google Sheets Setup"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span id="desktop-sheets-status-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-[#090D16]"></span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-2xl mx-auto px-3.5 pt-3.5 space-y-4">
+  <main class="max-w-2xl lg:max-w-6xl mx-auto px-3.5 lg:px-6 pt-3.5 lg:pt-6 space-y-4">
 
     <!-- NBA-STYLE HOT ZONES COURT VISUALIZER VIEW -->
     <section id="hotzones-view" class="hidden space-y-3">
-      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl space-y-3">
+      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 lg:p-5 shadow-xl space-y-3 lg:space-y-4">
         <div class="flex items-center justify-between gap-2">
           <div>
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-400">Shot Chart Analytics</span>
-            <h2 class="text-base font-black text-white">TomCat Shooting Hot Zones</h2>
+            <h2 class="text-base lg:text-xl font-black text-white">TomCat Shooting Hot Zones</h2>
           </div>
           <div class="flex items-center gap-1.5">
             <label
               for="hotzones-csv-input"
-              class="tap-btn cursor-pointer text-[11px] font-bold px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700"
+              class="tap-btn cursor-pointer text-[11px] lg:text-xs font-bold px-2.5 lg:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700"
               title="Visualize an exported CSV file"
             >
               Load CSV
@@ -208,7 +231,7 @@
             <button
               id="close-hotzones-btn"
               type="button"
-              class="tap-btn text-[11px] font-bold px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
+              class="tap-btn text-[11px] lg:text-xs font-bold px-2.5 lg:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
             >
               Workout
             </button>
@@ -223,71 +246,77 @@
           </button>
         </div>
 
-        <!-- Timeframe & Drill Filters -->
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label for="hz-timeframe-select" class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">Timeframe</label>
-            <select
-              id="hz-timeframe-select"
-              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white focus:outline-none focus:border-orange-500"
-            >
-              <option value="all">All Logged Sessions</option>
-              <option value="week">Last 7 Days</option>
-              <option value="date">Selected Session Date</option>
-            </select>
+        <!-- Desktop 2-Column Split: Court on Left, Filters & Inspector on Right -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+          <!-- Interactive Half-Court SVG -->
+          <div class="lg:col-span-7 bg-[#060911] border border-slate-800 rounded-2xl p-2 lg:p-3 overflow-hidden">
+            <svg id="hotzones-court-svg" viewBox="0 0 500 470" class="w-full h-auto select-none">
+              <!-- Populated dynamically by renderHotZonesView() -->
+            </svg>
           </div>
-          <div>
-            <label for="hz-drill-select" class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">Workout / Drill</label>
-            <select
-              id="hz-drill-select"
-              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white focus:outline-none focus:border-orange-500"
-            >
-              <option value="all">All 10 Court Zones</option>
-              <option value="catchShoot">Catch + Shoot (5 Perimeter)</option>
-              <option value="footworkDribble">Footwork + Dribble (5 Mid-Range)</option>
-            </select>
-          </div>
-        </div>
 
-        <!-- Color Legend -->
-        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-800/80 text-[10px] font-bold">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex items-center gap-1 text-rose-300">
-              <span class="w-2.5 h-2.5 rounded-sm bg-[#DC2626]"></span> Hot (≥70%)
-            </span>
-            <span class="inline-flex items-center gap-1 text-amber-300">
-              <span class="w-2.5 h-2.5 rounded-sm bg-[#B45309]"></span> Solid (55–69%)
-            </span>
-            <span class="inline-flex items-center gap-1 text-blue-300">
-              <span class="w-2.5 h-2.5 rounded-sm bg-[#1D4ED8]"></span> Cold (&lt;55%)
-            </span>
-          </div>
-          <span id="hz-overall-summary" class="font-mono text-slate-300">Court: 0/0 (0.0%)</span>
-        </div>
+          <!-- Right Panel: Filters, Legend & Zone Breakdown -->
+          <div class="lg:col-span-5 space-y-3">
+            <!-- Timeframe & Drill Filters -->
+            <div class="grid grid-cols-2 lg:grid-cols-1 gap-2.5 bg-slate-950/80 border border-slate-800 rounded-xl p-3">
+              <div>
+                <label for="hz-timeframe-select" class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">Timeframe</label>
+                <select
+                  id="hz-timeframe-select"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white focus:outline-none focus:border-orange-500"
+                >
+                  <option value="all">All Logged Sessions</option>
+                  <option value="week">Last 7 Days</option>
+                  <option value="date">Selected Session Date</option>
+                </select>
+              </div>
+              <div>
+                <label for="hz-drill-select" class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">Workout / Drill</label>
+                <select
+                  id="hz-drill-select"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white focus:outline-none focus:border-orange-500"
+                >
+                  <option value="all">All 10 Court Zones</option>
+                  <option value="catchShoot">Catch + Shoot (5 Perimeter)</option>
+                  <option value="footworkDribble">Footwork + Dribble (5 Mid-Range)</option>
+                </select>
+              </div>
+            </div>
 
-        <!-- Interactive Half-Court SVG -->
-        <div class="bg-[#060911] border border-slate-800 rounded-2xl p-2 overflow-hidden">
-          <svg id="hotzones-court-svg" viewBox="0 0 500 470" class="w-full h-auto select-none">
-            <!-- Populated dynamically by renderHotZonesView() -->
-          </svg>
-        </div>
+            <!-- Color Legend -->
+            <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-[10px] lg:text-xs font-bold">
+              <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1 text-rose-300">
+                  <span class="w-2.5 h-2.5 rounded-sm bg-[#DC2626]"></span> Hot (≥70%)
+                </span>
+                <span class="inline-flex items-center gap-1 text-amber-300">
+                  <span class="w-2.5 h-2.5 rounded-sm bg-[#B45309]"></span> Solid (55–69%)
+                </span>
+                <span class="inline-flex items-center gap-1 text-blue-300">
+                  <span class="w-2.5 h-2.5 rounded-sm bg-[#1D4ED8]"></span> Cold (&lt;55%)
+                </span>
+              </div>
+              <span id="hz-overall-summary" class="font-mono text-slate-300">Court: 0/0 (0.0%)</span>
+            </div>
 
-        <!-- Selected Zone Drill-by-Drill Inspector -->
-        <div id="hz-zone-inspector" class="bg-slate-950/90 border border-slate-800 rounded-xl p-3 space-y-2">
-          <div class="flex items-center justify-between">
-            <span id="hz-inspector-title" class="text-xs font-black text-white">Tap any zone on the court to inspect drills</span>
-            <span id="hz-inspector-total" class="font-mono text-xs font-extrabold text-orange-400"></span>
-          </div>
-          <div id="hz-inspector-list" class="space-y-1 text-xs text-slate-300">
-            <p class="text-[11px] text-slate-400">Outer ring shows Catch + Shoot perimeter spots; inner ring shows Footwork + Off-Dribble spots.</p>
+            <!-- Selected Zone Drill-by-Drill Inspector -->
+            <div id="hz-zone-inspector" class="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 space-y-2">
+              <div class="flex items-center justify-between">
+                <span id="hz-inspector-title" class="text-xs lg:text-sm font-black text-white">Tap any zone on the court to inspect drills</span>
+                <span id="hz-inspector-total" class="font-mono text-xs font-extrabold text-orange-400"></span>
+              </div>
+              <div id="hz-inspector-list" class="space-y-1.5 text-xs text-slate-300">
+                <p class="text-[11px] text-slate-400">Outer ring shows Catch + Shoot perimeter spots; inner ring shows Footwork + Off-Dribble spots.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- DAILY VITAMINS VIDEO LIBRARY VIEW -->
-    <section id="vitamins-view" class="hidden space-y-3">
-      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl">
+    <section id="vitamins-view" class="hidden space-y-3 lg:space-y-4">
+      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 lg:p-5 shadow-xl">
         <div class="flex items-center justify-between gap-2">
           <div>
             <div class="flex items-center gap-1.5">
@@ -295,26 +324,26 @@
               <span class="text-slate-600">•</span>
               <span class="text-[11px] font-bold text-slate-300">Pre-Workout Warm-Up</span>
             </div>
-            <h2 class="text-lg font-black text-white mt-0.5">Daily Vitamins Video Library</h2>
-            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            <h2 class="text-lg lg:text-xl font-black text-white mt-0.5">Daily Vitamins Video Library</h2>
+            <p class="text-xs lg:text-sm text-slate-400 mt-1 leading-relaxed">
               Complete these four drills before each shooting workout. Work from 3–4 feet, take your time, and focus on the details of your mechanics.
             </p>
           </div>
         </div>
       </div>
 
-      <!-- 4 Daily Vitamin Drill Video Cards -->
-      <div id="vitamins-list-container" class="space-y-3">
+      <!-- 4 Daily Vitamin Drill Video Cards (2x2 Grid on Laptop) -->
+      <div id="vitamins-list-container" class="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
         <!-- Populated by JS -->
       </div>
     </section>
 
     <!-- LOGGED DATES SUMMARY VIEW -->
-    <section id="weekly-grid-section" class="hidden bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl">
+    <section id="weekly-grid-section" class="hidden bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 lg:p-5 shadow-xl">
       <div class="flex items-center justify-between mb-3 gap-2">
         <div>
           <span id="grid-workout-badge" class="text-[10px] font-extrabold uppercase tracking-wider text-orange-400">Catch + Shoot Workout</span>
-          <h2 class="text-base font-black text-white">Logged Sessions by Date</h2>
+          <h2 class="text-base lg:text-xl font-black text-white">Logged Sessions by Date</h2>
         </div>
         <button
           id="close-grid-btn"
@@ -326,7 +355,7 @@
       </div>
 
       <div class="overflow-x-auto rounded-xl border border-slate-800">
-        <table class="w-full text-left border-collapse text-xs">
+        <table class="w-full text-left border-collapse text-xs lg:text-sm">
           <thead id="weekly-grid-thead">
             <!-- Populated by JS -->
           </thead>
@@ -340,96 +369,155 @@
       </div>
     </section>
 
-    <!-- ACTIVE DATE WORKOUT VIEW -->
-    <div id="active-day-view" class="space-y-4">
+    <!-- ACTIVE DATE WORKOUT VIEW (Responsive 2-Column Laptop Dashboard + Stacked iPhone View) -->
+    <div id="active-day-view" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
 
-      <!-- DAILY SUMMARY + PT KNEE COMFORT + WORKOUT NOTES CARD -->
-      <section class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <div class="flex items-center gap-1.5">
-              <span id="active-day-label" class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">NOV 18, 2026</span>
-              <span class="text-slate-600">•</span>
-              <span id="active-workout-subtitle" class="text-[11px] font-bold text-slate-300">Catch + Shoot Workout</span>
+      <!-- LEFT STICKY SIDEBAR ON LAPTOP: SUMMARY + KNEE CHECK + SYNC/EXPORT -->
+      <div class="lg:col-span-4 lg:sticky lg:top-20 space-y-4">
+        <!-- DAILY SUMMARY + PT KNEE COMFORT + WORKOUT NOTES CARD -->
+        <section class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 lg:p-4 shadow-xl">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span id="active-day-label" class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">NOV 18, 2026</span>
+                <span class="text-slate-600">•</span>
+                <span id="active-workout-subtitle" class="text-[11px] font-bold text-slate-300">Catch + Shoot Workout</span>
+              </div>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span id="day-makes-hero" class="text-3xl font-black font-mono text-white">0</span>
+                <span class="text-xs font-bold text-slate-400">/ <span id="day-goal-hero">100</span> Makes Goal</span>
+              </div>
             </div>
-            <div class="flex items-baseline gap-2 mt-0.5">
-              <span id="day-makes-hero" class="text-3xl font-black font-mono text-white">0</span>
-              <span class="text-xs font-bold text-slate-400">/ <span id="day-goal-hero">100</span> Makes Goal</span>
+
+            <div class="text-right">
+              <span id="day-pct-badge" class="inline-block font-mono text-xs font-extrabold px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700">
+                0.0% (0 att)
+              </span>
+              <div class="text-[11px] text-slate-400 mt-1 font-mono">
+                Total Logged: <strong id="week-makes-mini" class="text-white">0</strong>/<span id="week-goal-mini">0</span> (<span id="week-pct-mini">0.0%</span>)
+              </div>
             </div>
           </div>
 
-          <div class="text-right">
-            <span id="day-pct-badge" class="inline-block font-mono text-xs font-extrabold px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700">
-              0.0% (0 att)
-            </span>
-            <div class="text-[11px] text-slate-400 mt-1 font-mono">
-              Total Logged: <strong id="week-makes-mini" class="text-white">0</strong>/<span id="week-goal-mini">0</span> (<span id="week-pct-mini">0.0%</span>)
-            </div>
-          </div>
-        </div>
-
-        <!-- Daily Progress Bar -->
-        <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden mt-2.5 border border-slate-800">
-          <div
-            id="day-progress-bar"
-            class="h-full bg-gradient-to-r from-orange-500 via-amber-500 to-emerald-500 transition-all duration-300"
-            style="width: 0%"
-          ></div>
-        </div>
-
-        <!-- PT Knee Comfort Check & Daily Workout Notes -->
-        <div class="mt-3 pt-3 border-t border-slate-800/80 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-              <span class="text-xs font-bold text-slate-200">PT Knee Comfort Check:</span>
-            </div>
-            <span id="last-synced-badge" class="text-[10px] font-mono text-slate-500">Not synced yet</span>
+          <!-- Daily Progress Bar -->
+          <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden mt-2.5 border border-slate-800">
+            <div
+              id="day-progress-bar"
+              class="h-full bg-gradient-to-r from-orange-500 via-amber-500 to-emerald-500 transition-all duration-300"
+              style="width: 0%"
+            ></div>
           </div>
 
-          <div class="grid grid-cols-3 gap-1.5" id="knee-status-group">
+          <!-- PT Knee Comfort Check & Daily Workout Notes -->
+          <div class="mt-3 pt-3 border-t border-slate-800/80 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+                <span class="text-xs font-bold text-slate-200">PT Knee Comfort Check:</span>
+              </div>
+              <span id="last-synced-badge" class="text-[10px] font-mono text-slate-500">Not synced yet</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-1.5" id="knee-status-group">
+              <button
+                type="button"
+                data-knee="Great (0/10)"
+                class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+              >
+                Great (0/10)
+              </button>
+              <button
+                type="button"
+                data-knee="Mild Tightness (1-2/10)"
+                class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+              >
+                Mild Tightness
+              </button>
+              <button
+                type="button"
+                data-knee="Sore - Stop Hops (3+/10)"
+                class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+              >
+                Sore • Stop Hops
+              </button>
+            </div>
+
+            <div>
+              <label for="day-notes-input" class="sr-only">Workout Notes</label>
+              <input
+                id="day-notes-input"
+                type="text"
+                placeholder="Workout Notes (e.g., Wore knee sleeve, felt explosive)..."
+                class="w-full bg-slate-950/90 border border-slate-800 focus:border-orange-500 rounded-xl px-3 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none"
+              />
+            </div>
+          </div>
+        </section>
+
+        <!-- SYNC, EXPORT & RESET ACTION CARD (Desktop Sidebar Position) -->
+        <section class="hidden lg:block bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-2.5">
+          <button
+            id="desktop-sync-sheets-btn"
+            type="button"
+            class="tap-btn w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/30"
+          >
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+              <path d="M16 16h5v5"></path>
+            </svg>
+            <span id="desktop-sync-sheets-btn-text">Sync Session to Google Sheets</span>
+          </button>
+
+          <div class="grid grid-cols-3 gap-2">
             <button
+              id="desktop-copy-log-btn"
               type="button"
-              data-knee="Great (0/10)"
-              class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+              class="tap-btn flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs py-2.5 px-2 rounded-xl"
             >
-              Great (0/10)
+              <svg class="w-3.5 h-3.5 text-orange-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copy Log</span>
             </button>
+
             <button
+              id="desktop-export-csv-btn"
               type="button"
-              data-knee="Mild Tightness (1-2/10)"
-              class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+              class="tap-btn flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs py-2.5 px-2 rounded-xl"
             >
-              Mild Tightness
+              <svg class="w-3.5 h-3.5 text-sky-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Export CSV</span>
             </button>
+
             <button
+              id="desktop-reset-day-btn"
               type="button"
-              data-knee="Sore - Stop Hops (3+/10)"
-              class="knee-btn tap-btn text-[11px] font-bold px-2 py-2 rounded-xl border border-slate-700 bg-slate-800/70 text-slate-300 text-center leading-tight"
+              class="tap-btn flex items-center justify-center gap-1.5 bg-rose-950/60 hover:bg-rose-900/70 border border-rose-800/70 text-rose-300 font-bold text-xs py-2.5 px-2 rounded-xl"
             >
-              Sore • Stop Hops
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              <span id="desktop-reset-day-label">Reset Date</span>
             </button>
           </div>
+        </section>
+      </div>
 
-          <div>
-            <label for="day-notes-input" class="sr-only">Workout Notes</label>
-            <input
-              id="day-notes-input"
-              type="text"
-              placeholder="Workout Notes (e.g., Wore knee sleeve, felt explosive)..."
-              class="w-full bg-slate-950/90 border border-slate-800 focus:border-orange-500 rounded-xl px-3 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none"
-            />
-          </div>
-        </div>
-      </section>
-
-      <!-- DRILL CARDS LIST -->
-      <section id="drills-container" class="space-y-3">
+      <!-- RIGHT MAIN AREA ON LAPTOP: 2-COLUMN DRILL CARDS GRID -->
+      <section id="drills-container" class="lg:col-span-8 grid grid-cols-1 xl:grid-cols-2 gap-3 lg:gap-4">
         <!-- Populated dynamically by JS -->
       </section>
 
-      <!-- BOTTOM SYNC, EXPORT & RESET ACTION CARD -->
-      <section class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl space-y-2.5">
+      <!-- SYNC, EXPORT & RESET ACTION CARD (Mobile Bottom Position) -->
+      <section class="lg:hidden bg-slate-900/95 border border-slate-800 rounded-2xl p-3.5 shadow-xl space-y-2.5">
         <button
           id="sync-sheets-btn"
           type="button"
@@ -544,8 +632,8 @@
   </div>
 
   <!-- OFFLINE VIDEO PLAYER MODAL -->
-  <div id="video-player-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-sm p-3">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+  <div id="video-player-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-sm p-3 lg:p-6">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg lg:max-w-3xl overflow-hidden shadow-2xl">
       <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
         <div class="min-w-0 pr-2">
           <span id="player-drill-badge" class="text-[10px] font-extrabold uppercase tracking-wider text-orange-400">DRILL 1 DEMO</span>
@@ -1838,8 +1926,14 @@
         notesInput.value = dayRecord.notes || '';
       }
 
-      document.getElementById('sync-sheets-btn-text').textContent = `Sync ${formatDisplayDate(state.activeDate, false)} to Google Sheets`;
-      document.getElementById('reset-day-label').textContent = `Reset ${formatDisplayDate(state.activeDate, false)}`;
+      const syncLabel = `Sync ${formatDisplayDate(state.activeDate, false)} to Google Sheets`;
+      const resetLabel = `Reset ${formatDisplayDate(state.activeDate, false)}`;
+      document.getElementById('sync-sheets-btn-text').textContent = syncLabel;
+      document.getElementById('reset-day-label').textContent = resetLabel;
+      const dSyncText = document.getElementById('desktop-sync-sheets-btn-text');
+      const dResetText = document.getElementById('desktop-reset-day-label');
+      if (dSyncText) dSyncText.textContent = syncLabel;
+      if (dResetText) dResetText.textContent = resetLabel;
 
       const container = document.getElementById('drills-container');
       container.innerHTML = workout.drills.map((d) => {
@@ -2057,14 +2151,19 @@
       document.getElementById('session-date-input').value = state.activeDate;
       document.getElementById('header-current-makes').textContent = dayTotals.makes;
       document.getElementById('header-goal-num').textContent = dayTotals.goal;
+      const dMakesEl = document.getElementById('desktop-header-current-makes');
+      const dGoalEl = document.getElementById('desktop-header-goal-num');
+      if (dMakesEl) dMakesEl.textContent = dayTotals.makes;
+      if (dGoalEl) dGoalEl.textContent = dayTotals.goal;
 
       const webhookUrl = localStorage.getItem(WEBHOOK_STORAGE_KEY);
       const statusDot = document.getElementById('sheets-status-dot');
-      if (webhookUrl && webhookUrl.startsWith('http')) {
-        statusDot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#090D16]';
-      } else {
-        statusDot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-[#090D16]';
-      }
+      const desktopStatusDot = document.getElementById('desktop-sheets-status-dot');
+      const dotClass = (webhookUrl && webhookUrl.startsWith('http'))
+        ? 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#090D16]'
+        : 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-[#090D16]';
+      statusDot.className = dotClass;
+      if (desktopStatusDot) desktopStatusDot.className = dotClass;
 
       const vitBtn = document.getElementById('workout-btn-vitamins');
       if (state.showVitamins) {
@@ -2612,7 +2711,7 @@
     });
 
     // GOOGLE SHEETS SYNC
-    document.getElementById('sync-sheets-btn').addEventListener('click', async () => {
+    async function handleSyncSheets() {
       const webhookUrl = localStorage.getItem(WEBHOOK_STORAGE_KEY);
       if (!webhookUrl || !webhookUrl.startsWith('http')) {
         showToast('Paste your Google Sheets Web App URL in Settings first', 'warn');
@@ -2651,8 +2750,12 @@
 
       const btn = document.getElementById('sync-sheets-btn');
       const btnText = document.getElementById('sync-sheets-btn-text');
+      const dBtn = document.getElementById('desktop-sync-sheets-btn');
+      const dBtnText = document.getElementById('desktop-sync-sheets-btn-text');
       btn.disabled = true;
       btnText.textContent = 'Syncing to Google Sheets...';
+      if (dBtn) dBtn.disabled = true;
+      if (dBtnText) dBtnText.textContent = 'Syncing to Google Sheets...';
 
       try {
         await fetch(webhookUrl, {
@@ -2671,13 +2774,19 @@
         console.error('Sync failed:', err);
         showToast('Sync failed — check internet or Web App URL', 'error');
       } finally {
+        const label = `Sync ${formatDisplayDate(state.activeDate, false)} to Google Sheets`;
         btn.disabled = false;
-        btnText.textContent = `Sync ${formatDisplayDate(state.activeDate, false)} to Google Sheets`;
+        btnText.textContent = label;
+        if (dBtn) dBtn.disabled = false;
+        if (dBtnText) dBtnText.textContent = label;
       }
-    });
+    }
+
+    document.getElementById('sync-sheets-btn').addEventListener('click', handleSyncSheets);
+    document.getElementById('desktop-sync-sheets-btn')?.addEventListener('click', handleSyncSheets);
 
     // COPY FORMATTED LOG TO CLIPBOARD
-    document.getElementById('copy-log-btn').addEventListener('click', () => {
+    function handleCopyLog() {
       const workout = getActiveWorkoutConfig();
       const dayRecord = getActiveDayRecord();
       const totals = computeDateTotals(state.activeWorkout, state.activeDate);
@@ -2720,10 +2829,13 @@
       } finally {
         document.body.removeChild(ta);
       }
-    });
+    }
+
+    document.getElementById('copy-log-btn').addEventListener('click', handleCopyLog);
+    document.getElementById('desktop-copy-log-btn')?.addEventListener('click', handleCopyLog);
 
     // EXPORT CSV
-    document.getElementById('export-csv-btn').addEventListener('click', () => {
+    function handleExportCsv() {
       const csvRows = [
         ['Player', 'Workout', 'Date', 'Drill #', 'Drill Name', 'Target', 'Makes', 'Attempts', 'Percentage', 'Spot 1', 'Spot 2', 'Spot 3', 'Spot 4', 'Spot 5', 'Knee Comfort', 'Notes']
       ];
@@ -2769,10 +2881,13 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       showToast('Exported TomCat_Shooting_Tracker.csv');
-    });
+    }
+
+    document.getElementById('export-csv-btn').addEventListener('click', handleExportCsv);
+    document.getElementById('desktop-export-csv-btn')?.addEventListener('click', handleExportCsv);
 
     // RESET DATE MODAL LOGIC
-    document.getElementById('reset-day-btn').addEventListener('click', () => {
+    function handleOpenResetModal() {
       const workout = getActiveWorkoutConfig();
       const formattedDate = formatDisplayDate(state.activeDate, true);
       document.getElementById('confirm-reset-title').textContent = `Reset ${formattedDate} Stats?`;
@@ -2780,7 +2895,10 @@
       const modal = document.getElementById('confirm-reset-modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-    });
+    }
+
+    document.getElementById('reset-day-btn').addEventListener('click', handleOpenResetModal);
+    document.getElementById('desktop-reset-day-btn')?.addEventListener('click', handleOpenResetModal);
 
     document.getElementById('cancel-reset-btn').addEventListener('click', () => {
       const modal = document.getElementById('confirm-reset-modal');
@@ -2814,6 +2932,8 @@
     }
 
     document.getElementById('open-sheets-setup-btn').addEventListener('click', openSheetsModal);
+    const desktopSheetsBtn = document.getElementById('desktop-open-sheets-setup-btn');
+    if (desktopSheetsBtn) desktopSheetsBtn.addEventListener('click', openSheetsModal);
     document.getElementById('close-sheets-modal-btn').addEventListener('click', closeSheetsModal);
 
     document.getElementById('save-webhook-btn').addEventListener('click', () => {
