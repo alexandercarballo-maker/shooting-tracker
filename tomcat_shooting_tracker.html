@@ -125,12 +125,12 @@
       <section class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-1.5 grid grid-cols-2 gap-1.5">
         <button id="workout-btn-catch_shoot" onclick="selectWorkout('catch_shoot')" class="py-3 px-3.5 rounded-xl text-left transition flex items-center justify-between gap-2">
           <span class="text-base sm:text-lg font-black tracking-tight leading-tight">Catch and Shoot</span>
-          <span id="workout-badge-catch_shoot" class="text-xs sm:text-sm font-mono font-black px-2.5 py-1 rounded-lg bg-black/25 shrink-0">0/150</span>
+          <span id="workout-badge-catch_shoot" class="text-xs sm:text-sm font-mono font-black px-2.5 py-1 rounded-lg bg-black/25 shrink-0">0/100</span>
         </button>
 
         <button id="workout-btn-footwork_dribble" onclick="selectWorkout('footwork_dribble')" class="py-3 px-3.5 rounded-xl text-left transition flex items-center justify-between gap-2">
           <span class="text-base sm:text-lg font-black tracking-tight leading-tight">Footwork</span>
-          <span id="workout-badge-footwork_dribble" class="text-xs sm:text-sm font-mono font-black px-2.5 py-1 rounded-lg bg-black/25 shrink-0">0/175</span>
+          <span id="workout-badge-footwork_dribble" class="text-xs sm:text-sm font-mono font-black px-2.5 py-1 rounded-lg bg-black/25 shrink-0">0/155</span>
         </button>
       </section>
     </div>
@@ -142,20 +142,14 @@
       <div class="lg:col-span-4 space-y-4 lg:sticky lg:top-20">
         <!-- Session Progress & Summary Card -->
         <section class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800/90 border border-slate-800 rounded-2xl p-4 shadow-xl">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <div class="flex items-center gap-2">
-                <span id="day-tag-pill" class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30">Workout 1</span>
-                <span id="day-focus-title" class="text-xs font-semibold text-slate-400">Catch + Shoot</span>
-              </div>
-              <div class="mt-2 flex items-baseline gap-2">
-                <span id="day-makes-hero" class="text-3xl font-black font-mono text-white">0</span>
-                <span class="text-sm font-semibold text-slate-400">/ <span id="day-goal-hero">100</span> Makes Goal</span>
-              </div>
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-baseline gap-2 min-w-0">
+              <span id="day-makes-hero" class="text-3xl sm:text-4xl font-black font-mono text-white leading-none">0</span>
+              <span class="text-xs sm:text-sm font-semibold text-slate-400 truncate">/ <span id="day-goal-hero">100</span> Makes Goal</span>
             </div>
 
             <div class="text-right shrink-0">
-              <span id="day-pct-badge" class="inline-block font-mono text-xs font-extrabold px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700">
+              <span id="day-pct-badge" class="inline-block font-mono text-sm sm:text-base font-black px-3 py-1.5 rounded-xl bg-slate-800 text-emerald-400 border border-slate-700">
                 0.0% • 0 att
               </span>
             </div>
@@ -166,12 +160,12 @@
             <div id="day-progress-bar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
           </div>
 
-          <!-- PT / Knee Comfort Check -->
+          <!-- Knee Comfort Check -->
           <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-col gap-2">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                PT Knee Comfort
+                Knee Comfort
               </span>
               <div class="flex items-center gap-1.5">
                 <button onclick="setKneeComfort('Great')" id="knee-btn-Great" class="px-2.5 py-1 rounded-lg text-xs font-bold border transition">Great</button>
@@ -182,7 +176,11 @@
           </div>
 
           <!-- Session Coaching Notes -->
-          <div class="mt-3">
+          <div class="mt-3 space-y-1.5">
+            <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Overall Body Status
+            </span>
             <input type="text" id="day-notes-input" oninput="updateDayNotes(this.value)" placeholder="Session notes (balance, arc, footwork, knee feel)..." class="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500/60" />
           </div>
         </section>
@@ -485,8 +483,14 @@
       </div>
       <div id="video-modal-body" class="bg-black flex items-center justify-center w-full aspect-video max-h-[74vh] overflow-hidden"></div>
       <div class="px-4 py-2.5 bg-slate-950 border-t border-slate-800 flex items-center justify-between gap-2 text-[11px] text-slate-400">
-        <span id="video-modal-source" class="truncate">Offline Device Storage</span>
-        <button onclick="closeVideoModal()" class="px-3 py-1 rounded-lg bg-slate-800 text-slate-200 font-bold hover:bg-slate-700 shrink-0">Done</button>
+        <span id="video-modal-source" class="truncate">Local Device Storage</span>
+        <div class="flex items-center gap-2 shrink-0">
+          <label id="video-modal-upload-label" class="cursor-pointer px-3 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold hover:bg-amber-500/30">
+            Select Local Video File
+            <input type="file" id="video-modal-file-input" accept="video/*,.mp4,.mov,.m4v,.webm" class="hidden" />
+          </label>
+          <button onclick="closeVideoModal()" class="px-3 py-1 rounded-lg bg-slate-800 text-slate-200 font-bold hover:bg-slate-700">Done</button>
+        </div>
       </div>
     </div>
   </div>
@@ -653,7 +657,8 @@ function doGet(e) {
     const SETTINGS_KEY = 'tomcat_shooting_settings_v2';
     const VIDEO_LINKS_KEY = 'tomcat_drill_video_links_v1';
     const OFFLINE_VIDEO_META_KEY = 'tomcat_offline_video_meta_v1';
-    const OFFLINE_VIDEO_CACHE_NAME = 'tomcat-drill-videos-cache-v1';
+    const VIDEO_DB_NAME = 'TomCatLocalVideosDB';
+    const VIDEO_STORE_NAME = 'videos';
 
     let appState = loadState();
     let appSettings = loadSettings();
@@ -670,7 +675,7 @@ function doGet(e) {
     let importedHotZoneFilename = '';
 
     // =========================================================================
-    // 2. DATE HELPERS & STATE INITIALIZATION
+    // 2. DATE HELPERS & LOCAL INDEXEDDB VIDEO STORAGE
     // =========================================================================
     function getTodayISO() {
       const now = new Date();
@@ -678,6 +683,252 @@ function doGet(e) {
       const m = String(now.getMonth() + 1).padStart(2, '0');
       const d = String(now.getDate()).padStart(2, '0');
       return `${y}-${m}-${d}`;
+    }
+
+    function openLocalVideoDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error('IndexedDB unavailable'));
+          return;
+        }
+        const req = indexedDB.open(VIDEO_DB_NAME, 1);
+        req.onupgradeneeded = e => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
+            db.createObjectStore(VIDEO_STORE_NAME);
+          }
+        };
+        req.onsuccess = e => resolve(e.target.result);
+        req.onerror = e => reject(e.target.error);
+      });
+    }
+
+    async function putLocalVideoBlob(key, blob) {
+      const db = await openLocalVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+        tx.objectStore(VIDEO_STORE_NAME).put(blob, key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = e => reject(e.target.error);
+      });
+    }
+
+    async function getLocalVideoBlob(key) {
+      const db = await openLocalVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readonly');
+        const req = tx.objectStore(VIDEO_STORE_NAME).get(key);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = e => reject(e.target.error);
+      });
+    }
+
+    async function deleteLocalVideoBlob(key) {
+      const db = await openLocalVideoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(VIDEO_STORE_NAME, 'readwrite');
+        tx.objectStore(VIDEO_STORE_NAME).delete(key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = e => reject(e.target.error);
+      });
+    }
+
+    function normalizeVideoUrl(rawUrl) {
+      const u = String(rawUrl || '').trim();
+      if (!u) return '';
+      // Convert local Windows/Mac paths if user pastes one directly
+      if (/^[a-zA-Z]:\\/.test(u)) {
+        return 'file:///' + u.replace(/\\/g, '/');
+      }
+      if (u.startsWith('/Users/') || u.startsWith('/home/')) {
+        return 'file://' + u;
+      }
+      return u;
+    }
+
+    function getEffectiveVideoUrl(drillId, slot) {
+      const saved = videoLinks[drillId] && videoLinks[drillId][slot];
+      if (saved && saved.trim()) return normalizeVideoUrl(saved);
+      const def = DEFAULT_DRILL_VIDEOS[drillId] && DEFAULT_DRILL_VIDEOS[drillId][slot];
+      return def || '';
+    }
+
+    function hasOfflineVideo(key) {
+      return !!(offlineVideoMeta && offlineVideoMeta[key]);
+    }
+
+    function toggleVideoDrawer(drillId) {
+      openVideoDrawerDrillId = openVideoDrawerDrillId === drillId ? null : drillId;
+      renderActiveDayView();
+    }
+
+    function saveDrillVideoLink(drillId, slot, value) {
+      if (!videoLinks[drillId]) videoLinks[drillId] = {};
+      videoLinks[drillId][slot] = value.trim();
+      saveVideoLinks();
+      renderActiveDayView();
+      if (showingVitamins) renderVitaminsView();
+      showToast('Video link saved');
+    }
+
+    async function storeLocalVideoFile(file, storageKey, label) {
+      if (!file) return;
+      try {
+        await putLocalVideoBlob(storageKey, file);
+        offlineVideoMeta[storageKey] = {
+          name: file.name,
+          sizeMB: (file.size / (1024 * 1024)).toFixed(1),
+          type: file.type || 'video/mp4'
+        };
+        saveOfflineVideoMeta();
+        renderAll();
+        showToast(`Saved ${label} locally (${offlineVideoMeta[storageKey].sizeMB} MB)`);
+      } catch (err) {
+        console.error(err);
+        showToast('Could not save video locally', true);
+      }
+    }
+
+    async function handleOfflineVideoUpload(event, storageKey, label) {
+      const file = event.target.files && event.target.files[0];
+      await storeLocalVideoFile(file, storageKey, label);
+      event.target.value = '';
+    }
+
+    async function removeOfflineVideo(storageKey) {
+      try {
+        await deleteLocalVideoBlob(storageKey);
+        delete offlineVideoMeta[storageKey];
+        saveOfflineVideoMeta();
+        renderAll();
+        showToast('Local video removed');
+      } catch (e) {}
+    }
+
+    function bindModalLocalUpload(storageKey, label, reopenFn) {
+      const input = document.getElementById('video-modal-file-input');
+      if (!input) return;
+      input.onchange = async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        await storeLocalVideoFile(file, storageKey, label);
+        e.target.value = '';
+        if (typeof reopenFn === 'function') reopenFn();
+      };
+    }
+
+    function attachVideoFallbackHandler(videoEl, storageKey, label, reopenFn) {
+      if (!videoEl) return;
+      videoEl.onerror = () => {
+        const body = document.getElementById('video-modal-body');
+        if (!body) return;
+        body.innerHTML = `
+          <div class="p-6 text-center space-y-3 max-w-md">
+            <div class="text-sm font-extrabold text-white">No Local Video Attached Yet</div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Select a local <span class="font-mono text-amber-400">.mp4 / .mov</span> file from your device or laptop to save it permanently inside this browser.
+            </p>
+            <label class="inline-flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs shadow-lg">
+              Choose Local Video File
+              <input type="file" id="inline-fallback-video-input" accept="video/*,.mp4,.mov,.m4v,.webm" class="hidden" />
+            </label>
+          </div>
+        `;
+        const inlineInput = document.getElementById('inline-fallback-video-input');
+        if (inlineInput) {
+          inlineInput.onchange = async (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            await storeLocalVideoFile(file, storageKey, label);
+            if (typeof reopenFn === 'function') reopenFn();
+          };
+        }
+      };
+    }
+
+    async function openDrillVideo(drillId, slot, titleText) {
+      const offlineKey = `${drillId}_${slot}`;
+      const modal = document.getElementById('video-modal');
+      const body = document.getElementById('video-modal-body');
+      const slotLabel = slot === 'breakdown' ? 'Coach Breakdown' : 'Drill Demo';
+      document.getElementById('video-modal-badge').textContent = slotLabel;
+      document.getElementById('video-modal-title').textContent = titleText;
+      bindModalLocalUpload(offlineKey, slotLabel, () => openDrillVideo(drillId, slot, titleText));
+
+      if (activeVideoObjectUrl) {
+        URL.revokeObjectURL(activeVideoObjectUrl);
+        activeVideoObjectUrl = null;
+      }
+
+      if (hasOfflineVideo(offlineKey)) {
+        try {
+          const blob = await getLocalVideoBlob(offlineKey);
+          if (blob) {
+            activeVideoObjectUrl = URL.createObjectURL(blob);
+            document.getElementById('video-modal-source').textContent = `Local Device File (${offlineVideoMeta[offlineKey].name})`;
+            body.innerHTML = `<video src="${activeVideoObjectUrl}" controls autoplay playsinline class="w-full h-full object-contain"></video>`;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            return;
+          }
+        } catch (e) {}
+      }
+
+      const url = getEffectiveVideoUrl(drillId, slot);
+      if (!url) {
+        document.getElementById('video-modal-source').textContent = 'No video linked yet';
+        body.innerHTML = '';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        attachVideoFallbackHandler({ onerror: null }, offlineKey, slotLabel, () => openDrillVideo(drillId, slot, titleText));
+        // Trigger clean picker card immediately
+        const fakeVid = {};
+        attachVideoFallbackHandler(fakeVid, offlineKey, slotLabel, () => openDrillVideo(drillId, slot, titleText));
+        fakeVid.onerror();
+        return;
+      }
+
+      document.getElementById('video-modal-source').textContent = url;
+      body.innerHTML = buildVideoEmbedHTML(url);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      const vidEl = body.querySelector('video');
+      attachVideoFallbackHandler(vidEl, offlineKey, slotLabel, () => openDrillVideo(drillId, slot, titleText));
+    }
+
+    async function openVitaminVideo(vitId, titleText, defaultPath) {
+      const modal = document.getElementById('video-modal');
+      const body = document.getElementById('video-modal-body');
+      document.getElementById('video-modal-badge').textContent = 'Daily Vitamin';
+      document.getElementById('video-modal-title').textContent = titleText;
+      bindModalLocalUpload(vitId, 'Vitamin Demo', () => openVitaminVideo(vitId, titleText, defaultPath));
+
+      if (activeVideoObjectUrl) {
+        URL.revokeObjectURL(activeVideoObjectUrl);
+        activeVideoObjectUrl = null;
+      }
+
+      if (hasOfflineVideo(vitId)) {
+        try {
+          const blob = await getLocalVideoBlob(vitId);
+          if (blob) {
+            activeVideoObjectUrl = URL.createObjectURL(blob);
+            document.getElementById('video-modal-source').textContent = `Local Device File (${offlineVideoMeta[vitId].name})`;
+            body.innerHTML = `<video src="${activeVideoObjectUrl}" controls autoplay playsinline class="w-full h-full object-contain"></video>`;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            return;
+          }
+        } catch (e) {}
+      }
+
+      const savedUrl = normalizeVideoUrl((videoLinks[vitId] && videoLinks[vitId].demo) || defaultPath);
+      document.getElementById('video-modal-source').textContent = savedUrl;
+      body.innerHTML = buildVideoEmbedHTML(savedUrl);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      const vidEl = body.querySelector('video');
+      attachVideoFallbackHandler(vidEl, vitId, 'Vitamin Demo', () => openVitaminVideo(vitId, titleText, defaultPath));
     }
 
     function formatDisplayDate(isoStr) {
@@ -783,7 +1034,6 @@ function doGet(e) {
       if (!appState.sessions[dateStr][workoutKey]) {
         appState.sessions[dateStr][workoutKey] = createEmptyWorkoutLog(workoutKey);
       }
-      // Ensure any new drill IDs exist
       const workout = WORKOUTS[workoutKey];
       const log = appState.sessions[dateStr][workoutKey];
       workout.drills.forEach(d => {
@@ -1042,161 +1292,15 @@ function doGet(e) {
       modal.classList.remove('flex');
     }
 
-    // =========================================================================
-    // 6. VIDEO & OFFLINE CACHE STORAGE
-    // =========================================================================
-    function getEffectiveVideoUrl(drillId, slot) {
-      const saved = videoLinks[drillId] && videoLinks[drillId][slot];
-      if (saved && saved.trim()) return saved.trim();
-      const def = DEFAULT_DRILL_VIDEOS[drillId] && DEFAULT_DRILL_VIDEOS[drillId][slot];
-      return def || '';
-    }
-
-    function hasOfflineVideo(key) {
-      return !!(offlineVideoMeta && offlineVideoMeta[key]);
-    }
-
-    function toggleVideoDrawer(drillId) {
-      openVideoDrawerDrillId = openVideoDrawerDrillId === drillId ? null : drillId;
-      renderActiveDayView();
-    }
-
-    function saveDrillVideoLink(drillId, slot, value) {
-      if (!videoLinks[drillId]) videoLinks[drillId] = {};
-      videoLinks[drillId][slot] = value.trim();
-      saveVideoLinks();
-      renderActiveDayView();
-      if (showingVitamins) renderVitaminsView();
-      showToast('Video link saved');
-    }
-
-    async function handleOfflineVideoUpload(event, storageKey, label) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      try {
-        const cache = await caches.open(OFFLINE_VIDEO_CACHE_NAME);
-        const cacheUrl = new URL(`/__offline_video__/${encodeURIComponent(storageKey)}`, window.location.origin).href;
-        const response = new Response(file, {
-          headers: { 'Content-Type': file.type || 'video/mp4', 'Content-Length': String(file.size) }
-        });
-        await cache.put(cacheUrl, response);
-        offlineVideoMeta[storageKey] = {
-          name: file.name,
-          sizeMB: (file.size / (1024 * 1024)).toFixed(1),
-          type: file.type || 'video/mp4'
-        };
-        saveOfflineVideoMeta();
-        renderAll();
-        showToast(`Saved ${label} offline (${offlineVideoMeta[storageKey].sizeMB} MB)`);
-      } catch (err) {
-        console.error(err);
-        showToast('Could not save video offline', true);
-      }
-      event.target.value = '';
-    }
-
-    async function removeOfflineVideo(storageKey) {
-      try {
-        const cache = await caches.open(OFFLINE_VIDEO_CACHE_NAME);
-        const cacheUrl = new URL(`/__offline_video__/${encodeURIComponent(storageKey)}`, window.location.origin).href;
-        await cache.delete(cacheUrl);
-        delete offlineVideoMeta[storageKey];
-        saveOfflineVideoMeta();
-        renderAll();
-        showToast('Offline video removed');
-      } catch (e) {}
-    }
-
-    async function openDrillVideo(drillId, slot, titleText) {
-      const offlineKey = `${drillId}_${slot}`;
-      const modal = document.getElementById('video-modal');
-      const body = document.getElementById('video-modal-body');
-      document.getElementById('video-modal-badge').textContent = slot === 'breakdown' ? 'Coach Breakdown' : 'Drill Demo';
-      document.getElementById('video-modal-title').textContent = titleText;
-
-      if (activeVideoObjectUrl) {
-        URL.revokeObjectURL(activeVideoObjectUrl);
-        activeVideoObjectUrl = null;
-      }
-
-      if (hasOfflineVideo(offlineKey)) {
-        try {
-          const cache = await caches.open(OFFLINE_VIDEO_CACHE_NAME);
-          const cacheUrl = new URL(`/__offline_video__/${encodeURIComponent(offlineKey)}`, window.location.origin).href;
-          const match = await cache.match(cacheUrl);
-          if (match) {
-            const blob = await match.blob();
-            activeVideoObjectUrl = URL.createObjectURL(blob);
-            document.getElementById('video-modal-source').textContent = `Offline Device File (${offlineVideoMeta[offlineKey].name})`;
-            body.innerHTML = `<video src="${activeVideoObjectUrl}" controls autoplay playsinline class="w-full h-full object-contain"></video>`;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            return;
-          }
-        } catch (e) {}
-      }
-
-      const url = getEffectiveVideoUrl(drillId, slot);
-      if (!url) {
-        openVideoDrawerDrillId = drillId;
-        renderActiveDayView();
-        showToast('Add a video file or link below', true);
-        return;
-      }
-
-      document.getElementById('video-modal-source').textContent = url;
-      body.innerHTML = buildVideoEmbedHTML(url);
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    async function openVitaminVideo(vitId, titleText, defaultPath) {
-      const modal = document.getElementById('video-modal');
-      const body = document.getElementById('video-modal-body');
-      document.getElementById('video-modal-badge').textContent = 'Daily Vitamin';
-      document.getElementById('video-modal-title').textContent = titleText;
-
-      if (activeVideoObjectUrl) {
-        URL.revokeObjectURL(activeVideoObjectUrl);
-        activeVideoObjectUrl = null;
-      }
-
-      if (hasOfflineVideo(vitId)) {
-        try {
-          const cache = await caches.open(OFFLINE_VIDEO_CACHE_NAME);
-          const cacheUrl = new URL(`/__offline_video__/${encodeURIComponent(vitId)}`, window.location.origin).href;
-          const match = await cache.match(cacheUrl);
-          if (match) {
-            const blob = await match.blob();
-            activeVideoObjectUrl = URL.createObjectURL(blob);
-            document.getElementById('video-modal-source').textContent = `Offline Device File (${offlineVideoMeta[vitId].name})`;
-            body.innerHTML = `<video src="${activeVideoObjectUrl}" controls autoplay playsinline class="w-full h-full object-contain"></video>`;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            return;
-          }
-        } catch (e) {}
-      }
-
-      const savedUrl = (videoLinks[vitId] && videoLinks[vitId].demo) || defaultPath;
-      document.getElementById('video-modal-source').textContent = savedUrl;
-      body.innerHTML = buildVideoEmbedHTML(savedUrl);
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
     function buildVideoEmbedHTML(url) {
-      // YouTube
       const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
       if (ytMatch) {
         return `<iframe src="https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&playsinline=1" class="w-full h-full border-0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
       }
-      // Google Drive
       const gdMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
       if (gdMatch) {
         return `<iframe src="https://drive.google.com/file/d/${gdMatch[1]}/preview" class="w-full h-full border-0" allow="autoplay"></iframe>`;
       }
-      // Direct MP4 / MOV / GitHub relative path
       return `<video src="${escapeHtml(url)}" controls autoplay playsinline class="w-full h-full object-contain"></video>`;
     }
 
@@ -1297,7 +1401,6 @@ function doGet(e) {
           const wKey = r.workoutKey;
           if (workoutFilter !== 'all' && wKey !== workoutFilter) return;
 
-          // Match drill in perDrillSpots
           const cleanName = String(r.drillName || '').replace(/^#\d+\s*/, '').trim().toLowerCase();
           const matchedDef = WORKOUTS[wKey].drills.find(d => d.name.toLowerCase() === cleanName);
 
@@ -1385,11 +1488,11 @@ function doGet(e) {
     }
 
     function getZoneFillColor(makes, attempts) {
-      if (!attempts || attempts <= 0) return '#1e293b'; // Slate 800
+      if (!attempts || attempts <= 0) return '#1e293b';
       const pct = (makes / attempts) * 100;
-      if (pct >= 70) return '#dc2626'; // Hot Red
-      if (pct >= 55) return '#b45309'; // Solid Gold/Amber
-      return '#1d4ed8'; // Cold Royal Blue
+      if (pct >= 70) return '#dc2626';
+      if (pct >= 55) return '#b45309';
+      return '#1d4ed8';
     }
 
     function polarToCartesian(cx, cy, r, angleDeg) {
@@ -1440,18 +1543,16 @@ function doGet(e) {
 
       const svg = document.getElementById('hotzones-svg');
       const cx = 250;
-      const cy = 62; // Basket center
+      const cy = 62;
       const rPaint = 92;
       const rMid = 205;
       const rThree = 345;
       const angles = [174, 142, 108, 72, 38, 6];
 
       let svgHtml = `
-        <!-- Court Hardwood / Dark Base -->
         <rect x="0" y="0" width="500" height="450" fill="#0f172a" />
       `;
 
-      // Outer 5 Perimeter Zones (Catch + Shoot)
       for (let i = 0; i < 5; i++) {
         const a1 = angles[i];
         const a2 = angles[i + 1];
@@ -1470,7 +1571,6 @@ function doGet(e) {
         `;
       }
 
-      // Inner 5 Mid-Range Zones (Footwork + Dribble)
       for (let i = 0; i < 5; i++) {
         const a1 = angles[i];
         const a2 = angles[i + 1];
@@ -1489,7 +1589,6 @@ function doGet(e) {
         `;
       }
 
-      // Key / Paint & Free Throw Zone
       const ftFill = getZoneFillColor(ft.makes, ft.attempts);
       svgHtml += `
         <g class="court-zone" onclick="inspectHotZone('ft', 0)">
@@ -1500,14 +1599,12 @@ function doGet(e) {
           <text x="250" y="130" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">${formatPct(ft.makes, ft.attempts)}</text>
         </g>
 
-        <!-- Backboard & Rim -->
         <line x1="220" y1="36" x2="280" y2="36" stroke="#f8fafc" stroke-width="3.5" />
         <circle cx="250" cy="48" r="10" fill="none" stroke="#f59e0b" stroke-width="3" />
       `;
 
       svg.innerHTML = svgHtml;
 
-      // Render Drill-by-Drill 5-Spot Heatmap Matrix
       const matrixContainer = document.getElementById('hz-drill-matrix-list');
       const matrixTitle = document.getElementById('hz-matrix-title');
       if (matrixContainer) {
@@ -1706,7 +1803,6 @@ function doGet(e) {
       if (appState.activeDate !== todayISO) todayPill.classList.remove('hidden');
       else todayPill.classList.add('hidden');
 
-      // Update workout selector pills
       ['catch_shoot', 'footwork_dribble'].forEach(wKey => {
         const btn = document.getElementById(`workout-btn-${wKey}`);
         const badge = document.getElementById(`workout-badge-${wKey}`);
@@ -1718,7 +1814,6 @@ function doGet(e) {
           : 'py-3 px-3.5 rounded-xl text-left transition flex items-center justify-between gap-2 bg-slate-950/60 text-slate-300 hover:bg-slate-800';
       });
 
-      // Top bar button active states
       document.getElementById('toggle-vitamins-btn').className = showingVitamins
         ? 'flex items-center gap-1 px-2.5 py-2 rounded-xl bg-amber-500 text-slate-950 border border-amber-400 text-xs font-bold transition'
         : 'flex items-center gap-1 px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-amber-400 transition';
@@ -1731,7 +1826,6 @@ function doGet(e) {
         ? 'flex items-center gap-1 px-2.5 py-2 rounded-xl bg-amber-500 text-slate-950 border border-amber-400 text-xs font-bold transition'
         : 'flex items-center gap-1 px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 transition';
 
-      // Show/Hide Views
       document.getElementById('active-day-view').classList.toggle('hidden', showingHistory || showingVitamins || showingHotZones);
       document.getElementById('hotzones-view').classList.toggle('hidden', !showingHotZones);
       document.getElementById('vitamins-view').classList.toggle('hidden', !showingVitamins);
@@ -1754,8 +1848,6 @@ function doGet(e) {
       const session = getActiveSession();
       const dayTotals = getWorkoutTotals(appState.activeDate, workoutKey);
 
-      document.getElementById('day-tag-pill').textContent = workout.tag;
-      document.getElementById('day-focus-title').textContent = workout.title;
       document.getElementById('day-makes-hero').textContent = dayTotals.makes;
       document.getElementById('day-goal-hero').textContent = dayTotals.goal;
       document.getElementById('day-pct-badge').textContent = `${formatPct(dayTotals.makes, dayTotals.attempts)} • ${dayTotals.attempts} att`;
@@ -1769,7 +1861,6 @@ function doGet(e) {
       if (syncMob) syncMob.textContent = shortDate;
       if (syncDesk) syncDesk.textContent = shortDate;
 
-      // Knee comfort buttons
       ['Great', 'Tight', 'Sore'].forEach(lvl => {
         const btn = document.getElementById(`knee-btn-${lvl}`);
         const active = session.kneeComfort === lvl;
@@ -1783,13 +1874,11 @@ function doGet(e) {
 
       document.getElementById('day-notes-input').value = session.notes || '';
 
-      // Update Collapse All Spots label
       const spotDrills = workout.drills.filter(d => d.type === 'spots');
       const anyExpanded = spotDrills.some(d => !(session.drills[d.id] && session.drills[d.id].collapsed));
       allSpotsCollapsed = !anyExpanded;
       document.getElementById('toggle-all-spots-label').textContent = allSpotsCollapsed ? 'Expand All Spots' : 'Collapse All Spots';
 
-      // Render Drills
       const container = document.getElementById('drills-container');
       container.innerHTML = workout.drills.map((drill, idx) => {
         const dState = session.drills[drill.id];
@@ -1848,7 +1937,6 @@ function doGet(e) {
             `;
           }
         } else {
-          // Free Throws Card Body
           bodyHtml = `
             <div class="pt-2 space-y-2.5">
               <div class="grid grid-cols-3 gap-2">
@@ -1879,7 +1967,6 @@ function doGet(e) {
         return `
           <div class="bg-slate-900 border ${goalMet ? 'border-emerald-600/50' : 'border-slate-800'} rounded-2xl p-3.5 shadow-md flex flex-col justify-between">
             <div>
-              <!-- Drill Header -->
               <div class="flex items-start justify-between gap-2">
                 <div onclick="${drill.type === 'spots' ? `toggleDrillCollapse('${drill.id}')` : ''}" class="${drill.type === 'spots' ? 'cursor-pointer' : ''} min-w-0 flex-1">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -1889,7 +1976,6 @@ function doGet(e) {
                   <p class="text-[11px] text-slate-400 mt-0.5 leading-snug">${escapeHtml(drill.cue)}</p>
                 </div>
 
-                <!-- Makes / Goal Badge -->
                 <div class="text-right shrink-0">
                   <div class="font-mono text-sm font-black ${goalMet ? 'text-emerald-400' : 'text-amber-400'}">
                     ${totals.makes}/${drill.targetMakes}
@@ -1898,7 +1984,6 @@ function doGet(e) {
                 </div>
               </div>
 
-              <!-- Drill Action Toolbar -->
               <div class="flex items-center justify-between gap-1.5 mt-2.5 pt-2 border-t border-slate-800/80">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <button onclick="openDrillVideo('${drill.id}', 'demo', '${escapeHtml(drill.name)}')" class="px-2 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition ${hasDemo ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30 hover:bg-sky-500/30' : 'bg-slate-800 text-slate-400 hover:text-slate-200'}">
@@ -1928,7 +2013,6 @@ function doGet(e) {
                 </div>
               </div>
 
-              <!-- Collapsible Video Link / Offline Upload Drawer -->
               ${isDrawerOpen ? `
                 <div class="mt-2.5 p-2.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-xs">
                   <div class="flex items-center justify-between gap-2">
@@ -1958,7 +2042,6 @@ function doGet(e) {
               ` : ''}
             </div>
 
-            <!-- Drill Interactive Body -->
             ${bodyHtml}
           </div>
         `;
@@ -2157,16 +2240,17 @@ function doGet(e) {
         }
 
         let importedCount = 0;
+        let latestDate = '';
         data.rows.forEach(r => {
           const dateStr = normalizeDateString(r.date);
           if (!dateStr) return;
+          if (!latestDate || dateStr > latestDate) latestDate = dateStr;
           const wKey = String(r.workout || '').toLowerCase().includes('footwork') ? 'footwork_dribble' : 'catch_shoot';
           const workout = WORKOUTS[wKey];
           const session = ensureSession(dateStr, wKey);
           if (r.kneeComfort) session.kneeComfort = r.kneeComfort;
           if (r.notes) session.notes = r.notes;
 
-          // Match drill by #number prefix or drill name
           const cleanDrill = String(r.drill || '').replace(/^#\d+\s*/, '').trim().toLowerCase();
           const numMatch = String(r.drill || '').match(/^#(\d+)/);
           let matchedDrill = null;
@@ -2198,7 +2282,6 @@ function doGet(e) {
               }
             }
             if (!foundSpots && Number(r.attempts || 0) > 0) {
-              // Distribute evenly across 5 spots if older row lacked Spot Breakdown column
               const totM = Number(r.makes || 0);
               const totA = Number(r.attempts || 0);
               for (let i = 0; i < 5; i++) {
@@ -2211,6 +2294,9 @@ function doGet(e) {
           }
         });
 
+        if (latestDate && importedCount > 0) {
+          appState.activeDate = latestDate;
+        }
         saveState();
         renderAll();
         showToast(`Pulled ${importedCount} drill records from Sheets!`);
